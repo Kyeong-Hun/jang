@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true;
+    }
+
+    function validBox(b) {
+      return b is map
+        && b.keys().hasAll(['iv', 'ciphertext'])
+        && b.keys().hasOnly(['iv', 'ciphertext'])
+        && b.iv is string
+        && b.iv.size() >= 16 && b.iv.size() <= 32
+        && b.ciphertext is string
+        && b.ciphertext.size() > 20 && b.ciphertext.size() < 900000;
+    }
+
+    function validKdf(k) {
+      return k is map
+        && k.keys().hasAll(['name', 'salt', 'iterations'])
+        && k.keys().hasOnly(['name', 'salt', 'iterations'])
+        && k.name == 'PBKDF2-SHA256'
+        && k.salt is string && k.salt.size() >= 20 && k.salt.size() <= 40
+        && k.iterations == 600000;
+    }
+
+    function validPending(p) {
+      return p is map
+        && p.keys().hasAll(['kdf', 'passwordWrap'])
+        && p.keys().hasOnly(['kdf', 'passwordWrap'])
+        && validKdf(p.kdf) && validBox(p.passwordWrap);
+    }
+
+    function validEncryptedState() {
+      let d = request.resource.data;
+      let v = d.vault;
+      return d.keys().hasAll(['schemaVersion', 'vault', 'updatedAt'])
+        && d.keys().hasOnly(['schemaVersion', 'vault', 'updatedAt'])
+        && d.schemaVersion == 2
+        && d.updatedAt is timestamp
+        && v is map
+        && v.keys().hasAll(['version', 'kdf', 'passwordWrap', 'recoverySalt', 'recoveryWrap', 'data'])
+        && v.keys().hasOnly(['version', 'kdf', 'passwordWrap', 'recoverySalt', 'recoveryWrap', 'data', 'pendingPassword'])
+        && v.version == 1
+        && validKdf(v.kdf)
+        && validBox(v.passwordWrap)
+        && v.recoverySalt is string && v.recoverySalt.size() >= 20 && v.recoverySalt.size() <= 40
+        && validBox(v.recoveryWrap)
+        && validBox(v.data)
+        && (!('pendingPassword' in v) || validPending(v.pendingPassword));
+    }
+
+    match /users/{uid}/private/{documentId} {
+      allow get: if documentId == 'state' && isOwner(uid);
+      allow list: if false;
+      // New documents must be encrypted. Legacy plaintext documents may only
+      // transition to the encrypted version; reverting to plaintext is denied.
+      allow create: if documentId == 'state' && isOwner(uid) && validEncryptedState();
+      allow update: if documentId == 'state' && isOwner(uid)
+        && resource.data.schemaVersion in [1, 2]
+        && validEncryptedState();
+      allow delete: if documentId == 'state' && isOwner(uid);
+    }
+  }
+}

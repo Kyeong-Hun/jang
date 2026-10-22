@@ -1,0 +1,12 @@
+node_modules/
+.firebase/
+.env
+.env.*
+*.log
+*serviceAccount*.json
+*service-account*.json
+*credentials*.json
+*secret*.json
+*recovery-key*
+*복구키*
+.DS_Store

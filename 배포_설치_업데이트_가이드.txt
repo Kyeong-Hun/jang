@@ -1,0 +1,82 @@
+장일기 · Firebase Hosting 출시 및 자동 업데이트 가이드
+====================================================
+
+프로젝트 확인
+- 현재 HTML 안에 설정된 Firebase projectId: jangilgi-f8d8d
+- 배포 대상으로 설정한 기본 사이트: https://jangilgi-f8d8d.web.app
+- 이 배포 키트는 2026-10-22 암호화 개편본 ZIP의 index.html과 images/를 그대로 복사했습니다.
+- Firebase에 실제 배포하거나 실제 계정 정보를 변경한 것은 아닙니다.
+
+[폴더]
+public/index.html         장일기 앱 (이 파일을 수정하여 업데이트)
+public/images/            배변 일러스트 7종
+firebase.json             Hosting 배포 폴더 및 캐시 설정
+.firebaserc               Firebase 프로젝트 선택
+firestore.rules           암호화 형식용 보안 규칙 (참고/수동 검토/적용)
+암호화_보안_적용안내.txt    이전 버전에서 전달한 마이그레이션 안내
+.gitignore                GitHub에 올리면 안 되는 일반적 비밀 파일 패턴
+
+[처음 출시: Windows PowerShell]
+1. Node.js LTS를 설치합니다. 이미 설치되어 있다면 넘어가도 됩니다.
+2. 이 ZIP을 컴퓨터의 장일기 프로젝트 폴더에 압축 해제합니다.
+3. 폴더 안에서 PowerShell을 엽니다.
+4. 아래를 순서대로 실행합니다.
+
+   npm install -g firebase-tools
+   firebase login
+   firebase projects:list
+   firebase hosting:channel:deploy test
+
+5. 반환된 미리보기 주소에서 회원가입·기록·암호화·다른 브라우저 로그인·복구키 등 시험을 합니다.
+   주의: 미리보기 주소도 실제 Firebase Auth/Firestore와 연결됩니다.
+6. FIRESTORE 보안 규칙은 별도로 Firebase Console에서 적용해야 합니다.
+   먼저 기존 규칙과 신중히 비교하고 시험한 뒤 게시하세요.
+   Firebase Console → Firestore Database → 규칙(Rules)
+7. Firebase Console → Authentication에서 이메일 인증과 비밀번호 정책을 확인하고,
+   Authorized domains(승인된 도메인)에 실제 사용 사이트 주소가 있는지 점검하세요.
+8. 운영 서비스 출시가 안전하다고 판단되면:
+
+   firebase deploy --only hosting
+
+9. https://jangilgi-f8d8d.web.app 에서 접속되는지 확인합니다.
+
+[일반 업데이트]
+- public/index.html (및 필요한 public/images/)을 새 파일로 교체합니다.
+- 재검증한 후 같은 프로젝트 폴더에서:
+
+   firebase hosting:channel:deploy test
+   firebase deploy --only hosting
+
+- 사용자에게 파일을 전달할 필요가 없습니다. 기존 주소가 최신 파일을 제공합니다.
+- 사용자가 이미 열어 놓은 탭은 보통 새로고침이 필요합니다.
+- 이 키트의 index.html에는 자동 새로고침/버전 감지 코드를 추가하지 않았습니다.
+
+[GitHub 자동 배포: 권장]
+1. 이 폴더를 본인의 GitHub 비공개(Private) 저장소로 연결합니다.
+2. 이 폴더에서:
+
+   firebase init hosting:github
+
+3. Firebase에서 안내하는 GitHub 권한 부여 및 워크플로 생성 과정을 진행합니다.
+4. 생성된 .github/workflows 파일을 GitHub에 커밋/푸시합니다.
+5. 이후 GitHub에 변경사항을 올리고 PR로 검토/병합하면 워크플로 설정에 따라
+   테스트 미리보기와 운영 사이트 자동 배포가 이루어집니다.
+6. 저장소에 Firebase 서비스 계정 JSON이나 사용자 복구 키를 올리지 마세요.
+   자동화에 사용되는 서비스 계정 권한은 정기적으로 검토하세요.
+
+[중요한 출시 전 확인사항]
+- 특히 새 암호화 버전의 서버 연결 및 마이그레이션은 실제 서비스에서 아직 검증되지 않았습니다.
+  공개 사용자에게 사용시키기 전에 시험용 Firebase 프로젝트에서 통합 테스트를 권장합니다.
+- 기존 Firestore의 평문 기록을 암호화 버전으로 이전할 때, 예전 버전에서 쓰기가 막히는
+  시점과 데이터 백업/복원 방법을 확인하세요. 롤백은 HTML만 되돌린다고 충분하지 않을 수 있습니다.
+- Firebase Hosting 자동 업데이트는 HTML 등 프런트엔드에만 해당합니다.
+  Firestore Rules 및 Auth 정책은 별도로 설정/검증/배포해야 합니다.
+- 사이트 관리자 권한을 가진 사람이 웹 JavaScript를 변경할 수 있다는 암호화 한계는 남아 있습니다.
+- 건강정보를 취급하므로 이용 약관, 개인정보처리방침, 삭제·보존 정책 등도 정비하세요.
+- Firebase 보안 규칙, 접근 권한, 사용량/과금 알림을 점검하세요.
+- 별도 프로덕션/시험 Firebase 프로젝트를 권장합니다.
+
+참고 공식 문서
+https://firebase.google.com/docs/hosting/quickstart
+https://firebase.google.com/docs/hosting/github-integration
+https://firebase.google.com/docs/hosting/test-preview-deploy
