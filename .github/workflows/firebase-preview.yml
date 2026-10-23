@@ -31,4 +31,4 @@ jobs:
           node-version: '22'
 
       - name: Deploy Firebase preview
-        run: npx --yes firebase-tools@15.34.1 hosting:channel:deploy test --project jangilgi-f8d8d --expires 7d --non-interactive
+run: npx --yes firebase-tools@15.34.1 deploy --only hosting --project jangilgi-f8d8d --non-interactive
