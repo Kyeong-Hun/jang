@@ -725,14 +725,14 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <button aria-label="메뉴 열기" class="mobile-menu">☰</button>
 <div class="breadcrumb"><button id="breadcrumbHome" type="button" title="홈으로 돌아가기">⌂ 장일기</button><b>/</b><strong id="pageTitle">홈</strong></div>
 <div class="top-actions">
-<button aria-label="앱 사용법 튜토리얼 시작" class="help-button" id="openHelp" type="button">? 도움말</button>
+<button class="help-button support-top-btn" type="button" data-view="support">✉ 문의</button><button aria-label="앱 사용법 튜토리얼 시작" class="help-button" id="openHelp" type="button">? 도움말</button>
 <div class="history-control"><span>변경 이력 기록됨</span><button aria-label="과거 기록 수정 열기" class="settings-button" id="editHistoryButton">✎ 기록 수정</button></div>
 <div class="account-menu-holder">
   <button class="avatar-small account-avatar" id="accountMenuButton" aria-label="내 계정과 프로필 열기" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu" type="button"><span id="accountAvatarLetter" aria-hidden="true">나</span></button>
   <div class="account-menu" id="accountMenu" role="region" aria-label="내 계정 및 프로필" hidden>
-    <div class="account-menu-header"><div class="account-avatar account-avatar-large" id="profileAvatarLetter" aria-hidden="true">나</div><div class="account-menu-intro"><strong>내 계정</strong><span id="accountEmail">로그인 정보 확인 중</span><small id="syncStatus" class="firebase-sync-message" role="status">서버 연결 대기</small></div></div>
-    <div class="account-menu-section"><span class="section-kicker">내 프로필</span><label class="profile-menu-field">연령대<select id="settingsAge"><option value="">선택 안 함</option><option value="10대">10대</option><option value="20대">20대</option><option value="30대">30대</option><option value="40대">40대</option><option value="50대 이상">50대 이상</option></select></label><label class="profile-menu-field">성별<select id="settingsGender"><option>선택 안 함</option><option>여성</option><option>남성</option></select></label><button class="account-primary" id="saveProfile" type="button">프로필 저장</button></div>
-    <div class="account-security-state"><span class="account-security-icon">♜</span><span><strong>개인 기록 암호화</strong><small id="securityStatus">보안 상태 확인 중</small></span></div><div class="account-menu-section account-menu-actions"><span class="section-kicker">계정 및 보안</span><button id="changeEmailBtn" type="button">✉ 이메일 주소 변경</button><button id="changePasswordBtn" type="button">🔑 로그인 비밀번호 변경</button><button id="showSecurityInfoBtn" type="button">🛡 암호화 및 복구 키 안내</button><p class="account-menu-tip">이메일 변경에는 인증이 필요해요. 비밀번호는 기록 암호화 키도 보호합니다.</p><span class="section-kicker">기록 관리</span><button id="clearData" class="account-danger" type="button">내 기록 모두 삭제</button><p class="account-menu-tip">배변·식사·생활 및 변경 이력을 삭제하며, 계정과 화면 설정은 유지됩니다.</p></div>
+    <div class="account-menu-header"><div class="account-avatar account-avatar-large" id="profileAvatarLetter" aria-hidden="true">나</div><div class="account-menu-intro"><strong id="accountDisplayName">내 계정</strong><span id="accountEmail">로그인 정보 확인 중</span><small id="syncStatus" class="firebase-sync-message" role="status">서버 연결 대기</small></div></div>
+    <div class="account-menu-section"><span class="section-kicker">내 프로필 · 암호화 보관</span><label class="profile-menu-field">이름<input id="settingsDisplayName" type="text" autocomplete="nickname" maxlength="30" placeholder="표시할 이름" /></label><label class="profile-menu-field">연령대<select id="settingsAge"><option value="">선택 안 함</option><option value="10대">10대</option><option value="20대">20대</option><option value="30대">30대</option><option value="40대">40대</option><option value="50대 이상">50대 이상</option></select></label><label class="profile-menu-field">성별<select id="settingsGender"><option>선택 안 함</option><option>여성</option><option>남성</option><option>기타 / 직접 밝히지 않음</option></select></label><button class="account-primary" id="saveProfile" type="button">프로필 저장</button></div>
+    <div class="account-security-state"><span class="account-security-icon">♜</span><span><strong>개인 기록 암호화</strong><small id="securityStatus">보안 상태 확인 중</small></span></div><div class="account-menu-section account-menu-actions"><span class="section-kicker">계정 및 보안</span><button id="changeEmailBtn" type="button">✉ 이메일 주소 변경</button><button id="changePasswordBtn" type="button">🔑 로그인 비밀번호 변경</button><button id="showSecurityInfoBtn" type="button">🛡 암호화 및 복구 키 안내</button><p class="account-menu-tip">이메일 변경에는 인증이 필요해요. 비밀번호는 기록 암호화 키도 보호합니다.</p><span class="section-kicker">문의 및 관리자</span><button id="profileContactBtn" type="button">✉ 개발자에게 문의</button><button id="adminModeButton" type="button" hidden>🛡 관리자 문의함</button><span class="section-kicker">기록 관리</span><button id="clearData" class="account-danger" type="button">내 기록 모두 삭제</button><p class="account-menu-tip">배변·식사·생활 및 변경 이력을 삭제하며, 계정과 화면 설정은 유지됩니다.</p></div>
     <div class="account-menu-footer"><button id="logoutBtn" type="button">로그아웃 ↗</button></div>
   </div>
 </div>
@@ -830,7 +830,13 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <div class="appearance-choices analysis-window-choices" role="group" aria-label="분석에 사용할 최근 기록 기간">
 <button type="button" data-analysis-days="30">30일</button><button type="button" data-analysis-days="60">60일</button><button type="button" data-analysis-days="90">90일</button><button type="button" data-analysis-days="180">180일</button></div>
 <p class="appearance-description">초기값 90일은 의학적 권고값이 아닌 탐색용 설정이에요. 연관성은 새로운 기록에서 재현되는지 따로 확인합니다.</p></article>
-</div><p class="appearance-footnote">선택한 테마와 배경은 로그인한 계정에 저장돼요. 연령대·이메일 변경은 오른쪽 위 프로필에서 관리할 수 있어요. 건강 참고 정보는 왼쪽 참고 메뉴에서 확인할 수 있어요.</p></section>
+<article class="settings-card card-surface" id="accountSupportSettings"><span class="section-kicker">PRIVACY &amp; SUPPORT</span><h2>계정과 문의</h2><p class="appearance-description">이름·연령대·성별은 암호화된 내 계정 기록에 저장돼요. 개발자에게 직접 보낸 문의 내용만 운영자가 볼 수 있어요.</p><div class="settings-support-actions"><button id="settingsProfileBtn" type="button">내 프로필 수정</button><button type="button" data-view="support">개발자에게 문의</button></div></article></div><p class="appearance-footnote">선택한 테마와 배경은 로그인한 계정에 저장돼요. 연령대·이메일 변경은 오른쪽 위 프로필에서 관리할 수 있어요. 건강 참고 정보는 왼쪽 참고 메뉴에서 확인할 수 있어요.</p></section>
+<section class="view" id="supportView" aria-label="개발자에게 문의">
+<div class="jg-subpage-head"><h1>개발자에게 문의</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
+<div class="support-grid"><article class="card-surface support-card"><span class="section-kicker">CONTACT THE DEVELOPER</span><h2>장일기에 의견을 보내주세요</h2><p class="support-muted">오류 제보, 기능 제안, 이용 문의를 보낼 수 있어요. 배변·식사·생활 기록은 자동으로 전송되지 않아요. 문의 내용에 민감한 개인정보를 넣지 않는 것이 좋아요.</p>
+<form id="supportForm"><label>문의 유형<select id="supportCategory" required><option value="bug">오류 제보</option><option value="feature">기능 제안</option><option value="account">계정·사용 문의</option><option value="other">기타</option></select></label><label>제목<input id="supportSubject" required minlength="3" maxlength="100" placeholder="문의 제목을 입력해 주세요"></label><label>내용<textarea id="supportMessage" required minlength="10" maxlength="2000" rows="5" placeholder="문의 내용을 자세히 적어 주세요"></textarea></label><button class="support-primary" id="supportSend" type="submit">개발자에게 보내기</button><p class="support-status" id="supportStatus" role="status"></p></form></article>
+<article class="card-surface support-card"><span class="section-kicker">MY INQUIRIES</span><div class="support-title-row"><h2>내 문의 내역</h2><button type="button" id="supportRefresh">새로고침</button></div><div id="supportMyList" class="support-list">문의 내역을 확인하려면 새로고침을 눌러 주세요.</div></article></div></section>
+<section class="view" id="adminSupportView" aria-label="관리자 문의함"><div class="jg-subpage-head"><h1>관리자 문의함</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div><article class="card-surface support-card"><div class="support-title-row"><div><span class="section-kicker">SUPPORT ADMIN ONLY</span><h2>접수된 개발자 문의</h2></div><div><button id="adminSupportRefresh" type="button">문의 새로고침</button><button id="adminSupportLock" type="button">관리자 모드 종료</button></div></div><p class="support-muted">이 화면은 사용자가 직접 전송한 문의만 표시합니다. 배변·식사·생활 기록 및 복호화 키를 조회하는 기능은 없습니다. 관리자 모드는 직접 종료하거나 일반 계정에서 로그아웃할 때 해제됩니다. 페이지를 새로고침해도 관리자 인증은 다시 필요합니다.</p><p id="adminSupportStatus" class="support-status" role="status"></p><div id="adminSupportList" class="support-list"></div></article></section>
 </main>
 </div>
 <div aria-hidden="true" class="history-modal" id="historyModal"><div class="history-modal-card"><div class="history-modal-head"><div><div class="section-kicker">DATA CONTROL</div><h2>과거 기록 수정</h2><p>수정 내용은 변경 이력에 남아요.</p></div><button aria-label="수정 창 닫기" id="closeHistory">×</button></div><div class="history-tabs"><button class="active" data-history-tab="edit">기록 수정</button><button data-history-tab="log">변경 이력</button></div><div class="history-panel active" id="historyEditPanel"><label>수정할 날짜<select id="editDate"></select></label><div class="history-form-grid"><label>대변 형태<select id="editBristol"><option value="1">1형 · 딱딱한 알갱이</option><option value="2">2형 · 울퉁불퉁한 소시지</option><option value="3">3형 · 금이 간 소시지</option><option value="4">4형 · 매끈한 소시지</option><option value="5">5형 · 부드러운 덩어리</option><option value="6">6형 · 흐물한 조각</option><option value="7">7형 · 물처럼 묽은 변</option></select></label><p class="appearance-description">이전 날짜별 음식 기록은 음식·생활 → 식사 기록 → 과거 자료 관리에서 수정할 수 있어요.</p></div><div class="history-original" id="historyOriginal">원래 기록을 불러오는 중이에요.</div><button class="save-history-button" id="saveHistory">수정 내용 저장하기</button></div><div class="history-panel" id="historyLogPanel"><div class="history-log" id="historyLog"><span>아직 변경한 기록이 없어요.</span></div></div></div></div>
@@ -888,6 +894,8 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
     <div class="clear-dialog-actions"><button type="button" id="clearRecordsCancel">취소</button><button type="button" id="clearRecordsConfirm" disabled>모든 기록 영구 삭제</button></div>
   </div>
 </div>
+<div id="profileWelcome" class="jg-overlay" hidden><div class="jg-dialog" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="jg-dialog-icon">✦</div><span class="section-kicker">WELCOME TO JANGILGI</span><h2 id="welcomeTitle">나의 프로필을 완성해 주세요</h2><p>처음 이용할 때 한 번만 입력해요. 기존 사용자도 프로필을 설정할 수 있어요. 정보는 건강 기록과 함께 기기에서 암호화되어 저장됩니다.</p><form id="welcomeProfileForm"><label>이름 또는 닉네임 <input id="welcomeName" required maxlength="30" autocomplete="nickname" placeholder="표시할 이름" /></label><label>연령대 <select id="welcomeAge" required><option value="">연령대를 선택해 주세요</option><option value="10대">10대</option><option value="20대">20대</option><option value="30대">30대</option><option value="40대">40대</option><option value="50대 이상">50대 이상</option></select></label><label>성별 (선택사항) <select id="welcomeGender"><option>선택 안 함</option><option>여성</option><option>남성</option><option>기타 / 직접 밝히지 않음</option></select></label><button class="support-primary" id="welcomeSave" type="submit">프로필 저장하고 계속</button><p class="support-status" id="welcomeStatus" role="status"></p></form></div></div>
+<div id="adminPasswordModal" class="jg-overlay" hidden><div class="jg-dialog" role="dialog" aria-modal="true" aria-labelledby="adminPasswordTitle"><span class="section-kicker">ADMIN ACCESS</span><h2 id="adminPasswordTitle">관리자 로그인</h2><p>기존 관리자 계정으로 로그인된 상태입니다. 별도로 설정한 관리자 비밀번호를 입력해 주세요. 다른 계정은 필요하지 않으며, 비밀번호 확인은 Firestore 보안 규칙에서 처리합니다.</p><form id="adminPasswordForm"><label>관리자 전용 추가 비밀번호<input id="adminPasswordInput" type="password" autocomplete="off" required></label><button class="support-primary" id="adminPasswordSubmit" type="submit">관리자 문의함 열기</button><button class="support-secondary" id="adminPasswordCancel" type="button">취소</button><p class="support-status" id="adminPasswordStatus" role="status"></p></form></div></div>
 <div aria-hidden="true" class="tour-screen" hidden="" id="tourScreen"><div class="tour-dim"></div><div class="tour-highlight" id="tourHighlight"></div><div aria-labelledby="tourTitle" aria-modal="true" class="tour-card" role="dialog"><div class="tour-progress" id="tourProgress">1 / 7</div><h2 id="tourTitle">처음 오셨나요?</h2><p id="tourDescription"></p><div class="tour-actions"><button id="tourExit" type="button">건너뛰기</button><div><button id="tourPrev" type="button">이전</button><button class="primary-button" id="tourNext" type="button">다음 →</button></div></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>'use strict';
@@ -924,8 +932,8 @@ function normalizeData(raw){
 }
 let cloudData=blankData(), accountReady=false, cloudWrite=null, cloudUserEmail='';
 function readData(){return normalizeData(JSON.parse(JSON.stringify(cloudData)));}
-function adoptCloudData(data,email){cloudData=normalizeData(data||blankData());accountReady=true;cloudUserEmail=email||'';const node=document.querySelector('#accountEmail');if(node)node.textContent=cloudUserEmail;const initial=cloudUserEmail.charAt(0).toUpperCase()||'나';document.querySelector('#accountAvatarLetter').textContent=initial;document.querySelector('#profileAvatarLetter').textContent=initial;refreshAllViews();}
-function clearCloudSession(){cloudData=blankData();accountReady=false;cloudWrite=null;cloudUserEmail='';document.querySelector('#accountMenu')?.setAttribute('hidden','');document.querySelector('#accountMenuButton')?.setAttribute('aria-expanded','false');document.querySelector('#accountAvatarLetter').textContent='나';document.querySelector('#profileAvatarLetter').textContent='나';document.body.dataset.theme='leaf';document.body.dataset.bg='plain';}
+function adoptCloudData(data,email){cloudData=normalizeData(data||blankData());accountReady=true;cloudUserEmail=email||'';const node=document.querySelector('#accountEmail');if(node)node.textContent=cloudUserEmail;const name=String(cloudData.profile?.displayName||'').trim();const initial=(name||cloudUserEmail).charAt(0).toUpperCase()||'나';document.querySelector('#accountAvatarLetter').textContent=initial;document.querySelector('#profileAvatarLetter').textContent=initial;document.querySelector('#accountDisplayName').textContent=name||'내 계정';document.querySelector('#adminModeButton').hidden=cloudUserEmail.trim().toLowerCase()!=='louis1004kkh@gmail.com';refreshAllViews();}
+function clearCloudSession(){cloudData=blankData();accountReady=false;cloudWrite=null;cloudUserEmail='';document.querySelector('#accountMenu')?.setAttribute('hidden','');document.querySelector('#accountMenuButton')?.setAttribute('aria-expanded','false');document.querySelector('#accountAvatarLetter').textContent='나';document.querySelector('#profileAvatarLetter').textContent='나';document.querySelector('#accountDisplayName').textContent='내 계정';document.querySelector('#adminModeButton').hidden=true;document.querySelector('#profileWelcome').hidden=true;document.querySelector('#adminPasswordModal').hidden=true;window.__jangilgiLockSupportAdmin?.();document.body.dataset.theme='leaf';document.body.dataset.bg='plain';}
 async function writeData(data){
  if(!accountReady||typeof cloudWrite!=='function'){showToast('먼저 로그인해 주세요.');return false;}
  const next=normalizeData(data);
@@ -957,7 +965,7 @@ function renderAgeGuide(data){
  const age=data.profile?.ageGroup;
  const focus=document.querySelector('#ageFocusCard');const info=ageGuides[age];
  focus.innerHTML=info?`<div class="section-kicker">연령별 참고 안내</div><h2>${info.title}</h2><p>${info.body}</p><small>증상만으로 특정 질병이나 염증 여부를 판정하지 않습니다.</small>`:'<div class="section-kicker">연령별 참고 안내</div><h2>연령대를 선택해 주세요</h2><p>오른쪽 위 프로필에서 연령대를 선택하면 해당 연령에 참고할 건강·검진 정보를 볼 수 있습니다.</p>';
- const sel=document.querySelector('#settingsAge');if(sel)sel.value=age||'';const gender=document.querySelector('#settingsGender');if(gender)gender.value=data.profile?.gender||'선택 안 함';
+ const sel=document.querySelector('#settingsAge');if(sel)sel.value=age||'';const gender=document.querySelector('#settingsGender');if(gender)gender.value=data.profile?.gender||'선택 안 함';const name=document.querySelector('#settingsDisplayName');if(name)name.value=data.profile?.displayName||'';
 }
 function renderTimeline(data){
  const {real}=eventObservations(data);const todayEvents=real.filter(e=>e.date===today()).sort((a,b)=>b.at.localeCompare(a.at));
@@ -1027,8 +1035,8 @@ function renderReport(data){
  renderFood(data);
 }
 function refreshAllViews(){const data=readData();applyAppearance(data.profile);renderFoodLife(data);renderAgeGuide(data);renderTimeline(data);renderSafetyFeedback(data);renderWeek(data);renderMonthCalendar();renderReport(data);document.querySelector('#dashboardView .page-intro .eyebrow').textContent=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(new Date());}
-function navigate(view){const target=document.querySelector(`#${view}View`);if(!target)return;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active-view',x===target));document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelector('#pageTitle').textContent={dashboard:'홈',reference:'참고 정보',record:'배변 기록',foodlife:'식사 기록',lifestyle:'생활 기록',analysis:'개인별 분석',bowelHistory:'오늘 배변 기록',foodHistory:'7일 식사 기록',week:'7일 배변 통계',report:'월간 리포트',settings:'설정'}[view]||'장일기';document.querySelector('.sidebar')?.classList.remove('open');closeAccountMenu();window.__jangilgiScreen?.(view,0);}
-async function saveAge(age){if(age&&!ageGuides[age])return;const data=readData();data.profile.ageGroup=age||null;const sex=document.querySelector('#settingsGender');if(sex)data.profile.gender=sex.value;if(await writeData(data)){refreshAllViews();showToast('연령대별 안내를 업데이트했어요.');}}
+function navigate(view){if(view==='adminSupport'&&!window.__jangilgiAdminSession?.())return;const target=document.querySelector(`#${view}View`);if(!target)return;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active-view',x===target));document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelector('#pageTitle').textContent={support:'개발자 문의',adminSupport:'관리자 문의함',dashboard:'홈',reference:'참고 정보',record:'배변 기록',foodlife:'식사 기록',lifestyle:'생활 기록',analysis:'개인별 분석',bowelHistory:'오늘 배변 기록',foodHistory:'7일 식사 기록',week:'7일 배변 통계',report:'월간 리포트',settings:'설정'}[view]||'장일기';document.querySelector('.sidebar')?.classList.remove('open');closeAccountMenu();window.__jangilgiScreen?.(view,0);if(view==='support')window.__jangilgiLoadOwnSupport?.();}
+async function saveAge(age){if(age&&!ageGuides[age])return;const data=readData();data.profile.ageGroup=age||null;data.profile.displayName=String(document.querySelector('#settingsDisplayName')?.value||'').trim().slice(0,30);if(!data.profile.displayName){showToast('이름 또는 닉네임을 입력해 주세요.');return;}data.profile.onboardingComplete=!!data.profile.ageGroup;const sex=document.querySelector('#settingsGender');if(sex)data.profile.gender=sex.value;if(await writeData(data)){adoptCloudData(data,cloudUserEmail);showToast('프로필을 업데이트했어요.');}}
 const THEMES=['leaf','cream','ocean'], BACKGROUNDS=['plain','soft','dots'];
 function applyAppearance(profile){
  const theme=THEMES.includes(profile?.theme)?profile.theme:'leaf',bg=BACKGROUNDS.includes(profile?.background)?profile.background:'plain';
@@ -1193,7 +1201,7 @@ function initEmailChangeDialog(){
 }
 window.__jangilgiRefreshAccountEmail=(email)=>{
  cloudUserEmail=email||'';
- const display=document.querySelector('#accountEmail');if(display)display.textContent=cloudUserEmail;
+ const display=document.querySelector('#accountEmail');if(display)display.textContent=cloudUserEmail;const ab=document.querySelector('#adminModeButton');if(ab)ab.hidden=cloudUserEmail.trim().toLowerCase()!=='louis1004kkh@gmail.com';
  const letter=cloudUserEmail.charAt(0).toUpperCase()||'나';
  document.querySelector('#accountAvatarLetter').textContent=letter;
  document.querySelector('#profileAvatarLetter').textContent=letter;
@@ -1208,7 +1216,7 @@ function initNav(){
  menuButton.onclick=()=>{const open=menu.hidden;menu.hidden=!open;menuButton.setAttribute('aria-expanded',String(open));};
  document.addEventListener('click',e=>{if(!e.target.closest('.account-menu-holder'))closeAccountMenu();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){closeAccountMenu();menuButton.focus();}});
- document.querySelector('#saveProfile').addEventListener('click',()=>saveAge(document.querySelector('#settingsAge').value));
+ document.querySelector('#saveProfile').addEventListener('click',()=>saveAge(document.querySelector('#settingsAge').value));document.querySelector('#settingsProfileBtn').addEventListener('click',()=>{document.querySelector('#accountMenu').hidden=false;document.querySelector('#settingsDisplayName').focus();});document.querySelector('#profileContactBtn').addEventListener('click',()=>navigate('support'));document.querySelector('#adminModeButton').addEventListener('click',()=>{closeAccountMenu();window.__jangilgiShowAdminLogin?.();});
  document.querySelector('#changeEmailBtn').addEventListener('click',openEmailChangeDialog);
  document.querySelector('#logoutBtn').addEventListener('click',()=>{closeAccountMenu();window.__jangilgiSignOut?.();});
  document.querySelectorAll('[data-theme-option],[data-background-option]').forEach(button=>button.addEventListener('click',()=>changeAppearance(button)));
@@ -1279,7 +1287,8 @@ const tourSteps=[
  {view:'foodlife',selector:'#foodlifeLifePanel',title:'생활 습관도 함께',text:'수분·채소·과일·수면·스트레스를 같은 날짜에 기록할 수 있어요. 기록하지 않은 값은 추정하지 않습니다.'},
  {view:'report',selector:'#reportTrendCard',title:'실제 기록의 변화',text:'기록 횟수·형태·불편 증상을 숫자와 그래프로 보여줍니다. 기록하지 않은 날은 0회로 판정하지 않습니다.'},
  {view:'reference',selector:'#ageFocusCard',title:'참고 정보는 별도 메뉴에',text:'대시보드의 참고 항목은 왼쪽 참고 메뉴로 옮겼어요. 관찰 결과와 연령별 정보를 여기에서 볼 수 있어요.'},
- {view:'settings',selector:'#settingsView .settings-grid',title:'설정과 개인화',text:'테마·배경, 음식·생활 기본 탭, 개인 분석 기간을 설정할 수 있어요. 이메일 변경은 오른쪽 위 계정 버튼, 참고 정보는 왼쪽 참고, JSON 백업은 홈에 있어요.'}
+ {view:'support',selector:'#supportView .support-card',title:'개발자에게 문의',text:'문의 내용은 직접 작성해 전송할 때만 개발자에게 전달돼요. 개인의 배변·식사·생활 기록은 문의와 함께 전송되지 않아요.'},
+ {view:'settings',selector:'#settingsView .settings-grid',title:'설정과 개인정보 보호',text:'테마·분석 기간, 암호화된 프로필을 설정하고 개발자에게 문의할 수 있어요. 오른쪽 위 계정 메뉴에서 보안과 이메일을 관리해요.'}
 ];
 let activeTour=-1,prevFocus=null;
 function closeTour(){if(activeTour>=0)window.__jangilgiTourClosed?.();document.querySelector('#tourScreen').hidden=true;document.querySelector('#tourScreen').setAttribute('aria-hidden','true');activeTour=-1;prevFocus?.focus?.();}
@@ -1291,6 +1300,7 @@ window.__jangilgiStart = (data,email,writer) => {
  cloudWrite=writer;
  if(!window.__jangilgiInitialized){initialize();window.__jangilgiInitialized=true;}
  adoptCloudData(data,email);
+ window.__jangilgiAfterSession?.(data);
 };
 window.__jangilgiSecurityRead=()=>accountReady?readData():null;
 window.__jangilgiSecurityWrite=async d=>writeData(d);
@@ -1338,7 +1348,7 @@ window.__jangilgiClear = () => {clearCloudSession();};
  rgrid.remove();addPageSwitcher('report',report,['빈도','형태','증상'],reportPanes,rhead);
  const settings=document.getElementById('settingsView'),sg=settings.querySelector('.appearance-grid'),sh=settings.querySelector('.record-header');
  const settingCards=Array.from(sg.querySelectorAll('.settings-card'));
- const sPanes=[makePane('테마',[settingCards[0]]),makePane('배경',[settingCards[1]]),makePane('음식·생활',[settingCards[2],settingCards[3]])];
+ const sPanes=[makePane('테마',[settingCards[0]]),makePane('배경',[settingCards[1]]),makePane('분석·계정',[settingCards[2],settingCards[3],settingCards[4]])];
  const foot=settings.querySelector('.appearance-footnote');if(foot)sPanes[1].appendChild(foot);
  sg.remove();addPageSwitcher('settings',settings,['테마 색상','배경 스타일','음식·생활'],sPanes,sh);
  const foodlife=document.getElementById('foodlifeView');
@@ -1751,6 +1761,26 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
 .security-dialog .security-feedback{min-height:22px;color:#a54030;font-size:12px;overflow-wrap:anywhere;font-weight:600}.security-dialog .security-check{display:flex;align-items:flex-start;gap:9px;font-size:12px;font-weight:500;margin-top:13px}.security-dialog .security-check input{margin-top:4px;flex:none}
 @media(max-width:480px){.security-dialog h2{font-size:20px}.security-dialog .security-actions{display:grid;grid-template-columns:1fr 1fr}.security-dialog .security-actions button{width:100%}}
 </style>
+<style id="support-profile-style">
+.jg-overlay[hidden],#adminModeButton[hidden]{display:none!important}
+.jg-overlay{position:fixed;inset:0;z-index:8200;display:grid;place-items:center;padding:16px;background:rgba(15,33,25,.7);overflow-y:auto}
+.jg-dialog{width:min(465px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface,#fff);color:var(--ink,#20392b);border-radius:22px;box-shadow:0 24px 70px #0005;padding:clamp(18px,3vw,30px)}
+.jg-dialog-icon{height:50px;width:50px;border-radius:16px;background:#e1f1df;color:#327d50;display:grid;place-items:center;font-size:26px}
+.jg-dialog h2,.support-card h2{font-size:clamp(20px,2.4vw,25px);margin:8px 0 10px;letter-spacing:-.045em}
+.jg-dialog p,.support-muted{color:var(--muted,#657a68);line-height:1.7;font-size:12px}
+.jg-dialog label,#supportForm label{display:grid;gap:7px;margin-top:13px;font-size:12px;font-weight:750}
+.jg-dialog :is(input,select),.support-card :is(input,select,textarea){width:100%;min-width:0;box-sizing:border-box;min-height:42px;padding:9px 12px;border:1px solid var(--line,#d9e4db);border-radius:10px;color:var(--ink);background:var(--surface,#fff);font:inherit;font-size:14px}
+.jg-dialog button,.support-card button,.settings-support-actions button{cursor:pointer;border-radius:10px;border:1px solid #cbdcd0;padding:9px 12px;font-weight:750;font-size:12px;background:var(--surface,#fff);color:var(--ink)}
+.jg-dialog button:disabled,.support-card button:disabled{opacity:.55;cursor:wait}
+.jg-dialog .support-primary,.support-card .support-primary{display:block;margin-top:15px;width:100%;background:var(--green,#2e8753);border-color:var(--green,#2e8753);color:#fff;padding:12px}
+.jg-dialog .support-secondary{margin-top:8px;width:100%}.support-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}.support-card{padding:clamp(16px,3vw,25px);min-width:0;overflow:auto;max-height:calc(100dvh - 145px)}
+.support-card textarea{resize:vertical;min-height:110px}.support-status{color:#496d53;font-size:12px;line-height:1.5;min-height:18px;overflow-wrap:anywhere}
+.support-title-row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.support-list{display:grid;gap:10px;margin-top:10px;max-height:min(500px,60dvh);overflow:auto}.support-ticket{padding:13px;border:1px solid var(--line,#dce5de);border-radius:12px;background:var(--surface,#fff);display:grid;gap:7px;overflow-wrap:anywhere}.support-ticket strong{font-size:13px}.support-ticket small,.support-ticket time{font-size:11px;color:var(--muted)}.support-ticket p{font-size:12px;white-space:pre-wrap;margin:1px 0;overflow-wrap:anywhere}.support-ticket textarea{width:100%}.settings-support-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+#settingsDisplayName{height:39px;border:1px solid #dbe6dc;border-radius:9px;background:var(--surface);padding:7px 10px;color:var(--ink);font-size:14px}
+.support-top-btn{font-size:12px}.account-menu-actions #profileContactBtn,.account-menu-actions #adminModeButton{width:100%;text-align:left}
+@media(max-width:720px){.support-grid{grid-template-columns:1fr}.support-card{max-height:none}.support-top-btn{padding:8px 9px;font-size:11px}}
+@media(max-width:380px){.support-top-btn{font-size:0}.support-top-btn::before{content:'✉';font-size:17px}}
+</style>
 <script type="application/json" id="firebaseConfig">{
   "apiKey": "AIzaSyAFZOCJUCKjjte-m4eFbsP3L-Klk1_YbKo",
   "authDomain": "jangilgi-f8d8d.firebaseapp.com",
@@ -1808,6 +1838,36 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
     <p id="authFeedback" class="auth-feedback" role="alert"></p>
   </div>
 </div>
+<script id="support-profile-controller">
+(function(){'use strict';
+const $=id=>document.getElementById(id);
+const modal=$('profileWelcome'),adminModal=$('adminPasswordModal');
+function status(id,message){$(id).textContent=message;}
+function escDate(value){try{return new Date(value).toLocaleString('ko-KR');}catch{return '';}}
+function add(tag,text,parent,className){const e=document.createElement(tag);if(text!=null)e.textContent=String(text);if(className)e.className=className;parent.appendChild(e);return e;}
+function renderTickets(id,items,isAdmin){const root=$(id);root.replaceChildren();if(!items.length){add('p','표시할 문의가 없습니다.',root,'support-muted');return;}
+ for(const t of items){const card=add('article',null,root,'support-ticket');add('strong',t.subject,card);add('small',`${t.categoryLabel||t.category} · ${escDate(t.createdAt)} · ${t.status==='replied'?'답변 완료':'접수됨'}`,card);if(isAdmin)add('small',`발신: ${t.email||'이메일 없음'}`,card);add('p',t.message,card);if(t.reply){add('small','개발자 답변',card);add('p',t.reply,card);}
+ if(isAdmin){const field=add('textarea',null,card);field.maxLength=2000;field.rows=3;field.placeholder='답변 입력';field.value=t.reply||'';const btn=add('button','답변 저장',card);btn.type='button';btn.onclick=async()=>{btn.disabled=true;try{await window.__jangilgiSupportRequest('supportAdminReply',{session:window.__jangilgiAdminSession?.(),ticketId:t.id,reply:field.value});status('adminSupportStatus','답변을 저장했어요.');await loadAdmin();}catch(e){status('adminSupportStatus',e.message||'답변 저장 실패');}finally{btn.disabled=false;}};}
+ }}
+async function loadOwn(){status('supportStatus','');$('supportMyList').textContent='문의 내역 불러오는 중…';try{const r=await window.__jangilgiSupportRequest('supportMyMessages',{});renderTickets('supportMyList',r.items||[],false);}catch(e){$('supportMyList').textContent='문의 내역을 불러올 수 없어요. 로그인과 Firestore 보안 규칙을 확인해 주세요.';}}
+async function loadAdmin(){status('adminSupportStatus','문의 내역을 조회하는 중…');try{const r=await window.__jangilgiSupportRequest('supportAdminList',{session:window.__jangilgiAdminSession?.()});renderTickets('adminSupportList',r.items||[],true);status('adminSupportStatus',`${(r.items||[]).length}건의 문의를 불러왔어요.`);}catch(e){status('adminSupportStatus',e.message||'관리자 권한이 없거나 Firestore에 연결할 수 없어요.');}}
+window.__jangilgiLoadOwnSupport=loadOwn;
+window.__jangilgiAfterSession=async(data)=>{if(!data?.profile?.onboardingComplete){$('welcomeName').value=data?.profile?.displayName||'';$('welcomeAge').value=data?.profile?.ageGroup||'';$('welcomeGender').value=data?.profile?.gender||'선택 안 함';modal.hidden=false;}else if(!data?.profile?.firstRunGuideSeen){setTimeout(()=>$('openHelp')?.click(),250);}};
+$('welcomeProfileForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('welcomeName').value.trim(),age=$('welcomeAge').value,gender=$('welcomeGender').value;if(!name||!age){status('welcomeStatus','이름과 연령대를 입력해 주세요.');return;}const data=window.__jangilgiSecurityRead?.();if(!data)return status('welcomeStatus','로그인 기록이 아직 열리지 않았어요.');data.profile={...data.profile,displayName:name,ageGroup:age,gender,onboardingComplete:true};$('welcomeSave').disabled=true;status('welcomeStatus','암호화된 프로필을 저장 중이에요…');const ok=await window.__jangilgiSecurityWrite?.(data);if(ok){modal.hidden=true;window.__jangilgiRefreshProfile?.(data);if(!data.profile.firstRunGuideSeen)setTimeout(()=>$('openHelp')?.click(),180);}else status('welcomeStatus','저장에 실패했어요. 네트워크 연결을 확인해 주세요.');$('welcomeSave').disabled=false;});
+window.__jangilgiRefreshProfile=data=>{const name=String(data?.profile?.displayName||'').trim();const email=$('accountEmail').textContent||'';$('accountDisplayName').textContent=name||'내 계정';$('accountAvatarLetter').textContent=(name||email).slice(0,1).toUpperCase()||'나';$('profileAvatarLetter').textContent=(name||email).slice(0,1).toUpperCase()||'나';$('settingsDisplayName').value=name;$('settingsAge').value=data?.profile?.ageGroup||'';$('settingsGender').value=data?.profile?.gender||'선택 안 함';};
+$('supportForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('supportSend');btn.disabled=true;status('supportStatus','문의 전송 중…');try{await window.__jangilgiSupportRequest('supportSubmit',{category:$('supportCategory').value,subject:$('supportSubject').value.trim(),message:$('supportMessage').value.trim()});status('supportStatus','문의가 접수됐어요. 답변은 이 화면에서 확인할 수 있어요.');$('supportForm').reset();await loadOwn();}catch(err){status('supportStatus','전송 실패: '+(err.message||'서버 연결을 확인해 주세요.'));}finally{btn.disabled=false;}});
+$('supportRefresh').onclick=loadOwn;
+$('adminSupportRefresh').onclick=loadAdmin;
+$('adminSupportLock').onclick=async()=>{await window.__jangilgiLockSupportAdmin?.();navigate('dashboard');};
+window.__jangilgiShowAdminLogin=()=>{adminModal.hidden=false;$('adminPasswordForm').reset();status('adminPasswordStatus','');$('adminPasswordInput').focus();};
+$('adminPasswordCancel').onclick=()=>adminModal.hidden=true;
+$('adminPasswordForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('adminPasswordSubmit');btn.disabled=true;status('adminPasswordStatus','관리자 권한 확인 중…');const pass=$('adminPasswordInput').value;try{const r=await window.__jangilgiSupportRequest('supportAdminUnlock',{password:pass});window.__jangilgiSetAdminSession?.(r.session);adminModal.hidden=true;$('adminPasswordInput').value='';navigate('adminSupport');await loadAdmin();}catch(err){status('adminPasswordStatus',err.message||'관리자 인증에 실패했어요.');}finally{$('adminPasswordInput').value='';btn.disabled=false;}});
+// Route entry updates when the user opens the support page.
+$('profileContactBtn').addEventListener('click',()=>loadOwn());
+$('settingsView').addEventListener('click',e=>{if(e.target.closest('[data-view="support"]'))loadOwn();});
+$('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="dashboard"]'))$('supportStatus').textContent='';});
+})();
+</script>
 <script type="module">
 const conf=JSON.parse(document.getElementById('firebaseConfig').textContent);
 const gate=document.getElementById('authGate');
@@ -1876,8 +1936,92 @@ else{
   ]);
   const {initializeApp}=appSDK;
   const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut,sendEmailVerification,reload,getIdToken,verifyBeforeUpdateEmail,reauthenticateWithCredential,EmailAuthProvider,updatePassword}=authSDK;
-  const {getFirestore,doc,getDoc,setDoc,runTransaction,deleteField,serverTimestamp}=dbSDK;
+  const {getFirestore,doc,getDoc,setDoc,deleteDoc,runTransaction,deleteField,serverTimestamp,collection,addDoc,query,where,limit,getDocs,updateDoc}=dbSDK;
   const app=initializeApp(conf),auth=getAuth(app),db=getFirestore(app);
+  // Single account: the dedicated admin password is NOT stored here.
+  // The browser derives a proof, and Firestore Rules compares it with a private
+  // verifier document. Rules also bind the unlock to this Firebase sign-in.
+  const ADMIN_PRIMARY_EMAIL='louis1004kkh@gmail.com';
+  const ADMIN_SALT_HEX='169444ae5b8f082cb4f39f1d928b6f2b';
+  const ADMIN_PASSWORD_ITERATIONS=600000;
+  function hexToBytes(hex){return new Uint8Array(hex.match(/../g).map(x=>parseInt(x,16)));}
+  async function deriveAdminProof(password){
+   const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);
+   const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:hexToBytes(ADMIN_SALT_HEX),iterations:ADMIN_PASSWORD_ITERATIONS},key,256);
+   return Array.from(new Uint8Array(bits),b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  const adminSessionRef=uid=>doc(db,'adminSessions',uid);
+  const CATEGORIES={bug:'오류 제보',feature:'기능 제안',account:'계정·사용 문의',other:'기타'};
+  let adminActive=false;
+  function userForSupport(){const user=auth.currentUser;if(!user?.emailVerified)throw Error('이메일 인증을 완료해 주세요.');return user;}
+  function ensurePrimaryAdmin(){const user=userForSupport();if(user.email?.trim().toLowerCase()!==ADMIN_PRIMARY_EMAIL)throw Error('기존 관리자 계정으로 먼저 로그인해 주세요.');return user;}
+  function ensureSupportAdmin(){ensurePrimaryAdmin();if(!adminActive)throw Error('관리자 전용 비밀번호로 로그인해 주세요.');}
+  const ticketRef=()=>collection(db,'supportTickets');
+  function convertTicket(d){const t=d.data();return {...t,id:d.id,createdAt:t.createdAt?.toDate?.()?.toISOString?.()||'',updatedAt:t.updatedAt?.toDate?.()?.toISOString?.()||''};}
+  window.__jangilgiSupportRequest=async(name,payload={})=>{
+   const user=userForSupport();
+   try{
+    if(name==='supportSubmit'){
+     const category=String(payload.category||''),subject=String(payload.subject||'').trim(),message=String(payload.message||'').trim();
+     if(!Object.hasOwn(CATEGORIES,category)||subject.length<3||subject.length>100||message.length<10||message.length>2000)throw Error('문의 유형, 제목(3~100자), 내용(10~2000자)을 확인해 주세요.');
+     await addDoc(ticketRef(),{ownerUid:user.uid,email:user.email,category,subject,message,reply:'',status:'open',createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+     return {ok:true};
+    }
+    if(name==='supportMyMessages'){
+     const q=query(ticketRef(),where('ownerUid','==',user.uid),limit(50));
+     const snap=await getDocs(q);return {items:snap.docs.map(convertTicket).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))};
+    }
+    if(name==='supportAdminUnlock'){
+     const firstUser=ensurePrimaryAdmin();
+     const password=String(payload.password||'');
+     if(!password)throw Error('관리자 전용 비밀번호를 입력해 주세요.');
+     adminActive=false;
+     const login=await firstUser.getIdTokenResult();
+     const authTime=Number(login.claims.auth_time);
+     if(!Number.isSafeInteger(authTime))throw Error('로그인 세션을 확인할 수 없어요. 다시 로그인해 주세요.');
+     // PBKDF2 is performed locally, but the proof is verified on Firestore's
+     // server-side rules against adminSecurity/config (which cannot be read by clients).
+     const proof=await deriveAdminProof(password);
+     try{
+      try { await setDoc(adminSessionRef(firstUser.uid),{proof,authTime,unlockedAt:serverTimestamp()}); } catch(e) { throw new Error('관리자 세션 저장 실패 ('+(e.code||'unknown')+'): '+e.message); }
+      if(auth.currentUser?.uid!==firstUser.uid)throw Error('로그인 상태가 변경되었어요.');
+      try { await getDocs(query(ticketRef(),limit(1))); } catch(e) { throw new Error('관리자 문의함 조회 실패 ('+(e.code||'unknown')+'): '+e.message); }
+      adminActive=true;
+      return {session:'firestore-admin-unlocked'};
+     }catch(e){
+      adminActive=false;
+      // An unsuccessful read must not leave a valid previous admin session behind.
+      await deleteDoc(adminSessionRef(firstUser.uid)).catch(()=>{});
+      throw e;
+     }
+    }
+    if(name==='supportAdminList'){
+     ensureSupportAdmin();
+     const snap=await getDocs(query(ticketRef(),limit(100)));
+     return {items:snap.docs.map(convertTicket).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))};
+    }
+    if(name==='supportAdminReply'){
+     ensureSupportAdmin();
+     const ticketId=String(payload.ticketId||''),reply=String(payload.reply||'').trim();
+     if(!/^[A-Za-z0-9_-]{10,40}$/.test(ticketId))throw Error('문의 식별자가 올바르지 않아요.');
+     if(!reply||reply.length>2000)throw Error('답변은 1~2000자로 입력해 주세요.');
+     await updateDoc(doc(db,'supportTickets',ticketId),{reply,status:'replied',updatedAt:serverTimestamp()});return {ok:true};
+    }
+    throw Error('알 수 없는 문의 요청입니다.');
+   }catch(e){
+    if(e?.code==='permission-denied')throw Error('관리자 비밀번호가 일치하지 않거나, 비공개 검증값·Firestore 보안 규칙이 설정되지 않았어요.');
+    throw e;
+   }
+  };
+  window.__jangilgiAdminSession=()=>adminActive&&auth.currentUser?.email?.trim().toLowerCase()===ADMIN_PRIMARY_EMAIL?'firestore-admin-unlocked':'';
+  window.__jangilgiSetAdminSession=token=>{if(token!=='firestore-admin-unlocked')adminActive=false;};
+  window.__jangilgiLockSupportAdmin=async()=>{
+   const uid=auth.currentUser?.uid;
+   adminActive=false;
+   if(uid&&auth.currentUser?.email?.trim().toLowerCase()===ADMIN_PRIMARY_EMAIL){
+    await deleteDoc(adminSessionRef(uid)).catch(e=>console.warn('관리자 모드 종료 시 세션 해제 실패',e));
+   }
+  };
   let mode='signin',currentId=null,inSession=false,currentKey=null,currentVault=null;
   let pendingPassword='',pendingSetup=null,recoveryPassword='',unlockRef=null;
   function friendly(e){return ({
@@ -1911,9 +2055,7 @@ else{
    await keyStore(user.uid,key);
    securityStatus('AES-256-GCM · 기기에서 암호화 중');
    gate.hidden=true;pendingPassword='';recoveryPassword='';pendingSetup=null;
-   if(showFirstGuide&&!data?.profile?.firstRunGuideSeen){
-    setTimeout(()=>el('openHelp')?.click(),200);
-   }
+   // First-run tour now follows the mandatory profile onboarding dialogue.
   }
   async function launchSetup(user,password,legacy){
    assertUser(user.uid);
@@ -1966,7 +2108,7 @@ else{
   }
   async function checkVerified(user){if(!user)return showLogin();await reload(user);await getIdToken(user,true);if(!user.emailVerified){showPanel('authVerify');el('authVerifyEmail').textContent=`${user.email} 주소를 확인해 주세요.`;return;}await unlock(user,pendingPassword);}
   onAuthStateChanged(auth,async user=>{
-    inSession=false;currentId=null;currentKey=null;currentVault=null;window.__jangilgiClear();
+    inSession=false;currentId=null;currentKey=null;currentVault=null;window.__jangilgiLockSupportAdmin?.();window.__jangilgiClear();
     if(!user){pendingPassword='';showLogin();return;}
     try{await checkVerified(user);}catch(e){showPanel('authLoading');tell(friendly(e));}
   },e=>{showPanel('authLoading');tell(friendly(e));});
@@ -1982,7 +2124,7 @@ else{
   });
   el('verifyAgain').onclick=async()=>{try{await checkVerified(auth.currentUser);}catch(e){tell(friendly(e));}};
   el('resendVerification').onclick=async()=>{try{await sendEmailVerification(auth.currentUser);tell('인증 이메일을 다시 보냈어요.');}catch(e){tell(friendly(e));}};
-  async function loggedOut(){const uid=auth.currentUser?.uid;gate.hidden=false;showPanel('authLoading');inSession=false;currentKey=null;pendingPassword='';recoveryPassword='';pendingSetup=null;if(uid)await keyDelete(uid);await signOut(auth);}
+  async function loggedOut(){const uid=auth.currentUser?.uid;gate.hidden=false;showPanel('authLoading');inSession=false;currentKey=null;await window.__jangilgiLockSupportAdmin?.();pendingPassword='';recoveryPassword='';pendingSetup=null;if(uid)await keyDelete(uid);await signOut(auth);}
   el('verifyLogout').onclick=loggedOut;
   el('vaultUnlockLogout').onclick=loggedOut;
   el('vaultSetupLogout').onclick=loggedOut;

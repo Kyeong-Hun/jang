@@ -63,5 +63,77 @@ service cloud.firestore {
         && validEncryptedState();
       allow delete: if documentId == 'state' && isOwner(uid);
     }
+
+    // Support inbox and encrypted health records remain entirely separate.
+    // No second Firebase Authentication account and no paid Cloud Functions.
+    function supportUser() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    function primaryAdmin() {
+      return supportUser()
+        && request.auth.token.email == 'louis1004kkh@gmail.com';
+    }
+
+    // Created manually through Firebase Console. Nobody may read or write this
+    // verifier using the web/mobile client SDK, including the administrator.
+    match /adminSecurity/{configId} {
+      allow read, write: if false;
+    }
+
+    // The password-derived proof is compared SERVER-SIDE with a private verifier.
+    // Session is associated with Firebase's verified sign-in auth_time claim.
+    // This is an app-level extra password, not a Firebase multi-factor credential.
+    match /adminSessions/{uid} {
+      allow get, list: if false;
+      allow create, update: if primaryAdmin()
+        && request.auth.uid == uid
+        && exists(/databases/$(database)/documents/adminSecurity/config)
+        && request.resource.data.keys().hasAll(['proof', 'authTime', 'unlockedAt'])
+        && request.resource.data.keys().hasOnly(['proof', 'authTime', 'unlockedAt'])
+        && request.resource.data.proof is string
+        && request.resource.data.proof.size() == 64
+        && request.resource.data.proof == get(/databases/$(database)/documents/adminSecurity/config).data.passwordVerifier
+        && request.resource.data.authTime == request.auth.token.auth_time
+        && request.resource.data.unlockedAt == request.time;
+      allow delete: if primaryAdmin() && request.auth.uid == uid;
+    }
+
+    function supportAdmin() {
+      return primaryAdmin()
+        && exists(/databases/$(database)/documents/adminSessions/$(request.auth.uid))
+        && get(/databases/$(database)/documents/adminSessions/$(request.auth.uid)).data.authTime == request.auth.token.auth_time
+        && get(/databases/$(database)/documents/adminSessions/$(request.auth.uid)).data.proof ==
+           get(/databases/$(database)/documents/adminSecurity/config).data.passwordVerifier;
+    }
+
+    match /supportTickets/{ticketId} {
+      allow create: if supportUser()
+        && request.resource.data.keys().hasAll(['ownerUid','email','category','subject','message','reply','status','createdAt','updatedAt'])
+        && request.resource.data.keys().hasOnly(['ownerUid','email','category','subject','message','reply','status','createdAt','updatedAt'])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.category in ['bug','feature','account','other']
+        && request.resource.data.subject is string
+        && request.resource.data.subject.size() >= 3
+        && request.resource.data.subject.size() <= 100
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 10
+        && request.resource.data.message.size() <= 2000
+        && request.resource.data.reply == ''
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+      allow get: if supportAdmin() || (supportUser() && resource.data.ownerUid == request.auth.uid);
+      allow list: if request.query.limit <= 100
+        && (supportAdmin() || (supportUser() && resource.data.ownerUid == request.auth.uid));
+      allow update: if supportAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply','status','updatedAt'])
+        && request.resource.data.reply is string
+        && request.resource.data.reply.size() >= 1
+        && request.resource.data.reply.size() <= 2000
+        && request.resource.data.status == 'replied'
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+    }
   }
 }
