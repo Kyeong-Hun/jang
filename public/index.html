@@ -310,6 +310,14 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
  #timedMealPanel #mealList{max-height:100px}
  #foodlifeView .screen-pane:has(#timedMealPanel) .foodlife-disclaimer{display:none}
 }
+
+/* v1.3: human-readable cooking facts; analysis taxonomy is displayed as derived results. */
+.digest-prep-hint{font-size:11px;line-height:1.6;color:var(--muted);margin:6px 0 9px}
+.digest-preview-label{font-size:10px;font-weight:700;color:var(--green);margin:10px 0 4px}
+.digest-current-tags{font-size:11px;line-height:1.6;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
+.digest-tag-grid label{min-height:39px;flex:1 1 min(175px,100%);line-height:1.45;align-items:center}
+.digest-tag-grid input{width:16px;height:16px;flex:none}
+@media(max-width:600px){.digest-tag-grid label{flex-basis:100%}}
 </style>
 <style>
 /* Firebase 연동에 필요한 인증 UI만 추가, 기존 앱 스타일은 유지 */
@@ -762,7 +770,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <button aria-label="메뉴 열기" class="mobile-menu">☰</button>
 <div class="breadcrumb"><button id="breadcrumbHome" type="button" title="홈으로 돌아가기">⌂ 장일기</button><b>/</b><strong id="pageTitle">홈</strong></div>
 <div class="top-actions">
-<button class="help-button support-top-btn" type="button" data-view="support">✉ 문의</button><button aria-label="카테고리별 상세 도움말 열기" class="help-button" id="openHelp" type="button">? 도움말</button><button class="help-button" id="openUpdates" type="button" aria-label="업데이트 확인 안내 보기">↻ 업데이트 확인 <span id="appVersionChip">v1.1.0</span></button>
+<button class="help-button support-top-btn" type="button" data-view="support">✉ 문의</button><button aria-label="카테고리별 상세 도움말 열기" class="help-button" id="openHelp" type="button">? 도움말</button>
 <div class="history-control"><span>변경 이력 기록됨</span><button aria-label="모든 기록 수정 화면 열기" class="settings-button" id="editHistoryButton">✎ 기록 수정</button></div>
 <div class="account-menu-holder">
   <button class="avatar-small account-avatar" id="accountMenuButton" aria-label="내 계정과 프로필 열기" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu" type="button"><span id="accountAvatarLetter" aria-hidden="true">나</span></button>
@@ -776,7 +784,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.2.0 업데이트 안내</strong><p id="releaseText">v1.1.0 이후 달라진 기록·분류·도움말을 확인해 주세요. 기존 기록은 보존됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.3.0 업데이트 안내</strong><p id="releaseText">v1.1.0부터 v1.3.0까지의 변경 사항을 확인해 주세요. 기존 기록은 보존됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -843,13 +851,13 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <section class="view" id="foodlifeView">
 <div class="record-header foodlife-intro"><div><div class="eyebrow">FOOD &amp; LIFESTYLE JOURNAL</div><h1>음식·생활 기록</h1><p>식사 시각을 기록하고 생활습관과 배변의 시간차를 확인해요.</p></div></div>
 <div class="foodlife-date card-surface" id="foodlifeDateBlock"><label for="foodlifeDate"><span class="section-kicker">기록 날짜</span><input type="date" id="foodlifeDate" required></label><span id="foodlifeDateStatus" aria-live="polite">날짜를 선택해 주세요.</span></div>
-<article class="foodlife-panel card-surface" id="foodlifeFoodPanel"><div class="card-heading"><div><span class="section-kicker">FOOD NOTES</span><h2>먹은 음식</h2></div></div><p class="foodlife-help">이전 날짜별 기록은 그대로 유지됩니다. 저장된 과거 음식명도 선택할 수 있어요. 선택하지 않은 채 저장하면 '선택한 음식 없음'으로 기록돼요.</p><div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="legacyFoodSearch" placeholder="기존 기록에서 음식 찾기"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="foodlifeFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="음식 종류"></div><section class="digestive-editor"><h3>선택한 음식의 소화 특성 <small>기본값 자동 적용 · 필요할 때만 수정</small></h3><div id="dailyDigestEditor"></div></section><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveFood">음식 기록 저장</button></div></article>
+<article class="foodlife-panel card-surface" id="foodlifeFoodPanel"><div class="card-heading"><div><span class="section-kicker">FOOD NOTES</span><h2>먹은 음식</h2></div></div><p class="foodlife-help">이전 날짜별 기록은 그대로 유지됩니다. 저장된 과거 음식명도 선택할 수 있어요. 선택하지 않은 채 저장하면 '선택한 음식 없음'으로 기록돼요.</p><div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="legacyFoodSearch" placeholder="기존 기록에서 음식 찾기"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="foodlifeFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="음식 종류"></div><section class="digestive-editor"><h3>선택한 음식의 소화 특성 <small>기본값 자동 적용 · 실제 조리 상태만 체크</small></h3><div id="dailyDigestEditor"></div></section><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveFood">음식 기록 저장</button></div></article>
 <article class="foodlife-panel card-surface" id="foodlifeLifePanel"><div class="card-heading"><div><span class="section-kicker">DAILY HABITS</span><h2>오늘의 생활 습관</h2></div></div><p class="foodlife-help">하루를 돌아보고 기억나는 항목만 선택해 주세요. 미선택은 미기록으로 남겨요.</p><div id="foodlifeLifestyleChoices" class="foodlife-habit-grid"></div><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveLife">생활 기록 저장</button></div></article>
 <article class="foodlife-panel card-surface" id="timedMealPanel">
  <div class="card-heading"><div><span class="section-kicker">TIME-STAMPED MEALS</span><h2>식사별 기록 · 분석용</h2></div></div>
- <p class="foodlife-help">실제 먹은 음식과 시각을 선택해 주세요. 음식을 선택하면 소화 관련 특성이 자동 지정됩니다. 실제 조리법이 다르면 선택한 음식의 특성을 펼쳐서 변경하세요. 과거 기록은 그대로 보존됩니다.</p>
+ <p class="foodlife-help">실제 먹은 음식과 시각을 선택해 주세요. 음식을 선택하면 소화 관련 특성은 기본값으로 자동 적용됩니다. 기름이 많거나 맵기·재료가 다른 경우 해당 메뉴의 체크 항목을 변경해 주세요. 과거 기록은 그대로 보존됩니다.</p>
  <label class="meal-time-label">실제 식사 시각 <input id="mealAt" type="datetime-local" aria-label="음식 섭취 날짜와 시각" required></label>
- <div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="mealFoodSearch" placeholder="예: 흰쌀밥, 새우, 고등어"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="mealFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="해당 식사에 포함된 음식"></div><section class="digestive-editor"><h3>식사별 소화 특성 <small>기본 분류 자동 적용 · 조리법이 다르면 해당 기록만 수정</small></h3><div id="mealDigestEditor"></div></section>
+ <div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="mealFoodSearch" placeholder="예: 흰쌀밥, 새우, 고등어"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="mealFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="해당 식사에 포함된 음식"></div><section class="digestive-editor"><h3>식사별 소화 특성 <small>기본 분류 자동 적용 · 실제 조리 상태를 체크해 조정</small></h3><div id="mealDigestEditor"></div></section>
  <label class="meal-time-label" hidden>추가 음식 이름(이전 호환용) <input id="mealCustomFood" type="text" placeholder="예: 마라탕, 김치찌개" maxlength="240" aria-label="태그에 없는 음식 이름을 쉼표로 구분하여 입력"></label>
  <div class="foodlife-actions"><button type="button" class="outline-button" id="mealCancelEdit" hidden>수정 취소</button><button type="button" class="primary-button" id="mealSave">식사 기록 추가</button></div>
  <div class="timed-meal-history"><strong>선택한 날짜의 식사</strong><div id="mealList" aria-live="polite"></div></div>
@@ -1999,39 +2007,53 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.2.0';
+const JANGILGI_VERSION='1.3.0';
 const JANGILGI_RELEASE_STEPS=[
- ['카테고리별 게임식 도움말','11개 안내 주제를 선택하고 실제 기능을 한 칸씩 강조하며 따라갈 수 있어요.'],
- ['업데이트 확인과 새 버전 안내','v1.1.0부터 추가된 기능을 한 번에 설명하고, 새 버전 첫 로그인에서는 안내가 자동으로 나타나요.'],
- ['홈 기록 바로가기와 통합 수정','배변·식사·생활 바로가기, 기록 요약, 모든 기록 수정 화면을 이용할 수 있어요.'],
- ['음식 299개 메뉴와 소화 특성','밥·국·면 등 17개 카테고리를 유지하면서 소화 관련 특성을 자동 분류해요. 한 메뉴에 특성이 여러 개 있을 수 있어요.'],
- ['기존 기록의 자동 분류','과거 음식명은 그대로 보관돼요. 이전 기록에는 분석할 때 기본 소화 특성을 적용하며, 실제 먹은 조리법이 다르면 기록 수정에서 변경할 수 있어요.'],
- ['분류 특성 중심의 개인 분석','음식 이름 299개를 각각 독립 변수로 취급하지 않고, 공통 특성의 섭취 여부를 시간 구간별 배변 기록과 비교해요.'],
- ['메뉴 추가 요청','개인 메뉴·선택칸 제작 대신 「메뉴 추가 요청」으로 문의 화면을 열고 새로운 음식 등록을 요청할 수 있어요.'],
- ['운영 공지와 새로고침','홈의 공지에서 최근 변경 내용을 확인하고, 실행 중에 새 배포가 감지되면 새로고침하여 적용할 수 있어요.'],
- ['개인 기록과 보안 유지','Firebase 인증, 암호화된 저장 구조, 복구 키는 이전 버전을 유지하며 저장된 사용자 기록을 일괄 변환하지 않아요.']
+ ["v1.1.0 · 자세한 사용법", "11개 카테고리별로 실제 화면을 따라가는 상세 도움말이 추가됐어요."],
+ ["v1.1.0 · 기록 관리", "식사·생활 기록과 배변 기록의 조회·수정을 한곳에서 할 수 있어요."],
+ ["v1.1.1 · 게임식 튜토리얼", "화면의 버튼과 입력칸을 하나씩 강조하는 안내 방식이 개선됐어요."],
+ ["v1.2.0 · 소화 특성 분석", "메뉴 이름을 그대로 비교하는 대신 식이섬유·유당·매운맛 등 소화 관련 특성으로 분석해요."],
+ ["v1.2.0 · 기존 기록 호환", "과거 기록은 그대로 두고, 과거 음식에는 분석 시 기본 소화 특성을 적용해요."],
+ ["v1.2.0 · 메뉴 추가 요청", "목록에 없는 메뉴는 문의 화면의 「메뉴 추가 요청」으로 개발자에게 제안할 수 있어요."],
+ ["v1.3.0 · 메뉴 추가", "카레·카레라이스·브리또와 토마토·크림·오일·로제 등 여러 종류의 파스타를 추가했어요."],
+ ["v1.3.0 · 조리 상태 체크", "음식마다 「기름이 많아요」「매워요」「일반 우유·크림 사용」 등 쉬운 체크 항목으로 그 기록의 분석 특성을 바꿀 수 있어요."],
+ ["v1.3.0 · 과거 식사 수정", "「기록 수정」에서도 동일한 메뉴 선택과 조리 상태 체크를 사용해 과거 기록의 분류만 고칠 수 있어요."],
+ ["v1.3.0 · 선택 목록 정리", "이전 버전 음식군과 양념·소스·기타 카테고리를 신규 선택 목록에서 제외했어요. 이전 기록의 음식명은 삭제되지 않아요."],
+ ["v1.3.0 · 공지 중심 업데이트", "별도 「업데이트 확인」 버튼 대신 홈의 공지에서 변경 사항을 살피고 새 버전이 있으면 새로고침할 수 있어요."],
+ ["안전하게 기록 계속하기", "원래 저장된 식사 이름과 배변 데이터, 로그인·암호화·복구 키는 유지돼요. 실제 먹은 조리법이 기본 분류와 다르면 해당 기록만 수정해 주세요."]
 ];
 const JANGILGI_CHANGELOG=[
- {version:'1.2.0',date:'2026-10-25',title:'소화 특성별 기록 분석과 공지 기능',details:JANGILGI_RELEASE_STEPS.map(x=>x[1])},
+ {version:'1.3.0',date:'2026-10-25',title:'조리 상태 선택과 메뉴 확장, 공지 통합',details:[
+  '카레·브리또와 다양한 종류의 파스타를 메뉴에 추가했습니다.',
+  '음식 특성은 전문적인 분석 태그 대신 실제 조리 상태를 선택하는 체크박스로 수정할 수 있습니다.',
+  '과거 식사 기록의 수정 화면에도 같은 조리 상태 체크박스를 적용했습니다.',
+  '이전 버전 음식군, 양념·소스·기타 카테고리를 신규 선택 목록에서 제외했습니다. 기존 기록은 보존됩니다.',
+  '홈 공지를 통해 업데이트를 확인하도록 정리하고 상단의 중복 공지의 변경 사항 보기을 제거했습니다.'
+ ]},
+ {version:'1.2.0',date:'2026-10-25',title:'소화 특성 분석과 운영 공지',details:[
+  '음식 이름을 소화 관련 특성에 연결하고 기존 기록에는 분석 시 기본 분류를 적용합니다.',
+  '음식 메뉴 요청을 문의 기능과 연결했습니다.',
+  '운영 공지와 새 버전 감지 및 새로고침 기능을 추가했습니다.'
+ ]},
+ {version:'1.1.1',date:'2026-10-25',title:'튜토리얼과 업데이트 안내 개선',details:[
+  '게임식으로 기능을 하나씩 강조하며 안내하도록 도움말을 개편했습니다.',
+  '업데이트 안내를 단계별 변경 사항 설명으로 개선했습니다.'
+ ]},
  {version:'1.1.0',date:'2026-10-25',title:'사용 설명서와 기록 관리 개편',details:[
-  '기능별로 나눈 상세 도움말과 화면 따라하기를 추가했습니다.',
-  '버전 번호, 업데이트 확인 버튼, 이전 버전과 달라진 사항을 설명하는 알림을 추가했습니다.',
-  '업데이트 후 계정에서 처음 접속하면 새 기능 안내가 자동으로 나타납니다.',
-  '밥·국·면·육류·생선·갑각류·패류·채소·간식·음료 등 기본 음식 항목을 세분화했습니다.',
-  '개인별 음식 선택칸을 만들고 이름과 음식 목록을 편집할 수 있습니다.',
-  '배변·식사·생활 및 이전 기록을 한 화면에서 찾아 수정할 수 있습니다.',
-  '이전 기록과 암호화 저장 구조는 그대로 보존합니다.'
+  '카테고리별 도움말과 새 버전 안내를 추가했습니다.',
+  '밥·국·면 등 기본 음식 목록을 확장했습니다.',
+  '배변·식사·생활과 이전 기록을 한곳에서 찾아 수정할 수 있도록 했습니다.'
  ]},
  {version:'1.0.0',date:'2026-10-24',title:'기존 정식 웹서비스',details:[
-  'Firebase 계정 인증과 사용자별 암호화된 건강 기록 저장',
-  '배변·식사·생활 기록 및 개인별 연관성 탐색',
-  '개발자 문의와 관리자 문의함, 개인 프로필, 테마 설정'
+  'Firebase 계정 인증 및 사용자별 암호화된 건강 기록 저장',
+  '배변·식사·생활 기록과 개인별 연관성 탐색',
+  '문의 및 관리자 문의함, 프로필과 테마 설정'
  ]}
 ];
 const JANGILGI_FOOD_CATALOG=[
- ['밥·쌀·곡류',['흰쌀밥','잡곡밥','현미밥','흑미밥','보리밥','콩밥','귀리밥','찰밥','볶음밥','김치볶음밥','비빔밥','주먹밥','김밥','초밥','유부초밥','리소토','죽','누룽지','떡국','떡','오트밀','시리얼']],
+ ['밥·쌀·곡류',['흰쌀밥','잡곡밥','현미밥','흑미밥','보리밥','콩밥','귀리밥','찰밥','볶음밥','김치볶음밥','비빔밥','주먹밥','김밥','초밥','유부초밥','리소토','카레','카레라이스','죽','누룽지','떡국','떡','오트밀','시리얼']],
  ['국·찌개·탕',['미역국','된장국','북엇국','콩나물국','소고기뭇국','김칫국','계란국','순두부찌개','된장찌개','김치찌개','부대찌개','청국장','감자탕','갈비탕','설렁탕','곰탕','육개장','삼계탕','해물탕','매운탕']],
- ['면·밀가루·빵',['라면','컵라면','국수','잔치국수','비빔국수','냉면','밀면','칼국수','수제비','우동','소바','쌀국수','파스타','짜장면','짬뽕','볶음면','빵','식빵','크루아상','베이글','도넛','피자','햄버거','샌드위치','만두']],
+ ['면·밀가루·빵',['라면','컵라면','국수','잔치국수','비빔국수','냉면','밀면','칼국수','수제비','우동','소바','쌀국수','토마토 파스타','크림 파스타','오일 파스타','로제 파스타','아라비아타 파스타','페스토 파스타','알리오 올리오','까르보나라','봉골레 파스타','미트소스 파스타','해산물 파스타','짜장면','짬뽕','볶음면','빵','식빵','크루아상','베이글','도넛','피자','햄버거','샌드위치','브리또','만두']],
  ['육류·가금류',['소고기','돼지고기','닭고기','오리고기','양고기','삼겹살','목살','갈비','불고기','제육볶음','수육','보쌈','족발','치킨','닭갈비','닭볶음탕','돈가스','스테이크','햄','소시지','베이컨','내장류']],
  ['생선류',['고등어','갈치','삼치','연어','참치','광어','우럭','대구','명태','조기','꽁치','멸치','장어','정어리','방어','농어','도미','생선회','생선구이','훈제생선']],
  ['갑각류',['새우','게','꽃게','대게','킹크랩','가재','바닷가재']],
@@ -2045,12 +2067,11 @@ const JANGILGI_FOOD_CATALOG=[
  ['매운·기름진·가공식품',['마라탕','마라샹궈','떡볶이','불닭볶음면','매운 닭발','매운 찜','고추장 양념','튀김','감자튀김','핫도그','어묵','냉동식품','즉석식품','통조림','가공육','양념치킨']],
  ['간식·디저트',['감자칩','과자','초콜릿','사탕','젤리','쿠키','케이크','마카롱','푸딩','와플','팬케이크','붕어빵','호떡','찹쌀떡','팥빙수','팝콘','에너지바']],
  ['음료·카페인',['물','탄산수','콜라','사이다','과일주스','스무디','이온음료','커피','아메리카노','라떼','카페인 없는 커피','에너지음료','녹차','홍차','보리차','허브차','코코아','식혜']],
- ['양념·소스·기타',['고추장','된장','간장','마요네즈','케첩','머스터드','매운 소스','식초','설탕','꿀','인공감미료','올리브유','참기름','들기름','고춧가루','후추','기타 음식']]
 ];
 // 기본 분류는 저장된 기존 기록을 변경하지 않고 해석 단계에서만 사용합니다.
 // '별도 특성 미지정', '구성·조리법 확인 필요'는 통계적 분석군이 아닙니다.
 const JANG_DIGEST_TAGS=["정제 전분·저섬유","통곡·식이섬유","식물성 식이섬유","밀·프럭탄 후보","양파·마늘 프럭탄","콩·발효성 올리고당","과당·폴리올 후보","유당","지방 함량·튀김","매운 음식","카페인","탄산","당분 많은 간식·음료","발효·절임","수분·무카페인 음료"];
-const JANG_DIGEST_DEFAULTS={"흰쌀밥":["정제 전분·저섬유"],"잡곡밥":["통곡·식이섬유"],"현미밥":["통곡·식이섬유"],"흑미밥":["통곡·식이섬유"],"보리밥":["통곡·식이섬유"],"콩밥":["통곡·식이섬유","콩·발효성 올리고당"],"귀리밥":["통곡·식이섬유"],"찰밥":["정제 전분·저섬유"],"볶음밥":["정제 전분·저섬유"],"김치볶음밥":["정제 전분·저섬유","발효·절임"],"비빔밥":["정제 전분·저섬유"],"주먹밥":["정제 전분·저섬유"],"김밥":["정제 전분·저섬유"],"초밥":["정제 전분·저섬유"],"유부초밥":["정제 전분·저섬유"],"리소토":["정제 전분·저섬유"],"죽":["정제 전분·저섬유"],"누룽지":["정제 전분·저섬유"],"떡국":["정제 전분·저섬유"],"떡":["정제 전분·저섬유"],"오트밀":["통곡·식이섬유"],"시리얼":["당분 많은 간식·음료"],"미역국":["식물성 식이섬유"],"된장국":["콩·발효성 올리고당","발효·절임"],"북엇국":[],"콩나물국":["식물성 식이섬유"],"소고기뭇국":["식물성 식이섬유"],"김칫국":["식물성 식이섬유","매운 음식","발효·절임"],"계란국":[],"순두부찌개":["식물성 식이섬유","콩·발효성 올리고당","매운 음식"],"된장찌개":["식물성 식이섬유","콩·발효성 올리고당","발효·절임"],"김치찌개":["식물성 식이섬유","매운 음식","발효·절임"],"부대찌개":["지방 함량·튀김","매운 음식"],"청국장":["식물성 식이섬유","콩·발효성 올리고당","발효·절임"],"감자탕":["식물성 식이섬유","지방 함량·튀김"],"갈비탕":["지방 함량·튀김"],"설렁탕":[],"곰탕":[],"육개장":["식물성 식이섬유","매운 음식"],"삼계탕":[],"해물탕":[],"매운탕":["매운 음식"],"라면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"컵라면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"국수":["정제 전분·저섬유","밀·프럭탄 후보"],"잔치국수":["정제 전분·저섬유","밀·프럭탄 후보"],"비빔국수":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"냉면":["정제 전분·저섬유"],"밀면":["정제 전분·저섬유","밀·프럭탄 후보"],"칼국수":["정제 전분·저섬유","밀·프럭탄 후보"],"수제비":["정제 전분·저섬유","밀·프럭탄 후보"],"우동":["정제 전분·저섬유","밀·프럭탄 후보"],"소바":["밀·프럭탄 후보"],"쌀국수":["정제 전분·저섬유"],"파스타":["정제 전분·저섬유","밀·프럭탄 후보"],"짜장면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"짬뽕":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"볶음면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"빵":["정제 전분·저섬유","밀·프럭탄 후보"],"식빵":["정제 전분·저섬유","밀·프럭탄 후보"],"크루아상":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"베이글":["정제 전분·저섬유","밀·프럭탄 후보"],"도넛":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"피자":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"햄버거":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"샌드위치":["정제 전분·저섬유","밀·프럭탄 후보"],"만두":["정제 전분·저섬유","밀·프럭탄 후보"],"소고기":[],"돼지고기":[],"닭고기":[],"오리고기":["지방 함량·튀김"],"양고기":["지방 함량·튀김"],"삼겹살":["지방 함량·튀김"],"목살":[],"갈비":["지방 함량·튀김"],"불고기":["양파·마늘 프럭탄"],"제육볶음":["양파·마늘 프럭탄","매운 음식"],"수육":[],"보쌈":[],"족발":["지방 함량·튀김"],"치킨":["지방 함량·튀김"],"닭갈비":["양파·마늘 프럭탄","지방 함량·튀김","매운 음식"],"닭볶음탕":["양파·마늘 프럭탄","매운 음식"],"돈가스":["지방 함량·튀김"],"스테이크":[],"햄":["지방 함량·튀김"],"소시지":["지방 함량·튀김"],"베이컨":["지방 함량·튀김"],"내장류":[],"고등어":["지방 함량·튀김"],"갈치":[],"삼치":["지방 함량·튀김"],"연어":["지방 함량·튀김"],"참치":[],"광어":[],"우럭":[],"대구":[],"명태":[],"조기":[],"꽁치":["지방 함량·튀김"],"멸치":[],"장어":["지방 함량·튀김"],"정어리":["지방 함량·튀김"],"방어":["지방 함량·튀김"],"농어":[],"도미":[],"생선회":[],"생선구이":[],"훈제생선":[],"새우":[],"게":[],"꽃게":[],"대게":[],"킹크랩":[],"가재":[],"바닷가재":[],"조개":[],"바지락":[],"홍합":[],"굴":[],"전복":[],"가리비":[],"소라":[],"꼬막":[],"키조개":[],"문어":[],"오징어":[],"낙지":[],"주꾸미":[],"해삼":[],"멍게":[],"달걀":[],"삶은 달걀":[],"계란말이":[],"계란찜":[],"두부":[],"순두부":[],"콩":["콩·발효성 올리고당"],"검은콩":["콩·발효성 올리고당"],"두유":["콩·발효성 올리고당"],"콩나물":["식물성 식이섬유"],"병아리콩":["콩·발효성 올리고당"],"렌틸콩":["콩·발효성 올리고당"],"아몬드":["지방 함량·튀김"],"호두":["지방 함량·튀김"],"땅콩":["지방 함량·튀김"],"캐슈넛":["콩·발효성 올리고당","지방 함량·튀김"],"피스타치오":["콩·발효성 올리고당","지방 함량·튀김"],"참깨":["지방 함량·튀김"],"땅콩버터":["지방 함량·튀김"],"배추":["식물성 식이섬유"],"양배추":["식물성 식이섬유"],"상추":["식물성 식이섬유"],"시금치":["식물성 식이섬유"],"깻잎":["식물성 식이섬유"],"부추":["식물성 식이섬유","양파·마늘 프럭탄"],"대파":["식물성 식이섬유","양파·마늘 프럭탄"],"양파":["식물성 식이섬유","양파·마늘 프럭탄"],"마늘":["식물성 식이섬유","양파·마늘 프럭탄"],"고추":["식물성 식이섬유","매운 음식"],"파프리카":["식물성 식이섬유"],"오이":["식물성 식이섬유"],"당근":["식물성 식이섬유"],"무":["식물성 식이섬유"],"감자":["정제 전분·저섬유"],"고구마":["통곡·식이섬유"],"토마토":["식물성 식이섬유"],"브로콜리":["식물성 식이섬유"],"콜리플라워":["식물성 식이섬유","과당·폴리올 후보"],"가지":["식물성 식이섬유"],"호박":["식물성 식이섬유"],"아스파라거스":["식물성 식이섬유","과당·폴리올 후보"],"팽이버섯":["식물성 식이섬유","과당·폴리올 후보"],"새송이버섯":["식물성 식이섬유","과당·폴리올 후보"],"표고버섯":["식물성 식이섬유","과당·폴리올 후보"],"미역":["식물성 식이섬유"],"김":["식물성 식이섬유"],"다시마":["식물성 식이섬유"],"샐러드":["식물성 식이섬유"],"사과":["식물성 식이섬유","과당·폴리올 후보"],"배":["식물성 식이섬유","과당·폴리올 후보"],"바나나":["식물성 식이섬유"],"귤":["식물성 식이섬유"],"오렌지":["식물성 식이섬유"],"자몽":["식물성 식이섬유"],"포도":["식물성 식이섬유"],"딸기":["식물성 식이섬유"],"블루베리":["식물성 식이섬유"],"라즈베리":["식물성 식이섬유"],"복숭아":["식물성 식이섬유","과당·폴리올 후보"],"자두":["식물성 식이섬유","과당·폴리올 후보"],"체리":["식물성 식이섬유","과당·폴리올 후보"],"망고":["식물성 식이섬유","과당·폴리올 후보"],"파인애플":["식물성 식이섬유"],"키위":["식물성 식이섬유"],"수박":["식물성 식이섬유","과당·폴리올 후보"],"참외":["식물성 식이섬유"],"멜론":["식물성 식이섬유"],"감":["식물성 식이섬유","과당·폴리올 후보"],"무화과":["식물성 식이섬유","과당·폴리올 후보"],"아보카도":["식물성 식이섬유","지방 함량·튀김"],"건포도":["식물성 식이섬유","과당·폴리올 후보"],"대추":["식물성 식이섬유","과당·폴리올 후보"],"우유":["유당"],"저지방 우유":["유당"],"무유당 우유":[],"요구르트":["유당","발효·절임"],"그릭요거트":["유당","발효·절임"],"액상 요구르트":["유당","당분 많은 간식·음료","발효·절임"],"치즈":["지방 함량·튀김"],"모차렐라":["지방 함량·튀김"],"크림치즈":["유당","지방 함량·튀김"],"버터":["지방 함량·튀김"],"생크림":["유당","지방 함량·튀김"],"아이스크림":["유당","지방 함량·튀김","당분 많은 간식·음료"],"두유 대체음료":[],"오트음료":[],"아몬드음료":[],"배추김치":["식물성 식이섬유","매운 음식","발효·절임"],"깍두기":["식물성 식이섬유","매운 음식","발효·절임"],"총각김치":["식물성 식이섬유","매운 음식","발효·절임"],"열무김치":["식물성 식이섬유","매운 음식","발효·절임"],"파김치":["식물성 식이섬유","매운 음식","발효·절임"],"오이소박이":["식물성 식이섬유","매운 음식","발효·절임"],"동치미":["식물성 식이섬유","발효·절임"],"장아찌":["식물성 식이섬유","발효·절임"],"단무지":["식물성 식이섬유","발효·절임"],"피클":["식물성 식이섬유","발효·절임"],"젓갈":["발효·절임"],"낫토":["콩·발효성 올리고당","발효·절임"],"사우어크라우트":["식물성 식이섬유","발효·절임"],"마라탕":["지방 함량·튀김","매운 음식"],"마라샹궈":["지방 함량·튀김","매운 음식"],"떡볶이":["정제 전분·저섬유","매운 음식"],"불닭볶음면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","매운 음식"],"매운 닭발":["매운 음식"],"매운 찜":["매운 음식"],"고추장 양념":["매운 음식"],"튀김":["지방 함량·튀김"],"감자튀김":["정제 전분·저섬유","지방 함량·튀김"],"핫도그":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"어묵":["정제 전분·저섬유"],"냉동식품":[],"즉석식품":[],"통조림":[],"가공육":[],"양념치킨":["지방 함량·튀김","매운 음식","당분 많은 간식·음료"],"감자칩":["정제 전분·저섬유","지방 함량·튀김"],"과자":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"초콜릿":["지방 함량·튀김","당분 많은 간식·음료"],"사탕":["당분 많은 간식·음료"],"젤리":["당분 많은 간식·음료"],"쿠키":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"케이크":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"마카롱":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"푸딩":["유당","당분 많은 간식·음료"],"와플":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"팬케이크":["정제 전분·저섬유","밀·프럭탄 후보","당분 많은 간식·음료"],"붕어빵":["정제 전분·저섬유","밀·프럭탄 후보","당분 많은 간식·음료"],"호떡":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"찹쌀떡":["정제 전분·저섬유","당분 많은 간식·음료"],"팥빙수":["유당","당분 많은 간식·음료"],"팝콘":["정제 전분·저섬유","지방 함량·튀김"],"에너지바":["정제 전분·저섬유","당분 많은 간식·음료"],"물":["수분·무카페인 음료"],"탄산수":["탄산"],"콜라":["탄산","당분 많은 간식·음료"],"사이다":["탄산","당분 많은 간식·음료"],"과일주스":["과당·폴리올 후보","당분 많은 간식·음료"],"스무디":["과당·폴리올 후보","당분 많은 간식·음료"],"이온음료":["당분 많은 간식·음료"],"커피":["카페인"],"아메리카노":["카페인"],"라떼":["유당","카페인"],"카페인 없는 커피":["수분·무카페인 음료"],"에너지음료":["카페인","당분 많은 간식·음료"],"녹차":["카페인"],"홍차":["카페인"],"보리차":["수분·무카페인 음료"],"허브차":["수분·무카페인 음료"],"코코아":["당분 많은 간식·음료"],"식혜":["당분 많은 간식·음료"],"고추장":["매운 음식","발효·절임"],"된장":["콩·발효성 올리고당","발효·절임"],"간장":["발효·절임"],"마요네즈":["지방 함량·튀김"],"케첩":["당분 많은 간식·음료"],"머스터드":[],"매운 소스":["매운 음식"],"식초":["발효·절임"],"설탕":["당분 많은 간식·음료"],"꿀":["과당·폴리올 후보","당분 많은 간식·음료"],"인공감미료":[],"올리브유":["지방 함량·튀김"],"참기름":["지방 함량·튀김"],"들기름":["지방 함량·튀김"],"고춧가루":["매운 음식"],"후추":[],"기타 음식":[]};
+const JANG_DIGEST_DEFAULTS={"흰쌀밥":["정제 전분·저섬유"],"잡곡밥":["통곡·식이섬유"],"현미밥":["통곡·식이섬유"],"흑미밥":["통곡·식이섬유"],"보리밥":["통곡·식이섬유"],"콩밥":["통곡·식이섬유","콩·발효성 올리고당"],"귀리밥":["통곡·식이섬유"],"찰밥":["정제 전분·저섬유"],"볶음밥":["정제 전분·저섬유"],"김치볶음밥":["정제 전분·저섬유","발효·절임"],"비빔밥":["정제 전분·저섬유"],"주먹밥":["정제 전분·저섬유"],"김밥":["정제 전분·저섬유"],"초밥":["정제 전분·저섬유"],"유부초밥":["정제 전분·저섬유"],"리소토":["정제 전분·저섬유"],"죽":["정제 전분·저섬유"],"누룽지":["정제 전분·저섬유"],"떡국":["정제 전분·저섬유"],"떡":["정제 전분·저섬유"],"오트밀":["통곡·식이섬유"],"시리얼":["당분 많은 간식·음료"],"미역국":["식물성 식이섬유"],"된장국":["콩·발효성 올리고당","발효·절임"],"북엇국":[],"콩나물국":["식물성 식이섬유"],"소고기뭇국":["식물성 식이섬유"],"김칫국":["식물성 식이섬유","매운 음식","발효·절임"],"계란국":[],"순두부찌개":["식물성 식이섬유","콩·발효성 올리고당","매운 음식"],"된장찌개":["식물성 식이섬유","콩·발효성 올리고당","발효·절임"],"김치찌개":["식물성 식이섬유","매운 음식","발효·절임"],"부대찌개":["지방 함량·튀김","매운 음식"],"청국장":["식물성 식이섬유","콩·발효성 올리고당","발효·절임"],"감자탕":["식물성 식이섬유","지방 함량·튀김"],"갈비탕":["지방 함량·튀김"],"설렁탕":[],"곰탕":[],"육개장":["식물성 식이섬유","매운 음식"],"삼계탕":[],"해물탕":[],"매운탕":["매운 음식"],"라면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"컵라면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"국수":["정제 전분·저섬유","밀·프럭탄 후보"],"잔치국수":["정제 전분·저섬유","밀·프럭탄 후보"],"비빔국수":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"냉면":["정제 전분·저섬유"],"밀면":["정제 전분·저섬유","밀·프럭탄 후보"],"칼국수":["정제 전분·저섬유","밀·프럭탄 후보"],"수제비":["정제 전분·저섬유","밀·프럭탄 후보"],"우동":["정제 전분·저섬유","밀·프럭탄 후보"],"소바":["밀·프럭탄 후보"],"쌀국수":["정제 전분·저섬유"],"파스타":["정제 전분·저섬유","밀·프럭탄 후보"],"짜장면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"짬뽕":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"볶음면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"빵":["정제 전분·저섬유","밀·프럭탄 후보"],"식빵":["정제 전분·저섬유","밀·프럭탄 후보"],"크루아상":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"베이글":["정제 전분·저섬유","밀·프럭탄 후보"],"도넛":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"피자":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"햄버거":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"샌드위치":["정제 전분·저섬유","밀·프럭탄 후보"],"만두":["정제 전분·저섬유","밀·프럭탄 후보"],"소고기":[],"돼지고기":[],"닭고기":[],"오리고기":["지방 함량·튀김"],"양고기":["지방 함량·튀김"],"삼겹살":["지방 함량·튀김"],"목살":[],"갈비":["지방 함량·튀김"],"불고기":["양파·마늘 프럭탄"],"제육볶음":["양파·마늘 프럭탄","매운 음식"],"수육":[],"보쌈":[],"족발":["지방 함량·튀김"],"치킨":["지방 함량·튀김"],"닭갈비":["양파·마늘 프럭탄","지방 함량·튀김","매운 음식"],"닭볶음탕":["양파·마늘 프럭탄","매운 음식"],"돈가스":["지방 함량·튀김"],"스테이크":[],"햄":["지방 함량·튀김"],"소시지":["지방 함량·튀김"],"베이컨":["지방 함량·튀김"],"내장류":[],"고등어":["지방 함량·튀김"],"갈치":[],"삼치":["지방 함량·튀김"],"연어":["지방 함량·튀김"],"참치":[],"광어":[],"우럭":[],"대구":[],"명태":[],"조기":[],"꽁치":["지방 함량·튀김"],"멸치":[],"장어":["지방 함량·튀김"],"정어리":["지방 함량·튀김"],"방어":["지방 함량·튀김"],"농어":[],"도미":[],"생선회":[],"생선구이":[],"훈제생선":[],"새우":[],"게":[],"꽃게":[],"대게":[],"킹크랩":[],"가재":[],"바닷가재":[],"조개":[],"바지락":[],"홍합":[],"굴":[],"전복":[],"가리비":[],"소라":[],"꼬막":[],"키조개":[],"문어":[],"오징어":[],"낙지":[],"주꾸미":[],"해삼":[],"멍게":[],"달걀":[],"삶은 달걀":[],"계란말이":[],"계란찜":[],"두부":[],"순두부":[],"콩":["콩·발효성 올리고당"],"검은콩":["콩·발효성 올리고당"],"두유":["콩·발효성 올리고당"],"콩나물":["식물성 식이섬유"],"병아리콩":["콩·발효성 올리고당"],"렌틸콩":["콩·발효성 올리고당"],"아몬드":["지방 함량·튀김"],"호두":["지방 함량·튀김"],"땅콩":["지방 함량·튀김"],"캐슈넛":["콩·발효성 올리고당","지방 함량·튀김"],"피스타치오":["콩·발효성 올리고당","지방 함량·튀김"],"참깨":["지방 함량·튀김"],"땅콩버터":["지방 함량·튀김"],"배추":["식물성 식이섬유"],"양배추":["식물성 식이섬유"],"상추":["식물성 식이섬유"],"시금치":["식물성 식이섬유"],"깻잎":["식물성 식이섬유"],"부추":["식물성 식이섬유","양파·마늘 프럭탄"],"대파":["식물성 식이섬유","양파·마늘 프럭탄"],"양파":["식물성 식이섬유","양파·마늘 프럭탄"],"마늘":["식물성 식이섬유","양파·마늘 프럭탄"],"고추":["식물성 식이섬유","매운 음식"],"파프리카":["식물성 식이섬유"],"오이":["식물성 식이섬유"],"당근":["식물성 식이섬유"],"무":["식물성 식이섬유"],"감자":["정제 전분·저섬유"],"고구마":["통곡·식이섬유"],"토마토":["식물성 식이섬유"],"브로콜리":["식물성 식이섬유"],"콜리플라워":["식물성 식이섬유","과당·폴리올 후보"],"가지":["식물성 식이섬유"],"호박":["식물성 식이섬유"],"아스파라거스":["식물성 식이섬유","과당·폴리올 후보"],"팽이버섯":["식물성 식이섬유","과당·폴리올 후보"],"새송이버섯":["식물성 식이섬유","과당·폴리올 후보"],"표고버섯":["식물성 식이섬유","과당·폴리올 후보"],"미역":["식물성 식이섬유"],"김":["식물성 식이섬유"],"다시마":["식물성 식이섬유"],"샐러드":["식물성 식이섬유"],"사과":["식물성 식이섬유","과당·폴리올 후보"],"배":["식물성 식이섬유","과당·폴리올 후보"],"바나나":["식물성 식이섬유"],"귤":["식물성 식이섬유"],"오렌지":["식물성 식이섬유"],"자몽":["식물성 식이섬유"],"포도":["식물성 식이섬유"],"딸기":["식물성 식이섬유"],"블루베리":["식물성 식이섬유"],"라즈베리":["식물성 식이섬유"],"복숭아":["식물성 식이섬유","과당·폴리올 후보"],"자두":["식물성 식이섬유","과당·폴리올 후보"],"체리":["식물성 식이섬유","과당·폴리올 후보"],"망고":["식물성 식이섬유","과당·폴리올 후보"],"파인애플":["식물성 식이섬유"],"키위":["식물성 식이섬유"],"수박":["식물성 식이섬유","과당·폴리올 후보"],"참외":["식물성 식이섬유"],"멜론":["식물성 식이섬유"],"감":["식물성 식이섬유","과당·폴리올 후보"],"무화과":["식물성 식이섬유","과당·폴리올 후보"],"아보카도":["식물성 식이섬유","지방 함량·튀김"],"건포도":["식물성 식이섬유","과당·폴리올 후보"],"대추":["식물성 식이섬유","과당·폴리올 후보"],"우유":["유당"],"저지방 우유":["유당"],"무유당 우유":[],"요구르트":["유당","발효·절임"],"그릭요거트":["유당","발효·절임"],"액상 요구르트":["유당","당분 많은 간식·음료","발효·절임"],"치즈":["지방 함량·튀김"],"모차렐라":["지방 함량·튀김"],"크림치즈":["유당","지방 함량·튀김"],"버터":["지방 함량·튀김"],"생크림":["유당","지방 함량·튀김"],"아이스크림":["유당","지방 함량·튀김","당분 많은 간식·음료"],"두유 대체음료":[],"오트음료":[],"아몬드음료":[],"배추김치":["식물성 식이섬유","매운 음식","발효·절임"],"깍두기":["식물성 식이섬유","매운 음식","발효·절임"],"총각김치":["식물성 식이섬유","매운 음식","발효·절임"],"열무김치":["식물성 식이섬유","매운 음식","발효·절임"],"파김치":["식물성 식이섬유","매운 음식","발효·절임"],"오이소박이":["식물성 식이섬유","매운 음식","발효·절임"],"동치미":["식물성 식이섬유","발효·절임"],"장아찌":["식물성 식이섬유","발효·절임"],"단무지":["식물성 식이섬유","발효·절임"],"피클":["식물성 식이섬유","발효·절임"],"젓갈":["발효·절임"],"낫토":["콩·발효성 올리고당","발효·절임"],"사우어크라우트":["식물성 식이섬유","발효·절임"],"마라탕":["지방 함량·튀김","매운 음식"],"마라샹궈":["지방 함량·튀김","매운 음식"],"떡볶이":["정제 전분·저섬유","매운 음식"],"불닭볶음면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","매운 음식"],"매운 닭발":["매운 음식"],"매운 찜":["매운 음식"],"고추장 양념":["매운 음식"],"튀김":["지방 함량·튀김"],"감자튀김":["정제 전분·저섬유","지방 함량·튀김"],"핫도그":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"어묵":["정제 전분·저섬유"],"냉동식품":[],"즉석식품":[],"통조림":[],"가공육":[],"양념치킨":["지방 함량·튀김","매운 음식","당분 많은 간식·음료"],"감자칩":["정제 전분·저섬유","지방 함량·튀김"],"과자":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"초콜릿":["지방 함량·튀김","당분 많은 간식·음료"],"사탕":["당분 많은 간식·음료"],"젤리":["당분 많은 간식·음료"],"쿠키":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"케이크":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"마카롱":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"푸딩":["유당","당분 많은 간식·음료"],"와플":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"팬케이크":["정제 전분·저섬유","밀·프럭탄 후보","당분 많은 간식·음료"],"붕어빵":["정제 전분·저섬유","밀·프럭탄 후보","당분 많은 간식·음료"],"호떡":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"찹쌀떡":["정제 전분·저섬유","당분 많은 간식·음료"],"팥빙수":["유당","당분 많은 간식·음료"],"팝콘":["정제 전분·저섬유","지방 함량·튀김"],"에너지바":["정제 전분·저섬유","당분 많은 간식·음료"],"물":["수분·무카페인 음료"],"탄산수":["탄산"],"콜라":["탄산","당분 많은 간식·음료"],"사이다":["탄산","당분 많은 간식·음료"],"과일주스":["과당·폴리올 후보","당분 많은 간식·음료"],"스무디":["과당·폴리올 후보","당분 많은 간식·음료"],"이온음료":["당분 많은 간식·음료"],"커피":["카페인"],"아메리카노":["카페인"],"라떼":["유당","카페인"],"카페인 없는 커피":["수분·무카페인 음료"],"에너지음료":["카페인","당분 많은 간식·음료"],"녹차":["카페인"],"홍차":["카페인"],"보리차":["수분·무카페인 음료"],"허브차":["수분·무카페인 음료"],"코코아":["당분 많은 간식·음료"],"식혜":["당분 많은 간식·음료"],"고추장":["매운 음식","발효·절임"],"된장":["콩·발효성 올리고당","발효·절임"],"간장":["발효·절임"],"마요네즈":["지방 함량·튀김"],"케첩":["당분 많은 간식·음료"],"머스터드":[],"매운 소스":["매운 음식"],"식초":["발효·절임"],"설탕":["당분 많은 간식·음료"],"꿀":["과당·폴리올 후보","당분 많은 간식·음료"],"인공감미료":[],"올리브유":["지방 함량·튀김"],"참기름":["지방 함량·튀김"],"들기름":["지방 함량·튀김"],"고춧가루":["매운 음식"],"후추":[],"기타 음식":[],"카레":[],"카레라이스":["정제 전분·저섬유"],"브리또":["정제 전분·저섬유","밀·프럭탄 후보"],"토마토 파스타":["정제 전분·저섬유","밀·프럭탄 후보"],"크림 파스타":["정제 전분·저섬유","밀·프럭탄 후보","유당"],"오일 파스타":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"로제 파스타":["정제 전분·저섬유","밀·프럭탄 후보","유당"],"아라비아타 파스타":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"페스토 파스타":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"알리오 올리오":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"까르보나라":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"봉골레 파스타":["정제 전분·저섬유","밀·프럭탄 후보"],"미트소스 파스타":["정제 전분·저섬유","밀·프럭탄 후보"],"해산물 파스타":["정제 전분·저섬유","밀·프럭탄 후보"]};
 const JANG_DIGEST_SET=new Set(JANG_DIGEST_TAGS);
 function jangDefaultTags(food){return Array.isArray(JANG_DIGEST_DEFAULTS[food])?[...JANG_DIGEST_DEFAULTS[food]]:[];}
 function jangEffectiveTags(food,overrides){
@@ -2068,13 +2089,76 @@ function jangValidOverrides(raw,foods){
  return result;
 }
 function jangFeatureSet(foodNames,overrides){const result=new Set();for(const f of foodNames||[])for(const t of jangEffectiveTags(f,overrides))result.add(t);return [...result];}
+// v1.3.0: recipe/actual cooking facts are edited; digestive analysis tags stay internal.
+const JANG_PREP_FACTS={
+ fatty:{label:'기름을 많이 사용했거나 튀겼어요',tag:'지방 함량·튀김',hint:'해당 식사의 지방·튀김 특성만 변경해요.'},
+ spicy:{label:'매운 음식으로 먹었어요',tag:'매운 음식',hint:'맵지 않게 먹었다면 체크를 해제하세요.'},
+ whole:{label:'현미·잡곡·통곡 재료로 만들었어요',tag:'통곡·식이섬유',hint:'흰쌀·정제 밀가루 대신 현미·통곡을 쓴 경우예요.'},
+ dairy:{label:'일반 우유·생크림이 들어갔어요',tag:'유당',hint:'무유당 제품이거나 우유·크림이 없었다면 해제하세요.'},
+ onion:{label:'양파·마늘이 들어갔어요',tag:'양파·마늘 프럭탄',hint:'실제로 양파·마늘을 넣은 경우에만 선택하세요.'},
+ beans:{label:'콩·병아리콩·렌틸콩이 들어갔어요',tag:'콩·발효성 올리고당',hint:'콩 재료를 넣지 않았다면 해제하세요.'},
+ caffeine:{label:'카페인이 들어갔어요',tag:'카페인',hint:'디카페인이라면 체크를 해제하세요.'},
+ carbonated:{label:'탄산이 들어갔어요',tag:'탄산',hint:'일반 탄산음료인지 선택하세요.'},
+ sweet:{label:'설탕·시럽 등 단맛이 강해요',tag:'당분 많은 간식·음료',hint:'단맛이 적거나 무가당이라면 해제하세요.'},
+ fermented:{label:'발효·절임 음식이에요',tag:'발효·절임',hint:'실제 발효·절임 상태일 때 선택하세요.'}
+};
+function jangPrepChoices(food){
+ const group=JANGILGI_FOOD_CATALOG.find(([,names])=>names.includes(food))?.[0]||'';
+ const tags=jangDefaultTags(food), inGroup=(name)=>group.includes(name);
+ const main=inGroup('밥')||inGroup('국')||inGroup('면')||inGroup('육류')||inGroup('매운');
+ const drink=inGroup('음료')||inGroup('우유');
+ const dessert=inGroup('간식');
+ const starchy=inGroup('밥')||inGroup('면')||/브리또|떡|빵|파스타|피자|만두/.test(food);
+ const prepared=(main&&(!inGroup('밥')||/볶|비빔|김밥|리소토|카레|주먹/.test(food)))||dessert||/볶|튀김|구이|돈가스|카레|파스타|브리또/.test(food);
+ const keys=[];
+ if(prepared||tags.includes('지방 함량·튀김'))keys.push('fatty');
+ if((main&&(!inGroup('밥')||/볶|비빔|카레|김치|김밥/.test(food)))||/매운|떡볶이|고추|김치|라면/.test(food)||tags.includes('매운 음식'))keys.push('spicy');
+ if(starchy)keys.push('whole');
+ if(inGroup('우유')||(drink&&/커피|라떼|코코아|스무디|차|요구르트/.test(food))||dessert||/파스타|카레|브리또|리소토|푸딩/.test(food)||tags.includes('유당'))keys.push('dairy');
+ if(main||/파스타|브리또/.test(food)||tags.includes('양파·마늘 프럭탄'))keys.push('onion');
+ if(/브리또|카레|샐러드|찌개|볶음밥|비빔밥|콩|두부|견과/.test(food)||tags.includes('콩·발효성 올리고당'))keys.push('beans');
+ if((drink&&/커피|라떼|홍차|녹차|에너지|콜라|코코아/.test(food))||tags.includes('카페인'))keys.push('caffeine');
+ if((inGroup('음료')&&/탄산|콜라|사이다|주스|스무디|음료/.test(food))||tags.includes('탄산'))keys.push('carbonated');
+ if((drink&&!/^(물|탄산수|보리차|허브차|카페인 없는 커피|아메리카노)$/.test(food))||dessert||/소스|빙수/.test(food)||tags.includes('당분 많은 간식·음료'))keys.push('sweet');
+ if(inGroup('김치')||tags.includes('발효·절임'))keys.push('fermented');
+ // Historical food entries outside the catalog can still be adjusted instead of becoming read-only.
+ if(!keys.length&&!group)keys.push('fatty','spicy','dairy');
+ return [...new Set(keys)];
+}
+function jangChangePrep(override,food,kind,checked){
+ const rule=JANG_PREP_FACTS[kind];if(!rule)return;
+ const tags=new Set(jangEffectiveTags(food,override));
+ if(checked)tags.add(rule.tag);else tags.delete(rule.tag);
+ // One meal cannot be classified as both primarily refined and switched to whole grain by this control.
+ if(kind==='whole'){
+  if(checked)tags.delete('정제 전분·저섬유');
+  else if(jangDefaultTags(food).includes('정제 전분·저섬유'))tags.add('정제 전분·저섬유');
+ }
+ const next=[...tags],defaults=jangDefaultTags(food);
+ if(JSON.stringify([...next].sort())===JSON.stringify([...defaults].sort()))delete override[food];
+ else override[food]=next;
+}
 function jangTagEditorHTML(foodNames,overrides,mode){
  const foods=[...new Set((foodNames||[]).filter(f=>typeof f==='string'&&f.trim()))];
- if(!foods.length)return '<p class="digest-muted">먼저 음식을 선택하면 기본 소화 특성이 여기에 표시돼요.</p>';
+ if(!foods.length)return '<p class="digest-muted">먼저 음식을 선택하면 실제 조리 상태에 맞는 체크 항목이 나와요.</p>';
  return foods.map(food=>{
   const tags=jangEffectiveTags(food,overrides),changed=Object.prototype.hasOwnProperty.call(overrides||{},food);
-  return `<details class="digest-food-row" data-digest-food="${escapeHTML(food)}"><summary><strong>${escapeHTML(food)}</strong><span>${escapeHTML(tags.join(' · ')||'기본 특성 없음')} ${changed?'· 직접 수정됨':'· 기본값'}</span></summary><div class="digest-tag-grid">${JANG_DIGEST_TAGS.map(tag=>`<label><input type="checkbox" data-digest-mode="${mode}" data-digest-food="${escapeHTML(food)}" data-digest-tag="${escapeHTML(tag)}" ${tags.includes(tag)?'checked':''}>${escapeHTML(tag)}</label>`).join('')}</div><button type="button" class="digest-reset" data-digest-reset="${escapeHTML(food)}" data-digest-mode="${mode}">기본 분류로 되돌리기</button></details>`;
+  const toggles=jangPrepChoices(food).map(id=>{
+   const rule=JANG_PREP_FACTS[id];
+   return `<label title="${escapeHTML(rule.hint)}"><input type="checkbox" data-digest-prep="${id}" data-digest-food="${escapeHTML(food)}" data-digest-mode="${mode}" ${tags.includes(rule.tag)?'checked':''}><span>${escapeHTML(rule.label)}</span></label>`;
+  }).join('');
+  return `<details class="digest-food-row" data-digest-food="${escapeHTML(food)}"><summary><strong>${escapeHTML(food)}</strong><span>${escapeHTML(tags.join(' · ')||'분류 가능한 기본 특성 없음')} ${changed?'· 실제 조리 상태 반영':'· 기본값'}</span></summary><p class="digest-prep-hint">실제로 먹은 음식과 다른 항목만 체크하거나 해제하세요. 체크 결과가 분석 특성에 자동 반영됩니다.</p><div class="digest-tag-grid">${toggles||'<p class="digest-muted">이 음식은 추가로 수정할 조리 상태 항목이 없어요. 기본 분류를 사용합니다.</p>'}</div><p class="digest-preview-label">현재 분석 특성</p><div class="digest-current-tags">${escapeHTML(tags.join(' · ')||'지정된 특성 없음')}</div><button type="button" class="digest-reset" data-digest-reset="${escapeHTML(food)}" data-digest-mode="${mode}">기본 분류로 되돌리기</button></details>`;
  }).join('');
+}
+function jangRefreshPrepRow(input,overrides){
+ const row=input.closest('.digest-food-row'),food=input.dataset.digestFood;
+ if(!row)return;
+ const tags=jangEffectiveTags(food,overrides),changed=Object.prototype.hasOwnProperty.call(overrides,food);
+ const summary=row.querySelector('summary span'),preview=row.querySelector('.digest-current-tags');
+ if(summary)summary.textContent=(tags.join(' · ')||'분류 가능한 기본 특성 없음')+(changed?' · 실제 조리 상태 반영':' · 기본값');
+ if(preview)preview.textContent=tags.join(' · ')||'지정된 특성 없음';
+ // Sync the dependent preparation checkboxes when whole/refined or similar alternatives are switched.
+ row.querySelectorAll('[data-digest-prep]').forEach(box=>box.checked=tags.includes(JANG_PREP_FACTS[box.dataset.digestPrep]?.tag));
 }
 function jangUpdateOverrides(override,food,tag,checked){
  const current=jangEffectiveTags(food,override);const next=checked?[...new Set([...current,tag])]:current.filter(t=>t!==tag);
@@ -2086,7 +2170,7 @@ const JANGILGI_HELP=[
   '회원가입 후 이메일 인증을 완료하고 로그인합니다. 최초 접속 시 프로필(이름·연령대·선택적 성별)을 입력합니다.',
   '기록을 안전하게 보관하는 암호화 키와 복구 키 안내를 읽고 복구 키를 안전한 장소에 보관합니다. 복구 키는 비밀번호 분실 시 필요할 수 있습니다.',
   '홈의 배변·식사·생활 기록 바로가기를 사용합니다. 각 기록은 한꺼번에 작성할 필요 없이 발생할 때마다 남길 수 있습니다.',
-  '화면 오른쪽의 「기록 수정」으로 이전 기록을 확인하고, 「업데이트 확인」으로 기능 변경을 확인합니다.' ],note:'기록은 사용자 기기에서 암호화된 후 Firebase에 저장됩니다. 복구 키와 계정 비밀번호는 다른 사람에게 공유하지 마세요.'},
+  '화면 오른쪽의 「기록 수정」으로 이전 기록을 확인하고, 홈 공지의 「변경 사항 보기」로 기능 변경을 확인합니다.' ],note:'기록은 사용자 기기에서 암호화된 후 Firebase에 저장됩니다. 복구 키와 계정 비밀번호는 다른 사람에게 공유하지 마세요.'},
  {id:'bowel',label:'배변 기록',title:'배변 직후 기록하기',steps:[
   '홈의 「배변 기록 작성」을 눌러 실제 배변 날짜와 시각을 확인합니다. 늦게 입력했다면 기록 시각을 수정합니다.',
   '브리스톨 대변 형태 1~7형 중 실제 형태와 가장 가까운 항목을 고릅니다. 1~2형은 단단한 형태, 3~4형은 형태가 유지된 변, 6~7형은 묽은 형태입니다.',
@@ -2097,13 +2181,13 @@ const JANGILGI_HELP=[
   '홈의 「식사 기록 작성」에서 실제 식사 시각을 입력하거나 「현재 시각」을 사용합니다.',
   '검색창으로 음식명을 찾거나 밥·국·면·생선·갑각류·패류·음료 등의 카테고리를 펼칩니다.',
   '한 끼에 먹은 여러 음식을 모두 선택합니다. 예: 흰쌀밥 + 김치찌개 + 계란말이.',
-  '선택한 메뉴에는 기본 소화 특성이 자동 적용됩니다. 실제 조리법과 다르면 펼쳐서 특성을 바꾼 후 저장할 수 있습니다.',
+  '선택한 메뉴에는 소화 특성 기본값이 적용됩니다. 실제로 기름을 많이 사용했거나 매웠다면 조리 상태 체크박스로 조정한 후 저장하세요.',
   '과거 음식명은 변경하지 않고 기본 특성을 적용하며, 기록 수정에서 특성을 바꿀 수 있습니다. 날짜만 있는 예전 기록은 시간차 분석에서 제외합니다.' ],note:'음식 목록의 선택 여부는 실제 섭취 기록을 나타냅니다. 기록이 없다고 해서 해당 음식을 먹지 않았다는 의미는 아닙니다.'},
   {id:'custom',label:'소화 특성·메뉴 요청',title:'기본 소화 특성과 메뉴 추가 요청',steps:[
-   '밥·국·면 등 17개 항목에서 메뉴를 선택하면 여러 소화 특성이 자동 적용됩니다.',
+   '밥·국·면 등 메뉴 카테고리에서 메뉴를 선택하면 여러 소화 특성이 자동 적용됩니다.',
    '흰쌀밥과 현미밥처럼 소화 특성이 다른 메뉴는 서로 다르게 분류합니다.',
    '한 끼에 매운 음식이 여러 개 있어도 분석에서는 해당 특성이 포함된 식사 1회로 취급합니다.',
-   '실제 조리법이 다른 식사 기록은 「기록 수정」에서 메뉴별 특성을 변경하고 저장할 수 있습니다.',
+   '실제 조리 상태가 다른 식사는 「기록 수정」에서 기름·매운맛·우유 등의 체크박스를 바꿔 저장할 수 있습니다.',
    '원하는 메뉴가 없다면 「메뉴 추가 요청」을 눌러 문의 화면에서 등록을 요청합니다.' ],note:'기존 사용자 음식 선택칸에 저장된 음식명은 과거 기록에서 유지됩니다. 기본 특성은 진단이나 원인 확정이 아닙니다.'},
  {id:'life',label:'생활 기록',title:'하루 생활습관 남기기',steps:[
   '홈의 「생활 기록 작성」을 눌러 날짜를 선택합니다.',
@@ -2142,7 +2226,7 @@ const JANGILGI_HELP=[
   '복구 키는 비밀번호를 잊은 뒤 암호화된 기록을 복구할 때 필요할 수 있으므로 안전하게 보관합니다.',
   '전체 기록 삭제는 기록만 삭제하는 기능이며, 계정과 화면 설정은 유지됩니다.' ],note:'Firebase 운영자 권한과 클라이언트 측 암호화는 서로 다른 보호 방식입니다. 완전한 무접근을 보장하는 기술이라고 오해하지 마세요.'},
  {id:'version',label:'업데이트·설정',title:'앱 버전과 업데이트 안내',steps:[
-  '상단 「↻ 업데이트 확인」 버튼에서 이번 버전의 변경 사항을 화면별로 안내받습니다.',
+  '홈 공지의 「변경 사항 보기」에서 이번 버전의 변경 사항을 화면별로 안내받습니다.',
   '새 버전으로 처음 접속한 계정에는 변경 내용 안내가 자동으로 나타납니다.',
   '안내를 마지막 단계까지 완료하면 확인한 버전이 저장되어 동일 버전에서 자동 안내를 반복하지 않습니다.',
   '업데이트된 코드가 바로 보이지 않으면 공식 주소를 확인하고 브라우저 새로고침을 시도합니다.',
@@ -2150,7 +2234,7 @@ const JANGILGI_HELP=[
 ];
 
 function jangFoodGroups(data){
- const groupList=[...JANGILGI_FOOD_CATALOG,['이전 버전 음식군',FOOD_LABELS]];
+ const groupList=[...JANGILGI_FOOD_CATALOG];
  const listed=new Set(groupList.flatMap(g=>g[1]));
  // 이전에 개인 선택칸을 사용한 사용자의 기록은 선택 목록에 계속 표시합니다.
  const oldNames=[...(data?.records||[]).flatMap(r=>Array.isArray(r?.foods)?r.foods:[]),...mealDraftFoods,...(foodLifeState?.foods||[])];
@@ -2202,11 +2286,10 @@ function initDigestiveEditors(){
  for(const [id,mode] of [['dailyDigestEditor','daily'],['mealDigestEditor','meal']]){
   const node=document.getElementById(id);
   node.addEventListener('change',e=>{
-   const c=e.target.closest('[data-digest-tag]');if(!c||!JANG_DIGEST_SET.has(c.dataset.digestTag))return;
+   const c=e.target.closest('[data-digest-prep]');if(!c||!JANG_PREP_FACTS[c.dataset.digestPrep])return;
    const ov=mode==='meal'?mealDraftTagOverrides:foodLifeState.digestiveOverrides;
-   jangUpdateOverrides(ov,c.dataset.digestFood,c.dataset.digestTag,c.checked);
-   const row=c.closest('.digest-food-row'),desc=row?.querySelector('summary span');
-   if(desc)desc.textContent=(jangEffectiveTags(c.dataset.digestFood,ov).join(' · ')||'기본 특성 없음')+' · '+(Object.prototype.hasOwnProperty.call(ov,c.dataset.digestFood)?'직접 수정됨':'기본값');
+   jangChangePrep(ov,c.dataset.digestFood,c.dataset.digestPrep,c.checked);
+   jangRefreshPrepRow(c,ov);
   });
   node.addEventListener('click',e=>{
    const b=e.target.closest('[data-digest-reset]');if(!b)return;
@@ -2230,7 +2313,7 @@ const JANG_HELP_TARGETS={
  analysis:[['analysis','#analysisView'],['analysis','#analysisView'],['settings','#settingsView'],['analysis','#analysisView'],['analysis','#analysisView']],
  support:[['support','#supportView'],['support','#supportCategory'],['support','#supportSubject'],['support','#supportMyList'],['support','#supportForm']],
  account:[['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton']],
- version:[['dashboard','#openUpdates'],['dashboard','#openUpdates'],['dashboard','#openUpdates'],['dashboard','#openUpdates'],['settings','#settingsView']]
+ version:[['dashboard','#releaseOpenGuide'],['dashboard','#releaseOpenGuide'],['dashboard','#releaseOpenGuide'],['dashboard','#releaseOpenGuide'],['settings','#settingsView']]
 };
 const JANG_HELP_TITLES={
  first:['계정과 프로필','개인 기록 보호','홈에서 바로 기록','수정과 업데이트'],
@@ -2243,7 +2326,7 @@ const JANG_HELP_TITLES={
  analysis:['식사와 배변의 관계','함께 먹은 음식 구분','비교 기간 설정','자료 부족 안내','결과의 한계'],
  support:['문의 화면 열기','문의 유형 고르기','문의 보내기','답변 확인','민감정보 주의'],
  account:['프로필 설정','이메일 변경','비밀번호 변경','복구 키 보관','기록 삭제 주의'],
- version:['업데이트 확인 버튼','첫 접속 안내','확인 상태 저장','운영 공지와 새로고침','화면 설정']
+ version:['공지에서 변경 사항 확인','첫 접속 안내','확인 상태 저장','운영 공지와 새로고침','화면 설정']
 };
 function jangHelpTour(id){
  const item=JANGILGI_HELP.find(x=>x.id===id)||JANGILGI_HELP[0];
@@ -2269,15 +2352,18 @@ function initDetailedHelp(){
  document.getElementById('launchGuidedTour').onclick=()=>startHelpCategory(jangCurrentHelp);
 }
 const JANG_UPDATE_TARGETS=[
- ['dashboard','#openHelp','카테고리별 게임식 도움말'],
- ['dashboard','#openUpdates','업데이트 확인'],
- ['dashboard','.home-main-shortcuts','홈과 통합 기록 수정'],
- ['foodlife','#mealFoodChoices','299개 상세 음식 메뉴'],
- ['recordManager','#managerDigestEditor','과거 기록 기본 특성 수정'],
- ['analysis','#foodPatternBody','소화 특성별 분석'],
- ['foodlife','#foodlifeView .menu-request-open','메뉴 추가 요청'],
- ['dashboard','#releaseNotice','업데이트 공지와 새로고침'],
- ['dashboard','#accountMenuButton','개인 기록 보관 유지']
+ ["dashboard", "#openHelp", "상세 도움말"],
+ ["recordManager", "#managerTabs", "통합 기록 관리"],
+ ["dashboard", "#openHelp", "게임식 따라하기"],
+ ["analysis", "#foodPatternBody", "소화 특성별 분석"],
+ ["recordManager", "#managerDigestEditor", "기존 기록 기본 분류"],
+ ["foodlife", "#mealFoodChoices", "메뉴 추가 요청"],
+ ["foodlife", "#mealFoodChoices", "새 메뉴 선택"],
+ ["foodlife", "#mealDigestEditor", "조리 상태 체크"],
+ ["recordManager", "#managerDigestEditor", "과거 기록의 조리 상태"],
+ ["foodlife", "#mealFoodChoices", "음식 선택 카테고리"],
+ ["dashboard", "#releaseNotice", "공지와 새로고침"],
+ ["dashboard", "#accountMenuButton", "기존 개인 기록 보호"]
 ];
 let jangUpdateSuggested=false;
 function showUpdateNotes(auto=false){
@@ -2285,7 +2371,7 @@ function showUpdateNotes(auto=false){
  if(!data){showToast('먼저 로그인해 주세요.');return;}
  const last=data.profile?.lastSeenAppVersion||'1.0.0';
  const items=JANGILGI_RELEASE_STEPS.map(x=>x[1]);
- const guided=items.map((desc,i)=>({view:JANG_UPDATE_TARGETS[i]?.[0]||'dashboard',selector:JANG_UPDATE_TARGETS[i]?.[1]||'#openUpdates',title:JANG_UPDATE_TARGETS[i]?.[2]||'업데이트된 기능',text:desc}));
+ const guided=items.map((desc,i)=>({view:JANG_UPDATE_TARGETS[i]?.[0]||'dashboard',selector:JANG_UPDATE_TARGETS[i]?.[1]||'#releaseOpenGuide',title:JANG_UPDATE_TARGETS[i]?.[2]||'업데이트된 기능',text:desc}));
  if(guided.length)guided[0].text=`${auto?'업데이트 이후 첫 접속이에요. ':'현재 장일기 v'+JANGILGI_VERSION+'입니다. '}${last!==JANGILGI_VERSION?'이전 확인 버전 v'+last+'에서 달라진 기능을 하나씩 살펴보세요. ':''}${guided[0].text}`;
  jangUpdateSuggested=auto;
  document.getElementById('updateNotesModal').hidden=true;
@@ -2301,8 +2387,7 @@ window.__jangilgiAfterOnboarding=data=>{
  if(!window.__jangilgiMaybeShowUpdate(data)&&!data?.profile?.firstRunGuideSeen)setTimeout(window.__jangilgiStartIntroGuide,180);
 };
 function initUpdates(){
- document.getElementById('appVersionChip').textContent='v'+JANGILGI_VERSION;
- document.getElementById('openUpdates').onclick=()=>showUpdateNotes(false);
+ // Update history now lives in the persistent home announcement; no duplicate topbar button.
 }
 let jangRemoteVersion=null,jangCheckingUpdate=false;
 function jangCompareVersion(left,right){
@@ -2318,8 +2403,8 @@ function jangRefreshAnnouncement(){
   desc.textContent='운영 공지: 변경된 앱을 사용하려면 「새로고침」을 눌러 최신 화면으로 이동해 주세요. 저장하지 않은 입력은 새로고침 전에 저장해 주세요.';
   card.classList.add('release-new');return;
  }
- headline.textContent=unseen?'📢 장일기 v1.2.0 업데이트 안내':'📢 장일기 최신 공지 · v1.2.0';
- desc.textContent='v1.1.0부터 개선된 도움말·기록 수정, 소화 특성 분석, 메뉴 추가 요청 기능을 확인하세요. 기존 기록은 유지됩니다.';
+ headline.textContent=unseen?'📢 장일기 v1.3.0 업데이트 안내':'📢 장일기 최신 공지 · v1.3.0';
+ desc.textContent='v1.1.0 이후의 도움말·기록 수정·소화 특성 분석부터 새 메뉴와 조리 상태 체크까지 확인하세요. 기존 기록은 유지됩니다.';
  card.classList.toggle('release-new',unseen);
 }
 async function jangCheckRemoteVersion(){
@@ -2368,7 +2453,7 @@ function managerFoodCheckboxes(d,selected){
  return `<div class="manager-food-toolbar"><label>음식 찾기<input type="search" id="managerFoodSearch" placeholder="메뉴명으로 검색"></label><button type="button" class="outline-button menu-request-open" id="managerMenuRequest">＋ 메뉴 추가 요청</button></div><div class="manager-food-checks food-catalog" id="managerFoodOptions">${groups.map(([cat,items],i)=>{
   const foods=[...new Set(items)].filter(f=>{if(seen.has(f))return false;seen.add(f);return true;});
   return `<details class="food-catalog-group" data-food-group="${escapeHTML(cat)}" ${i===0?'open':''}><summary>${escapeHTML(cat)} <small>(${foods.length})</small></summary><div class="food-catalog-items">${foods.map(food=>`<label class="manager-food-option"><input type="checkbox" name="managerFood" value="${escapeHTML(food)}" ${selected.includes(food)?'checked':''}> ${escapeHTML(food)}</label>`).join('')}</div></details>`;
- }).join('')}</div><div class="digestive-editor"><h3>음식별 소화 특성 <small>기존 음식은 기본값 · 필요하면 여기서 변경</small></h3><div id="managerDigestEditor">${jangTagEditorHTML(selected,managerDigestDraft,'manager')}</div></div>`;
+ }).join('')}</div><div class="digestive-editor"><h3>음식별 조리 상태 · 소화 특성 <small>기존 음식은 기본값 · 조리 상태를 체크해 수정</small></h3><div id="managerDigestEditor">${jangTagEditorHTML(selected,managerDigestDraft,'manager')}</div></div>`;
 }
 function managerFieldLayout(d,item){
  const painVals=[['0','없음'],['1','약간'],['2','보통'],['3','심함']];
@@ -2436,9 +2521,9 @@ function initManagerDigestEditor(){
  editor.addEventListener('change',e=>{
   const food=e.target.closest('input[name="managerFood"]');
   if(food){jangDigestPanel('managerDigestEditor',managerCollectedFoods(editor.querySelector('#managerEditForm')),managerDigestDraft,'manager');return;}
-  const tag=e.target.closest('[data-digest-tag]');if(tag&&JANG_DIGEST_SET.has(tag.dataset.digestTag)){
-   jangUpdateOverrides(managerDigestDraft,tag.dataset.digestFood,tag.dataset.digestTag,tag.checked);
-   const desc=tag.closest('.digest-food-row')?.querySelector('summary span');if(desc)desc.textContent=(jangEffectiveTags(tag.dataset.digestFood,managerDigestDraft).join(' · ')||'기본 특성 없음')+' · '+(Object.prototype.hasOwnProperty.call(managerDigestDraft,tag.dataset.digestFood)?'직접 수정됨':'기본값');
+  const tag=e.target.closest('[data-digest-prep]');if(tag&&JANG_PREP_FACTS[tag.dataset.digestPrep]){
+   jangChangePrep(managerDigestDraft,tag.dataset.digestFood,tag.dataset.digestPrep,tag.checked);
+   jangRefreshPrepRow(tag,managerDigestDraft);
   }
  });
  editor.addEventListener('click',e=>{
