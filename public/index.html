@@ -716,6 +716,24 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 #foodlifeView #timedMealPanel{grid-auto-rows:max-content;align-content:start}#foodlifeView #mealFoodChoices{height:clamp(190px,33vh,310px);min-height:190px;overflow-y:auto}#foodlifeView #foodlifeFoodChoices{height:250px;overflow-y:auto}#timedMealPanel .meal-time-label[hidden]{display:none!important}
 @media(max-width:780px){.manager-layout{grid-template-columns:1fr;grid-template-rows:minmax(170px,38%) minmax(220px,1fr)}.food-dialog,.help-dialog,.update-dialog{max-height:88dvh}.food-catalog{max-height:240px}.help-button#openUpdates{font-size:11px;padding:6px}.manager-filter{gap:5px}}
 @media(max-width:510px){#appVersionChip{display:none}.manager-filter input{max-width:122px}.custom-food-controls{display:grid;grid-template-columns:1fr auto}.custom-food-controls input{min-width:0}.food-catalog-bar{display:grid;grid-template-columns:1fr}.food-catalog-bar .outline-button{width:100%}}
+/* Guidance UI improvement only: v1.1.0 unchanged, zero data-schema changes. */
+#openUpdates{white-space:nowrap}
+.help-article{border:1px solid var(--line);border-radius:13px;padding:17px!important;margin-top:13px;background:var(--surface)}
+.help-article h3{margin:0 0 7px;font-size:16px}.help-article p{font-size:12px;line-height:1.65;margin:0;color:var(--muted)}
+.help-categories button{transition:background .15s,border-color .15s;white-space:nowrap}
+.help-categories button:focus-visible{outline:2px solid #2e8753;outline-offset:2px}
+.tour-card{width:min(420px,calc(100vw - 24px));padding:22px;max-height:calc(100dvh - 24px);overflow:auto}
+.tour-progress{letter-spacing:.03em;font-weight:800}
+.tour-progress-track{height:5px;border-radius:99px;background:#e6eee3;overflow:hidden;margin:11px 0 15px}
+#tourProgressFill{display:block;height:100%;width:0;background:#3e955d;border-radius:99px;transition:width .18s}
+.tour-card h2{line-height:1.35;font-size:19px;margin:8px 0 10px}
+.tour-card p{font-size:13px;line-height:1.75;word-break:keep-all;margin-bottom:12px}
+.tour-tip{border-top:1px solid #e4eee5;padding-top:10px;font-size:11px;color:#718375;line-height:1.5}
+.tour-actions{margin-top:16px}
+.tour-actions #tourExit{border:1px solid #dde7dd;color:#617564}
+.tour-actions #tourNext{min-width:90px}
+@media(max-width:640px){.tour-card{width:min(380px,calc(100vw - 20px));padding:17px}.tour-card p{font-size:12px}.tour-card h2{font-size:17px}.tour-actions button{padding:9px!important}}
+
 </style>
 </head>
 <body>
@@ -730,7 +748,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <button aria-label="메뉴 열기" class="mobile-menu">☰</button>
 <div class="breadcrumb"><button id="breadcrumbHome" type="button" title="홈으로 돌아가기">⌂ 장일기</button><b>/</b><strong id="pageTitle">홈</strong></div>
 <div class="top-actions">
-<button class="help-button support-top-btn" type="button" data-view="support">✉ 문의</button><button aria-label="카테고리별 상세 도움말 열기" class="help-button" id="openHelp" type="button">? 도움말</button><button class="help-button" id="openUpdates" type="button" aria-label="앱 업데이트 내역 확인">↻ 업데이트 <span id="appVersionChip">v1.1.0</span></button>
+<button class="help-button support-top-btn" type="button" data-view="support">✉ 문의</button><button aria-label="카테고리별 상세 도움말 열기" class="help-button" id="openHelp" type="button">? 도움말</button><button class="help-button" id="openUpdates" type="button" aria-label="업데이트 확인 안내 보기">↻ 업데이트 확인 <span id="appVersionChip">v1.1.0</span></button>
 <div class="history-control"><span>변경 이력 기록됨</span><button aria-label="모든 기록 수정 화면 열기" class="settings-button" id="editHistoryButton">✎ 기록 수정</button></div>
 <div class="account-menu-holder">
   <button class="avatar-small account-avatar" id="accountMenuButton" aria-label="내 계정과 프로필 열기" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu" type="button"><span id="accountAvatarLetter" aria-hidden="true">나</span></button>
@@ -853,7 +871,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <div aria-hidden="true" class="history-modal" id="historyModal"><div class="history-modal-card"><div class="history-modal-head"><div><div class="section-kicker">DATA CONTROL</div><h2>과거 기록 수정</h2><p>수정 내용은 변경 이력에 남아요.</p></div><button aria-label="수정 창 닫기" id="closeHistory">×</button></div><div class="history-tabs"><button class="active" data-history-tab="edit">기록 수정</button><button data-history-tab="log">변경 이력</button></div><div class="history-panel active" id="historyEditPanel"><label>수정할 날짜<select id="editDate"></select></label><div class="history-form-grid"><label>대변 형태<select id="editBristol"><option value="1">1형 · 딱딱한 알갱이</option><option value="2">2형 · 울퉁불퉁한 소시지</option><option value="3">3형 · 금이 간 소시지</option><option value="4">4형 · 매끈한 소시지</option><option value="5">5형 · 부드러운 덩어리</option><option value="6">6형 · 흐물한 조각</option><option value="7">7형 · 물처럼 묽은 변</option></select></label><p class="appearance-description">이전 날짜별 음식 기록은 음식·생활 → 식사 기록 → 과거 자료 관리에서 수정할 수 있어요.</p></div><div class="history-original" id="historyOriginal">원래 기록을 불러오는 중이에요.</div><button class="save-history-button" id="saveHistory">수정 내용 저장하기</button></div><div class="history-panel" id="historyLogPanel"><div class="history-log" id="historyLog"><span>아직 변경한 기록이 없어요.</span></div></div></div></div>
 <div class="jg-overlay" id="foodChoicesModal" hidden><div class="jg-dialog food-dialog" role="dialog" aria-modal="true" aria-labelledby="foodChoicesTitle"><div class="modal-bar"><div><span class="section-kicker">PERSONAL FOOD OPTIONS</span><h2 id="foodChoicesTitle">내 음식 선택칸 편집</h2></div><button type="button" id="foodChoicesClose" aria-label="닫기">✕</button></div><p class="foodlife-help">내가 자주 먹는 음식이나 메뉴를 묶어서 선택칸을 만들고 이름을 수정할 수 있어요. 선택칸을 지워도 과거에 저장된 식사 기록은 삭제되지 않아요.</p><div class="custom-food-add"><label>선택칸 이름 <input id="newFoodGroupName" maxlength="30" placeholder="예: 학교 급식, 자주 먹는 메뉴"></label><button type="button" class="primary-button" id="newFoodGroupBtn">선택칸 만들기</button></div><div id="customFoodGroupList"></div><p class="support-status" id="customFoodStatus" role="status"></p></div></div>
 <div class="jg-overlay" id="updateNotesModal" hidden><div class="jg-dialog update-dialog" role="dialog" aria-modal="true" aria-labelledby="updateNotesTitle"><span class="section-kicker">WHAT'S NEW</span><h2 id="updateNotesTitle">장일기 업데이트 내역</h2><p id="updateNotesIntro"></p><div id="updateNotesContent"></div><p class="support-status" id="updateNotesStatus" role="status"></p><button type="button" class="primary-button" id="updateNotesAcknowledge">업데이트 내용 확인</button></div></div>
-<div class="jg-overlay" id="detailedHelpModal" hidden><div class="jg-dialog help-dialog" role="dialog" aria-modal="true" aria-labelledby="detailedHelpTitle"><div class="modal-bar"><div><span class="section-kicker">JANGILGI GUIDE</span><h2 id="detailedHelpTitle">장일기 사용 설명서</h2></div><button type="button" id="helpModalClose" aria-label="도움말 닫기">✕</button></div><p class="foodlife-help">궁금한 기능의 카테고리를 고르면 실제 화면에서 사용하는 방법과 주의사항을 자세히 볼 수 있어요.</p><nav id="helpCategoryList" class="help-categories" aria-label="도움말 주제"></nav><article id="helpCategoryContent" class="help-article"></article><div class="help-actions"><button type="button" id="launchGuidedTour" class="outline-button">화면 따라하기</button><button type="button" id="helpModalDone" class="primary-button">설명 확인</button></div></div></div>
+<div class="jg-overlay" id="detailedHelpModal" hidden><div class="jg-dialog help-dialog" role="dialog" aria-modal="true" aria-labelledby="detailedHelpTitle"><div class="modal-bar"><div><span class="section-kicker">JANGILGI GUIDE</span><h2 id="detailedHelpTitle">장일기 사용 설명서</h2></div><button type="button" id="helpModalClose" aria-label="도움말 닫기">✕</button></div><p class="foodlife-help">설명받을 기능을 선택하세요. 실제 화면에서 해당 위치를 강조하며 한 단계씩 알려드려요.</p><nav id="helpCategoryList" class="help-categories" aria-label="도움말 주제"></nav><article id="helpCategoryContent" class="help-article"></article><div class="help-actions"><button type="button" id="launchGuidedTour" class="outline-button">선택한 기능 안내 시작</button><button type="button" id="helpModalDone" class="primary-button">닫기</button></div></div></div>
 <div aria-hidden="true" class="alert-modal" id="alertModal"><div class="alert-modal-card"><div class="alert-modal-icon">!</div><div class="section-kicker">CHECK BEFORE RECORDING</div><h2>기록보다 먼저 확인이 필요해요</h2><p>해당 증상은 앱으로 원인을 판단할 수 없습니다. 신속히 의료기관에서 상담받으세요. 심한 출혈이나 실신·심한 어지럼증이 동반되면 응급진료를 받으세요.</p><div class="alert-modal-actions"><button id="dismissAlert">알겠습니다</button><button id="continueRecord">그래도 기록하기</button></div></div></div>
 
 
@@ -910,7 +928,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 <div id="profileWelcome" class="jg-overlay" hidden><div class="jg-dialog" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="jg-dialog-icon">✦</div><span class="section-kicker">WELCOME TO JANGILGI</span><h2 id="welcomeTitle">나의 프로필을 완성해 주세요</h2><p>처음 이용할 때 한 번만 입력해요. 기존 사용자도 프로필을 설정할 수 있어요. 정보는 건강 기록과 함께 기기에서 암호화되어 저장됩니다.</p><form id="welcomeProfileForm"><label>이름 또는 닉네임 <input id="welcomeName" required maxlength="30" autocomplete="nickname" placeholder="표시할 이름" /></label><label>연령대 <select id="welcomeAge" required><option value="">연령대를 선택해 주세요</option><option value="10대">10대</option><option value="20대">20대</option><option value="30대">30대</option><option value="40대">40대</option><option value="50대 이상">50대 이상</option></select></label><label>성별 (선택사항) <select id="welcomeGender"><option>선택 안 함</option><option>여성</option><option>남성</option><option>기타 / 직접 밝히지 않음</option></select></label><button class="support-primary" id="welcomeSave" type="submit">프로필 저장하고 계속</button><p class="support-status" id="welcomeStatus" role="status"></p></form></div></div>
 <div id="adminPasswordModal" class="jg-overlay" hidden><div class="jg-dialog" role="dialog" aria-modal="true" aria-labelledby="adminPasswordTitle"><span class="section-kicker">ADMIN ACCESS</span><h2 id="adminPasswordTitle">관리자 로그인</h2><p>기존 관리자 계정으로 로그인된 상태입니다. 별도로 설정한 관리자 비밀번호를 입력해 주세요. 다른 계정은 필요하지 않으며, 비밀번호 확인은 Firestore 보안 규칙에서 처리합니다.</p><form id="adminPasswordForm"><label>관리자 전용 추가 비밀번호<input id="adminPasswordInput" type="password" autocomplete="off" required></label><button class="support-primary" id="adminPasswordSubmit" type="submit">관리자 문의함 열기</button><button class="support-secondary" id="adminPasswordCancel" type="button">취소</button><p class="support-status" id="adminPasswordStatus" role="status"></p></form></div></div>
-<div aria-hidden="true" class="tour-screen" hidden="" id="tourScreen"><div class="tour-dim"></div><div class="tour-highlight" id="tourHighlight"></div><div aria-labelledby="tourTitle" aria-modal="true" class="tour-card" role="dialog"><div class="tour-progress" id="tourProgress">1 / 7</div><h2 id="tourTitle">처음 오셨나요?</h2><p id="tourDescription"></p><div class="tour-actions"><button id="tourExit" type="button">건너뛰기</button><div><button id="tourPrev" type="button">이전</button><button class="primary-button" id="tourNext" type="button">다음 →</button></div></div></div></div>
+<div aria-hidden="true" class="tour-screen" hidden="" id="tourScreen"><div class="tour-dim"></div><div class="tour-highlight" id="tourHighlight"></div><div aria-labelledby="tourTitle" aria-modal="true" class="tour-card" role="dialog"><div class="tour-progress" id="tourProgress">1 / 7</div><div class="tour-progress-track" aria-hidden="true"><span id="tourProgressFill"></span></div><h2 id="tourTitle">처음 오셨나요?</h2><p id="tourDescription"></p><div class="tour-tip" id="tourTip">화면에서 강조된 부분을 확인하고 다음을 눌러주세요. 실제 기록은 변경되지 않아요.</div><div class="tour-actions"><button id="tourExit" type="button">건너뛰기</button><div><button id="tourPrev" type="button">이전</button><button class="primary-button" id="tourNext" type="button">다음 →</button></div></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>'use strict';
 /* 장일기: 의학적으로 검증되지 않은 총점·등급을 사용하지 않는 기록 중심 버전. */
@@ -1306,9 +1324,84 @@ const tourSteps=[
  {view:'settings',selector:'#settingsView .settings-grid',title:'설정과 개인정보 보호',text:'테마·분석 기간, 암호화된 프로필을 설정하고 개발자에게 문의할 수 있어요. 오른쪽 위 계정 메뉴에서 보안과 이메일을 관리해요.'}
 ];
 let activeTour=-1,prevFocus=null;
-function closeTour(){if(activeTour>=0)window.__jangilgiTourClosed?.();document.querySelector('#tourScreen').hidden=true;document.querySelector('#tourScreen').setAttribute('aria-hidden','true');activeTour=-1;prevFocus?.focus?.();}
-function moveTour(diff){activeTour+=diff;if(activeTour>=tourSteps.length){closeTour();navigate('dashboard');return;}if(activeTour<0)activeTour=0;const step=tourSteps[activeTour];navigate(step.view);window.__jangilgiShowTarget?.(document.querySelector(step.selector));const screen=document.querySelector('#tourScreen');screen.hidden=false;screen.setAttribute('aria-hidden','false');document.querySelector('#tourProgress').textContent=`${activeTour+1} / ${tourSteps.length}`;document.querySelector('#tourTitle').textContent=step.title;document.querySelector('#tourDescription').textContent=step.text;document.querySelector('#tourPrev').disabled=activeTour===0;document.querySelector('#tourNext').textContent=activeTour===tourSteps.length-1?'완료 ✓':'다음 →';requestAnimationFrame(()=>{const target=document.querySelector(step.selector);if(!target)return;target.scrollIntoView({block:'center',behavior:'instant'});requestAnimationFrame(()=>{const r=target.getBoundingClientRect(),h=document.querySelector('#tourHighlight'),c=document.querySelector('.tour-card');h.style.left=`${Math.max(8,r.left-7)}px`;h.style.top=`${Math.max(8,r.top-7)}px`;h.style.width=`${Math.min(innerWidth-16,r.width+14)}px`;h.style.height=`${Math.min(innerHeight-16,r.height+14)}px`;const y=r.bottom+22+c.offsetHeight<innerHeight?Math.max(16,r.bottom+22):Math.max(16,r.top-c.offsetHeight-22);c.style.top=`${Math.min(innerHeight-c.offsetHeight-16,y)}px`;c.style.left=`${Math.min(innerWidth-c.offsetWidth-16,Math.max(16,r.left))}px`;});});}
-function initTutorial(){document.querySelector('#openHelp').onclick=()=>{prevFocus=document.activeElement;activeTour=-1;moveTour(1);};document.querySelector('#tourExit').onclick=closeTour;document.querySelector('#tourNext').onclick=()=>moveTour(1);document.querySelector('#tourPrev').onclick=()=>moveTour(-1);document.addEventListener('keydown',e=>{if(activeTour>=0&&e.key==='Escape')closeTour();});}
+let jangGuideMode='intro',jangGuideCategory='first',jangGuideReturnView='dashboard',jangGuideSaving=false;
+async function jangMarkUpdateSeen(){
+ const data=window.__jangilgiSecurityRead?.();if(!data)return false;
+ if(data.profile?.lastSeenAppVersion===JANGILGI_VERSION)return true;
+ const next={...data,profile:{...(data.profile||{}),lastSeenAppVersion:JANGILGI_VERSION}};
+ return !!await writeData(next);
+}
+async function closeTour(completed=false){
+ if(activeTour<0)return;
+ if(jangGuideSaving)return;
+ const mode=jangGuideMode;
+ if(mode==='update'&&completed){
+  jangGuideSaving=true;
+  const next=document.getElementById('tourNext'),tip=document.getElementById('tourTip');next.disabled=true;
+  tip.textContent='업데이트 확인 상태를 암호화하여 저장하는 중…';
+  let done=false;
+  try{done=await jangMarkUpdateSeen();}catch(e){console.warn('Update acknowledgement failed',e);}
+  jangGuideSaving=false;next.disabled=false;
+  if(!done){activeTour=tourSteps.length-1;tip.textContent='서버에 확인 상태를 저장하지 못했어요. 연결을 확인한 뒤 완료를 다시 눌러 주세요.';return;}
+ }
+ if(mode==='intro'||mode==='help')window.__jangilgiTourClosed?.();
+ const screen=document.getElementById('tourScreen');screen.hidden=true;screen.setAttribute('aria-hidden','true');
+ activeTour=-1;document.getElementById('tourHighlight').style.display='none';
+ if(completed){navigate(jangGuideReturnView);if(mode==='update'&&jangUpdateSuggested&&!readData().profile?.firstRunGuideSeen){jangUpdateSuggested=false;setTimeout(()=>window.__jangilgiStartIntroGuide?.(),200);}}
+ else if(mode==='update'){jangUpdateSuggested=false;}
+ prevFocus?.focus?.();
+}
+function moveTour(diff){
+ if(jangGuideSaving)return;
+ activeTour+=diff;
+ if(activeTour>=tourSteps.length){closeTour(true);return;}
+ if(activeTour<0)activeTour=0;
+ const step=tourSteps[activeTour];
+ if(step.view)navigate(step.view);
+ window.__jangilgiShowTarget?.(document.querySelector(step.selector));
+ const screen=document.getElementById('tourScreen');screen.hidden=false;screen.setAttribute('aria-hidden','false');
+ const label=jangGuideMode==='update'?'업데이트 확인':(JANGILGI_HELP.find(x=>x.id===jangGuideCategory)?.label||'사용 안내');
+ document.getElementById('tourProgress').textContent=`${label} · ${activeTour+1} / ${tourSteps.length}`;
+ document.getElementById('tourProgressFill').style.width=`${(activeTour+1)/tourSteps.length*100}%`;
+ document.getElementById('tourTitle').textContent=step.title;
+ document.getElementById('tourDescription').textContent=step.text;
+ document.getElementById('tourTip').textContent=jangGuideMode==='update'?'변경된 기능의 위치를 확인하세요. 마지막 단계에서 확인 상태가 저장돼요.':'강조된 기능을 둘러보세요. 안내 중에는 실제 기록을 변경하지 않아요.';
+ document.getElementById('tourPrev').disabled=activeTour===0;
+ document.getElementById('tourExit').textContent=jangGuideMode==='update'?'나중에 확인':'안내 닫기';
+ document.getElementById('tourNext').textContent=activeTour===tourSteps.length-1?'완료 ✓':'다음 →';
+ const currentStep=activeTour;
+ requestAnimationFrame(()=>{
+  if(activeTour!==currentStep)return;
+  const target=document.querySelector(step.selector),hi=document.getElementById('tourHighlight'),card=screen.querySelector('.tour-card');
+  const visible=()=>target&&target.getClientRects().length&&target.getBoundingClientRect().width>=12&&target.getBoundingClientRect().height>=12;
+  if(visible())target.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
+  requestAnimationFrame(()=>{
+   if(activeTour!==currentStep)return;
+   if(!visible()){
+    hi.style.display='none';card.style.top='50%';card.style.left='50%';card.style.transform='translate(-50%,-50%)';return;
+   }
+   hi.style.display='block';card.style.transform='none';
+   const r=target.getBoundingClientRect(),margin=9,w=Math.min(innerWidth-2*margin,Math.max(25,r.width+14)),h=Math.min(innerHeight-2*margin,Math.max(25,r.height+14));
+   hi.style.left=`${Math.max(margin,Math.min(innerWidth-w-margin,r.left-7))}px`;
+   hi.style.top=`${Math.max(margin,Math.min(innerHeight-h-margin,r.top-7))}px`;
+   hi.style.width=`${w}px`;hi.style.height=`${h}px`;
+   const ch=card.offsetHeight,cw=card.offsetWidth,spaceBelow=innerHeight-r.bottom,spaceAbove=r.top;
+   let top=(spaceBelow>=ch+18||spaceBelow>=spaceAbove)?r.bottom+18:r.top-ch-18;
+   top=Math.max(12,Math.min(innerHeight-ch-12,top));
+   card.style.top=`${top}px`;card.style.left=`${Math.max(12,Math.min(innerWidth-cw-12,r.left))}px`;
+  });
+ });
+}
+function jangBeginGuide(steps,mode='help',category='first'){
+ if(!Array.isArray(steps)||!steps.length)return;
+ if(activeTour>=0)return;
+ jangGuideReturnView=document.querySelector('.view.active-view')?.id?.replace(/View$/,'')||'dashboard';
+ jangGuideMode=mode; jangGuideCategory=category;
+ tourSteps.splice(0,tourSteps.length,...steps);
+ prevFocus=document.activeElement;
+ activeTour=-1; moveTour(1);
+}
+function initTutorial(){document.querySelector('#openHelp').onclick=()=>{prevFocus=document.activeElement;activeTour=-1;moveTour(1);};document.querySelector('#tourExit').onclick=()=>closeTour(false);document.querySelector('#tourNext').onclick=()=>moveTour(1);document.querySelector('#tourPrev').onclick=()=>moveTour(-1);document.addEventListener('keydown',e=>{if(activeTour>=0&&e.key==='Escape')closeTour();});}
 let lastSeenDate=today();
 function initialize(){initNav();initEmailChangeDialog();initClearRecordsDialog();initFoodLife();initQuickForm();initHistoryEditor();initTutorial();refreshAllViews();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAllViews();});setInterval(()=>{if(today()!==lastSeenDate){lastSeenDate=today();refreshAllViews();}else renderTimeline(readData());},60000);}
 window.__jangilgiStart = (data,email,writer) => {
@@ -1869,7 +1962,7 @@ function renderTickets(id,items,isAdmin){const root=$(id);root.replaceChildren()
 async function loadOwn(){status('supportStatus','');$('supportMyList').textContent='문의 내역 불러오는 중…';try{const r=await window.__jangilgiSupportRequest('supportMyMessages',{});renderTickets('supportMyList',r.items||[],false);}catch(e){$('supportMyList').textContent='문의 내역을 불러올 수 없어요. 로그인과 Firestore 보안 규칙을 확인해 주세요.';}}
 async function loadAdmin(){status('adminSupportStatus','문의 내역을 조회하는 중…');try{const r=await window.__jangilgiSupportRequest('supportAdminList',{session:window.__jangilgiAdminSession?.()});renderTickets('adminSupportList',r.items||[],true);status('adminSupportStatus',`${(r.items||[]).length}건의 문의를 불러왔어요.`);}catch(e){status('adminSupportStatus',e.message||'관리자 권한이 없거나 Firestore에 연결할 수 없어요.');}}
 window.__jangilgiLoadOwnSupport=loadOwn;
-window.__jangilgiAfterSession=async(data)=>{if(!data?.profile?.onboardingComplete){$('welcomeName').value=data?.profile?.displayName||'';$('welcomeAge').value=data?.profile?.ageGroup||'';$('welcomeGender').value=data?.profile?.gender||'선택 안 함';modal.hidden=false;}else if(!window.__jangilgiMaybeShowUpdate?.(data) && !data?.profile?.firstRunGuideSeen){setTimeout(()=>$('openHelp')?.click(),250);}};
+window.__jangilgiAfterSession=async(data)=>{if(!data?.profile?.onboardingComplete){$('welcomeName').value=data?.profile?.displayName||'';$('welcomeAge').value=data?.profile?.ageGroup||'';$('welcomeGender').value=data?.profile?.gender||'선택 안 함';modal.hidden=false;}else if(!window.__jangilgiMaybeShowUpdate?.(data) && !data?.profile?.firstRunGuideSeen){setTimeout(()=>window.__jangilgiStartIntroGuide?.(),250);}};
 $('welcomeProfileForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('welcomeName').value.trim(),age=$('welcomeAge').value,gender=$('welcomeGender').value;if(!name||!age){status('welcomeStatus','이름과 연령대를 입력해 주세요.');return;}const data=window.__jangilgiSecurityRead?.();if(!data)return status('welcomeStatus','로그인 기록이 아직 열리지 않았어요.');data.profile={...data.profile,displayName:name,ageGroup:age,gender,onboardingComplete:true};$('welcomeSave').disabled=true;status('welcomeStatus','암호화된 프로필을 저장 중이에요…');const ok=await window.__jangilgiSecurityWrite?.(data);if(ok){modal.hidden=true;window.__jangilgiRefreshProfile?.(data);window.__jangilgiAfterOnboarding?.(data);}else status('welcomeStatus','저장에 실패했어요. 네트워크 연결을 확인해 주세요.');$('welcomeSave').disabled=false;});
 window.__jangilgiRefreshProfile=data=>{const name=String(data?.profile?.displayName||'').trim();const email=$('accountEmail').textContent||'';$('accountDisplayName').textContent=name||'내 계정';$('accountAvatarLetter').textContent=(name||email).slice(0,1).toUpperCase()||'나';$('profileAvatarLetter').textContent=(name||email).slice(0,1).toUpperCase()||'나';$('settingsDisplayName').value=name;$('settingsAge').value=data?.profile?.ageGroup||'';$('settingsGender').value=data?.profile?.gender||'선택 안 함';};
 $('supportForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('supportSend');btn.disabled=true;status('supportStatus','문의 전송 중…');try{await window.__jangilgiSupportRequest('supportSubmit',{category:$('supportCategory').value,subject:$('supportSubject').value.trim(),message:$('supportMessage').value.trim()});status('supportStatus','문의가 접수됐어요. 답변은 이 화면에서 확인할 수 있어요.');$('supportForm').reset();await loadOwn();}catch(err){status('supportStatus','전송 실패: '+(err.message||'서버 연결을 확인해 주세요.'));}finally{btn.disabled=false;}});
@@ -1928,7 +2021,7 @@ const JANGILGI_HELP=[
   '회원가입 후 이메일 인증을 완료하고 로그인합니다. 최초 접속 시 프로필(이름·연령대·선택적 성별)을 입력합니다.',
   '기록을 안전하게 보관하는 암호화 키와 복구 키 안내를 읽고 복구 키를 안전한 장소에 보관합니다. 복구 키는 비밀번호 분실 시 필요할 수 있습니다.',
   '홈의 배변·식사·생활 기록 바로가기를 사용합니다. 각 기록은 한꺼번에 작성할 필요 없이 발생할 때마다 남길 수 있습니다.',
-  '화면 오른쪽의 「기록 수정」으로 이전 기록을 확인하고, 「업데이트」로 기능 변경을 확인합니다.' ],note:'기록은 사용자 기기에서 암호화된 후 Firebase에 저장됩니다. 복구 키와 계정 비밀번호는 다른 사람에게 공유하지 마세요.'},
+  '화면 오른쪽의 「기록 수정」으로 이전 기록을 확인하고, 「업데이트 확인」으로 기능 변경을 확인합니다.' ],note:'기록은 사용자 기기에서 암호화된 후 Firebase에 저장됩니다. 복구 키와 계정 비밀번호는 다른 사람에게 공유하지 마세요.'},
  {id:'bowel',label:'배변 기록',title:'배변 직후 기록하기',steps:[
   '홈의 「배변 기록 작성」을 눌러 실제 배변 날짜와 시각을 확인합니다. 늦게 입력했다면 기록 시각을 수정합니다.',
   '브리스톨 대변 형태 1~7형 중 실제 형태와 가장 가까운 항목을 고릅니다. 1~2형은 단단한 형태, 3~4형은 형태가 유지된 변, 6~7형은 묽은 형태입니다.',
@@ -1984,9 +2077,9 @@ const JANGILGI_HELP=[
   '복구 키는 비밀번호를 잊은 뒤 암호화된 기록을 복구할 때 필요할 수 있으므로 안전하게 보관합니다.',
   '전체 기록 삭제는 기록만 삭제하는 기능이며, 계정과 화면 설정은 유지됩니다.' ],note:'Firebase 운영자 권한과 클라이언트 측 암호화는 서로 다른 보호 방식입니다. 완전한 무접근을 보장하는 기술이라고 오해하지 마세요.'},
  {id:'version',label:'업데이트·설정',title:'앱 버전과 업데이트 안내',steps:[
-  '상단 「↻ 업데이트」 버튼에서 현재 버전과 과거 업데이트 내역을 확인합니다.',
+  '상단 「↻ 업데이트 확인」 버튼에서 이번 버전의 변경 사항을 화면별로 안내받습니다.',
   '새 버전으로 처음 접속한 계정에는 변경 내용 안내가 자동으로 나타납니다.',
-  '「업데이트 내용 확인」을 누르면 해당 계정에 확인한 버전이 저장되어 동일 버전에서는 자동 안내를 반복하지 않습니다.',
+  '안내를 마지막 단계까지 완료하면 확인한 버전이 저장되어 동일 버전에서 자동 안내를 반복하지 않습니다.',
   '업데이트된 코드가 바로 보이지 않으면 공식 주소를 확인하고 브라우저 새로고침을 시도합니다.',
   '화면 설정에서는 테마·배경·분석 기간을 바꿀 수 있습니다. 앱 버전 업데이트와 개인 기록 변경은 서로 다른 작업입니다.' ],note:'앱 배포 시 사용자 기록을 지우거나 암호화 키를 새로 발급하지 않습니다.'}
 ];
@@ -2091,56 +2184,90 @@ function initCustomFoods(){
  };
 }
 let jangCurrentHelp='first';
+// Each help category has one highlighted target per brief instruction.
+const JANG_HELP_TARGETS={
+ first:[['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','.home-main-shortcuts'],['dashboard','#editHistoryButton']],
+ bowel:[['record','#quickTimeBlock'],['record','#quickShapeBlock'],['record','#quickSymptomBlock'],['record','#quickFlagsBlock'],['record','#recordView .quick-actions']],
+ food:[['foodlife','#mealAt'],['foodlife','#mealFoodSearch'],['foodlife','#mealFoodChoices'],['foodlife','#timedMealPanel'],['foodlife','#timedMealPanel']],
+ custom:[['foodlife','#foodlifeView .food-manage-open'],['foodlife','#mealFoodChoices'],['foodlife','#mealFoodChoices'],['foodlife','#foodlifeView .food-manage-open'],['foodlife','#foodlifeView .food-manage-open']],
+ life:[['lifestyle','#lifestyleView'],['lifestyle','#lifestyleView'],['lifestyle','#lifestyleView'],['lifestyle','#lifestyleView'],['recordManager','#managerTabs']],
+ edit:[['recordManager','#managerTabs'],['recordManager','#managerTabs'],['recordManager','#managerEntries'],['recordManager','#managerEditor'],['recordManager','#managerEditor']],
+ home:[['dashboard','.home-summary-grid'],['dashboard','.home-summary-grid'],['report','#reportTrendCard'],['dashboard','.home-summary-grid'],['dashboard','.home-bottom-links']],
+ analysis:[['analysis','#analysisView'],['analysis','#analysisView'],['settings','#settingsView'],['analysis','#analysisView'],['analysis','#analysisView']],
+ support:[['support','#supportView'],['support','#supportCategory'],['support','#supportSubject'],['support','#supportMyList'],['support','#supportForm']],
+ account:[['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton']],
+ version:[['dashboard','#openUpdates'],['dashboard','#openUpdates'],['dashboard','#openUpdates'],['dashboard','#openUpdates'],['settings','#settingsView']]
+};
+const JANG_HELP_TITLES={
+ first:['계정과 프로필','개인 기록 보호','홈에서 바로 기록','수정과 업데이트'],
+ bowel:['배변 시각','대변 형태','증상 선택','주의 증상','식사 확인 후 저장'],
+ food:['식사 시간','음식 찾기','한 끼에 먹은 음식','식사 저장','예전 기록은 그대로'],
+ custom:['선택칸 편집하기','자주 먹는 메뉴 묶기','항목 관리','다른 기기에서도 사용','이전 기록 보호'],
+ life:['생활 기록 화면','생활 상태 선택','미기록 유지','날짜별 저장','예전 값 수정'],
+ edit:['기록 종류 고르기','날짜로 찾기','수정할 기록 선택','변경 사항 저장','삭제 전 확인'],
+ home:['오늘의 기록','요약 카드 활용','통계 살펴보기','미기록의 의미','기록 백업'],
+ analysis:['식사와 배변의 관계','함께 먹은 음식 구분','비교 기간 설정','자료 부족 안내','결과의 한계'],
+ support:['문의 화면 열기','문의 유형 고르기','문의 보내기','답변 확인','민감정보 주의'],
+ account:['프로필 설정','이메일 변경','비밀번호 변경','복구 키 보관','기록 삭제 주의'],
+ version:['업데이트 확인 버튼','첫 접속 안내','확인 상태 저장','배포된 사이트 확인','화면 설정']
+};
+function jangHelpTour(id){
+ const item=JANGILGI_HELP.find(x=>x.id===id)||JANGILGI_HELP[0];
+ const targets=JANG_HELP_TARGETS[item.id]||[];
+ const steps=item.steps.map((desc,i)=>({view:targets[i]?.[0]||'dashboard',selector:targets[i]?.[1]||'#openHelp',title:(JANG_HELP_TITLES[item.id]||[])[i]||item.title,text:desc}));
+ // Show the category-specific note in the last step only, not as a long article.
+ if(steps.length&&item.note)steps[steps.length-1].text+=`  참고: ${item.note}`;
+ return steps;
+}
 function renderHelp(id){
  const item=JANGILGI_HELP.find(x=>x.id===id)||JANGILGI_HELP[0];jangCurrentHelp=item.id;
- document.getElementById('helpCategoryList').innerHTML=JANGILGI_HELP.map(t=>`<button type="button" data-help="${t.id}" class="${t.id===item.id?'selected':''}" aria-pressed="${t.id===item.id}">${escapeHTML(t.label)}</button>`).join('');
- document.getElementById('helpCategoryContent').innerHTML=`<h3>${escapeHTML(item.title)}</h3><ol>${item.steps.map(s=>`<li>${escapeHTML(s)}</li>`).join('')}</ol><p><strong>알아두기:</strong> ${escapeHTML(item.note)}</p>`;
+ document.getElementById('helpCategoryList').innerHTML=JANGILGI_HELP.map(t=>`<button type="button" data-help="${t.id}" class="${t.id===item.id?'selected':''}" aria-pressed="${t.id===item.id}" aria-label="${escapeHTML(t.label)} 단계별 안내 시작">${escapeHTML(t.label)}</button>`).join('');
+ document.getElementById('helpCategoryContent').innerHTML=`<h3>${escapeHTML(item.title)}</h3><p>${item.steps.length}단계로 나눠 실제 화면의 해당 기능을 강조하며 알려드려요. 위 카테고리를 누르면 바로 시작할 수 있어요.</p>`;
 }
 function showHelp(){document.getElementById('detailedHelpModal').hidden=false;renderHelp(jangCurrentHelp);}
-async function closeHelp(markRead=true){
- document.getElementById('detailedHelpModal').hidden=true;
- if(markRead)await window.__jangilgiTourClosed?.();
-}
+async function closeHelp(markRead=false){document.getElementById('detailedHelpModal').hidden=true;if(markRead)await window.__jangilgiTourClosed?.();}
+function startHelpCategory(id){jangCurrentHelp=id;document.getElementById('detailedHelpModal').hidden=true; jangBeginGuide(jangHelpTour(id),'help',id);}
 function initDetailedHelp(){
  document.getElementById('openHelp').onclick=showHelp;
- document.getElementById('helpCategoryList').onclick=e=>{const b=e.target.closest('[data-help]');if(b)renderHelp(b.dataset.help);};
- document.getElementById('helpModalClose').onclick=()=>closeHelp();document.getElementById('helpModalDone').onclick=()=>closeHelp();
- document.getElementById('launchGuidedTour').onclick=()=>{closeHelp(false);prevFocus=document.activeElement;activeTour=-1;moveTour(1);};
+ document.getElementById('helpCategoryList').onclick=e=>{const b=e.target.closest('[data-help]');if(b)startHelpCategory(b.dataset.help);};
+ document.getElementById('helpModalClose').onclick=()=>closeHelp();
+ document.getElementById('helpModalDone').onclick=()=>closeHelp();
+ document.getElementById('launchGuidedTour').onclick=()=>startHelpCategory(jangCurrentHelp);
 }
+const JANG_UPDATE_TARGETS=[
+ ['dashboard','#openHelp','카테고리별 사용 안내'],
+ ['dashboard','#openUpdates','업데이트 확인'],
+ ['dashboard','#openUpdates','새 버전 첫 접속 안내'],
+ ['foodlife','#mealFoodChoices','세분화된 음식 목록'],
+ ['foodlife','#foodlifeView .food-manage-open','내 음식 선택칸 편집'],
+ ['recordManager','#managerTabs','모든 기록 수정'],
+ ['dashboard','#accountMenuButton','기존 기록과 보안 유지']
+];
 let jangUpdateSuggested=false;
 function showUpdateNotes(auto=false){
- const modal=document.getElementById('updateNotesModal');
- const d=window.__jangilgiSecurityRead?.();
- const last=d?.profile?.lastSeenAppVersion||null;
- document.getElementById('updateNotesTitle').textContent=`장일기 v${JANGILGI_VERSION} 업데이트`;
- document.getElementById('updateNotesIntro').textContent=auto?`새 버전이 적용됐어요. ${last?`이전 확인 버전 v${last}에서`: '기존 버전에서'} 바뀐 내용을 확인해 주세요.`:'현재 버전과 업데이트 내역을 확인할 수 있어요.';
- document.getElementById('updateNotesContent').innerHTML=JANGILGI_CHANGELOG.map(x=>`<section><h3>v${escapeHTML(x.version)} · ${escapeHTML(x.title)}</h3><small>${escapeHTML(x.date)}</small><ul>${x.details.map(s=>`<li>${escapeHTML(s)}</li>`).join('')}</ul></section>`).join('');
- document.getElementById('updateNotesStatus').textContent='';
- modal.hidden=false;modal.dataset.auto=auto?'true':'false';jangUpdateSuggested=auto;
+ const data=window.__jangilgiSecurityRead?.();
+ if(!data){showToast('먼저 로그인해 주세요.');return;}
+ const last=data.profile?.lastSeenAppVersion||'1.0.0';
+ const version=JANGILGI_CHANGELOG.find(x=>x.version===JANGILGI_VERSION);
+ const items=version?.details||[];
+ const guided=items.map((desc,i)=>({view:JANG_UPDATE_TARGETS[i]?.[0]||'dashboard',selector:JANG_UPDATE_TARGETS[i]?.[1]||'#openUpdates',title:JANG_UPDATE_TARGETS[i]?.[2]||'업데이트된 기능',text:desc}));
+ if(guided.length)guided[0].text=`${auto?'업데이트 이후 첫 접속이에요. ':'현재 장일기 v'+JANGILGI_VERSION+'입니다. '}${last!==JANGILGI_VERSION?'이전 확인 버전 v'+last+'에서 달라진 기능을 하나씩 살펴보세요. ':''}${guided[0].text}`;
+ jangUpdateSuggested=auto;
+ document.getElementById('updateNotesModal').hidden=true;
+ jangBeginGuide(guided,'update','version');
 }
 window.__jangilgiMaybeShowUpdate=data=>{
  if(!data?.profile?.onboardingComplete)return false;
  if(data.profile?.lastSeenAppVersion===JANGILGI_VERSION)return false;
  showUpdateNotes(true);return true;
 };
+window.__jangilgiStartIntroGuide=()=>{if(activeTour<0)jangBeginGuide(jangHelpTour('first'),'intro','first');};
 window.__jangilgiAfterOnboarding=data=>{
- if(!window.__jangilgiMaybeShowUpdate(data) && !data?.profile?.firstRunGuideSeen)setTimeout(showHelp,180);
+ if(!window.__jangilgiMaybeShowUpdate(data)&&!data?.profile?.firstRunGuideSeen)setTimeout(window.__jangilgiStartIntroGuide,180);
 };
 function initUpdates(){
  document.getElementById('appVersionChip').textContent='v'+JANGILGI_VERSION;
  document.getElementById('openUpdates').onclick=()=>showUpdateNotes(false);
- document.getElementById('updateNotesAcknowledge').onclick=async()=>{
-  const button=document.getElementById('updateNotesAcknowledge'),msg=document.getElementById('updateNotesStatus');
-  const data=window.__jangilgiSecurityRead?.();if(!data){msg.textContent='로그인된 계정의 기록을 확인할 수 없어요.';return;}
-  const first=data.profile?.lastSeenAppVersion!==JANGILGI_VERSION;
-  if(first){
-   data.profile={...(data.profile||{}),lastSeenAppVersion:JANGILGI_VERSION};button.disabled=true;msg.textContent='업데이트 확인 상태를 암호화하여 저장하는 중…';
-   try{if(!await writeData(data)){msg.textContent='확인 상태를 저장하지 못했어요. 다시 시도해 주세요.';return;}}finally{button.disabled=false;}
-  }
-  document.getElementById('updateNotesModal').hidden=true;
-  if(jangUpdateSuggested&&!data.profile?.firstRunGuideSeen)setTimeout(showHelp,200);
-  jangUpdateSuggested=false;
- };
 }
 let managerTab='bowel',managerKey=null;
 const jangKindOptions=[['bowel','배변'],['meal','식사'],['daily','생활·날짜별'],['legacy','이전 기록']];
@@ -2237,7 +2364,7 @@ function initRecordManager(){
  initialize=function(){oldInitialize();initCustomFoods();initDetailedHelp();initUpdates();initRecordManager();refreshFoodCatalogChoices(readData());};
  // Ensure a cloud signout never leaves an open modal showing the previous account's data.
  const originalClear=window.__jangilgiClear;
- window.__jangilgiClear=function(){for(const id of ['foodChoicesModal','detailedHelpModal','updateNotesModal']){const x=document.getElementById(id);if(x)x.hidden=true;}managerKey=null;managerTab='bowel';jangUpdateSuggested=false;mealDraftFoods=[];mealEditorId=null;foodLifeState={foods:[],lifestyle:{}};for(const id of ['mealFoodChoices','foodlifeFoodChoices']){const el=document.getElementById(id);if(el){el.innerHTML='';delete el.dataset.foodSignature;}}originalClear?.();};
+ window.__jangilgiClear=function(){if(activeTour>=0){document.getElementById('tourScreen').hidden=true;document.getElementById('tourScreen').setAttribute('aria-hidden','true');activeTour=-1;}for(const id of ['foodChoicesModal','detailedHelpModal','updateNotesModal']){const x=document.getElementById(id);if(x)x.hidden=true;}managerKey=null;managerTab='bowel';jangUpdateSuggested=false;mealDraftFoods=[];mealEditorId=null;foodLifeState={foods:[],lifestyle:{}};for(const id of ['mealFoodChoices','foodlifeFoodChoices']){const el=document.getElementById(id);if(el){el.innerHTML='';delete el.dataset.foodSignature;}}originalClear?.();};
 })();
 
 </script>
