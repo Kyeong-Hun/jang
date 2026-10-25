@@ -735,6 +735,20 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 @media(max-width:640px){.tour-card{width:min(380px,calc(100vw - 20px));padding:17px}.tour-card p{font-size:12px}.tour-card h2{font-size:17px}.tour-actions button{padding:9px!important}}
 
 </style>
+<style id="jangilgi-v120-styles">
+.release-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:#edf7ef;border:1px solid #c9e1ce;border-radius:13px;color:#254f38;flex-wrap:wrap;flex-shrink:0}
+.release-notice.release-new{background:#f5f9e6;border-color:#dbe8af}
+.release-copy{display:flex;align-items:center;gap:11px;min-width:0;flex:1}
+.release-icon{font-size:22px}.release-copy strong{font-size:12px}.release-copy p{margin:2px 0 0;color:#647c6c;font-size:11px;line-height:1.45;word-break:keep-all}
+.release-actions{display:flex;gap:6px}.release-actions button{border:1px solid #a4cbad;padding:8px 11px;border-radius:8px;background:#fff;font-size:11px;font-weight:750;white-space:nowrap;color:#2c734b}.release-actions button:last-child{background:#347e50;color:#fff;border-color:#347e50}
+.digestive-editor{border:1px solid #dbe9da;border-radius:13px;background:#f7fbf6;margin:12px 0;padding:12px;min-width:0}
+.digestive-editor h3{font-size:13px;margin:0 0 10px;color:#306d47}.digestive-editor h3 small{display:block;color:#78927e;font-size:10px;font-weight:400;margin-top:3px}
+.digest-food-row{border-top:1px solid #dce9dc;padding:7px 0}.digest-food-row summary{cursor:pointer;display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:12px}.digest-food-row summary strong{min-width:72px}.digest-food-row summary span{color:#558067;font-size:10px}.digest-food-row[open] summary{margin-bottom:10px}
+.digest-tag-grid{display:flex;gap:6px;flex-wrap:wrap}.digest-tag-grid label{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #dae8d9;border-radius:8px;padding:7px 9px;font-size:11px;cursor:pointer}.digest-tag-grid input{accent-color:#397c50}.digest-reset{font-size:10px;text-decoration:underline;color:#51805a;margin-top:10px}.digest-muted{font-size:11px;color:#78927e;margin:0}
+.manager-food-checks.food-catalog{max-height:300px;overflow:auto;display:block;padding:3px}.manager-food-checks .food-catalog-items{display:flex;flex-wrap:wrap;gap:6px}.manager-food-option{font-size:11px;display:flex;align-items:center;gap:5px;padding:7px 9px;border:1px solid #dbe8d8;border-radius:9px;cursor:pointer}.manager-food-option:has(input:checked){background:#e1f2dc;border-color:#62ae78;color:#236f47}.manager-food-option input{accent-color:#347e50}
+.manager-food-toolbar{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:10px 0}.manager-food-toolbar label{flex:1;min-width:170px}.manager-food-toolbar input{width:100%}.manager-food-toolbar .outline-button{width:auto;flex:0 0 auto}
+@media(max-width:640px){.release-notice{padding:10px}.release-copy{flex-basis:100%}.release-actions{width:100%}.release-actions button{flex:1}.digestive-editor{padding:9px}.manager-food-toolbar .outline-button{width:100%}}
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -762,6 +776,8 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.2.0 업데이트 안내</strong><p id="releaseText">v1.1.0 이후 달라진 기록·분류·도움말을 확인해 주세요. 기존 기록은 보존됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
 <div><div class="eyebrow">날짜 확인 중</div><h1>요즘 내 장은 어떤 흐름일까요?</h1><p class="intro-copy">배변할 때마다 기록하고, 평소와 달라진 점을 확인하세요.</p></div>
@@ -827,13 +843,13 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <section class="view" id="foodlifeView">
 <div class="record-header foodlife-intro"><div><div class="eyebrow">FOOD &amp; LIFESTYLE JOURNAL</div><h1>음식·생활 기록</h1><p>식사 시각을 기록하고 생활습관과 배변의 시간차를 확인해요.</p></div></div>
 <div class="foodlife-date card-surface" id="foodlifeDateBlock"><label for="foodlifeDate"><span class="section-kicker">기록 날짜</span><input type="date" id="foodlifeDate" required></label><span id="foodlifeDateStatus" aria-live="polite">날짜를 선택해 주세요.</span></div>
-<article class="foodlife-panel card-surface" id="foodlifeFoodPanel"><div class="card-heading"><div><span class="section-kicker">FOOD NOTES</span><h2>먹은 음식</h2></div></div><p class="foodlife-help">이전 날짜별 기록은 그대로 유지됩니다. 저장된 과거 음식명도 선택할 수 있어요. 선택하지 않은 채 저장하면 '선택한 음식 없음'으로 기록돼요.</p><div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="legacyFoodSearch" placeholder="기존 기록에서 음식 찾기"></label><button type="button" class="outline-button food-manage-open">⚙ 내 음식 선택칸 편집</button></div><div id="foodlifeFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="음식 종류"></div><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveFood">음식 기록 저장</button></div></article>
+<article class="foodlife-panel card-surface" id="foodlifeFoodPanel"><div class="card-heading"><div><span class="section-kicker">FOOD NOTES</span><h2>먹은 음식</h2></div></div><p class="foodlife-help">이전 날짜별 기록은 그대로 유지됩니다. 저장된 과거 음식명도 선택할 수 있어요. 선택하지 않은 채 저장하면 '선택한 음식 없음'으로 기록돼요.</p><div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="legacyFoodSearch" placeholder="기존 기록에서 음식 찾기"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="foodlifeFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="음식 종류"></div><section class="digestive-editor"><h3>선택한 음식의 소화 특성 <small>기본값 자동 적용 · 필요할 때만 수정</small></h3><div id="dailyDigestEditor"></div></section><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveFood">음식 기록 저장</button></div></article>
 <article class="foodlife-panel card-surface" id="foodlifeLifePanel"><div class="card-heading"><div><span class="section-kicker">DAILY HABITS</span><h2>오늘의 생활 습관</h2></div></div><p class="foodlife-help">하루를 돌아보고 기억나는 항목만 선택해 주세요. 미선택은 미기록으로 남겨요.</p><div id="foodlifeLifestyleChoices" class="foodlife-habit-grid"></div><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveLife">생활 기록 저장</button></div></article>
 <article class="foodlife-panel card-surface" id="timedMealPanel">
  <div class="card-heading"><div><span class="section-kicker">TIME-STAMPED MEALS</span><h2>식사별 기록 · 분석용</h2></div></div>
- <p class="foodlife-help">실제 먹은 음식과 시각을 선택해 주세요. 식사는 여러 음식으로 구성할 수 있고, 자주 먹는 메뉴는 「내 음식 선택칸 편집」에서 나만의 선택 항목으로 만들 수 있어요. 이전 버전의 날짜별 자료도 그대로 보존됩니다.</p>
+ <p class="foodlife-help">실제 먹은 음식과 시각을 선택해 주세요. 음식을 선택하면 소화 관련 특성이 자동 지정됩니다. 실제 조리법이 다르면 선택한 음식의 특성을 펼쳐서 변경하세요. 과거 기록은 그대로 보존됩니다.</p>
  <label class="meal-time-label">실제 식사 시각 <input id="mealAt" type="datetime-local" aria-label="음식 섭취 날짜와 시각" required></label>
- <div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="mealFoodSearch" placeholder="예: 흰쌀밥, 새우, 고등어"></label><button type="button" class="outline-button food-manage-open">⚙ 내 음식 선택칸 편집</button></div><div id="mealFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="해당 식사에 포함된 음식"></div>
+ <div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="mealFoodSearch" placeholder="예: 흰쌀밥, 새우, 고등어"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="mealFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="해당 식사에 포함된 음식"></div><section class="digestive-editor"><h3>식사별 소화 특성 <small>기본 분류 자동 적용 · 조리법이 다르면 해당 기록만 수정</small></h3><div id="mealDigestEditor"></div></section>
  <label class="meal-time-label" hidden>추가 음식 이름(이전 호환용) <input id="mealCustomFood" type="text" placeholder="예: 마라탕, 김치찌개" maxlength="240" aria-label="태그에 없는 음식 이름을 쉼표로 구분하여 입력"></label>
  <div class="foodlife-actions"><button type="button" class="outline-button" id="mealCancelEdit" hidden>수정 취소</button><button type="button" class="primary-button" id="mealSave">식사 기록 추가</button></div>
  <div class="timed-meal-history"><strong>선택한 날짜의 식사</strong><div id="mealList" aria-live="polite"></div></div>
@@ -869,7 +885,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </main>
 </div>
 <div aria-hidden="true" class="history-modal" id="historyModal"><div class="history-modal-card"><div class="history-modal-head"><div><div class="section-kicker">DATA CONTROL</div><h2>과거 기록 수정</h2><p>수정 내용은 변경 이력에 남아요.</p></div><button aria-label="수정 창 닫기" id="closeHistory">×</button></div><div class="history-tabs"><button class="active" data-history-tab="edit">기록 수정</button><button data-history-tab="log">변경 이력</button></div><div class="history-panel active" id="historyEditPanel"><label>수정할 날짜<select id="editDate"></select></label><div class="history-form-grid"><label>대변 형태<select id="editBristol"><option value="1">1형 · 딱딱한 알갱이</option><option value="2">2형 · 울퉁불퉁한 소시지</option><option value="3">3형 · 금이 간 소시지</option><option value="4">4형 · 매끈한 소시지</option><option value="5">5형 · 부드러운 덩어리</option><option value="6">6형 · 흐물한 조각</option><option value="7">7형 · 물처럼 묽은 변</option></select></label><p class="appearance-description">이전 날짜별 음식 기록은 음식·생활 → 식사 기록 → 과거 자료 관리에서 수정할 수 있어요.</p></div><div class="history-original" id="historyOriginal">원래 기록을 불러오는 중이에요.</div><button class="save-history-button" id="saveHistory">수정 내용 저장하기</button></div><div class="history-panel" id="historyLogPanel"><div class="history-log" id="historyLog"><span>아직 변경한 기록이 없어요.</span></div></div></div></div>
-<div class="jg-overlay" id="foodChoicesModal" hidden><div class="jg-dialog food-dialog" role="dialog" aria-modal="true" aria-labelledby="foodChoicesTitle"><div class="modal-bar"><div><span class="section-kicker">PERSONAL FOOD OPTIONS</span><h2 id="foodChoicesTitle">내 음식 선택칸 편집</h2></div><button type="button" id="foodChoicesClose" aria-label="닫기">✕</button></div><p class="foodlife-help">내가 자주 먹는 음식이나 메뉴를 묶어서 선택칸을 만들고 이름을 수정할 수 있어요. 선택칸을 지워도 과거에 저장된 식사 기록은 삭제되지 않아요.</p><div class="custom-food-add"><label>선택칸 이름 <input id="newFoodGroupName" maxlength="30" placeholder="예: 학교 급식, 자주 먹는 메뉴"></label><button type="button" class="primary-button" id="newFoodGroupBtn">선택칸 만들기</button></div><div id="customFoodGroupList"></div><p class="support-status" id="customFoodStatus" role="status"></p></div></div>
+
 <div class="jg-overlay" id="updateNotesModal" hidden><div class="jg-dialog update-dialog" role="dialog" aria-modal="true" aria-labelledby="updateNotesTitle"><span class="section-kicker">WHAT'S NEW</span><h2 id="updateNotesTitle">장일기 업데이트 내역</h2><p id="updateNotesIntro"></p><div id="updateNotesContent"></div><p class="support-status" id="updateNotesStatus" role="status"></p><button type="button" class="primary-button" id="updateNotesAcknowledge">업데이트 내용 확인</button></div></div>
 <div class="jg-overlay" id="detailedHelpModal" hidden><div class="jg-dialog help-dialog" role="dialog" aria-modal="true" aria-labelledby="detailedHelpTitle"><div class="modal-bar"><div><span class="section-kicker">JANGILGI GUIDE</span><h2 id="detailedHelpTitle">장일기 사용 설명서</h2></div><button type="button" id="helpModalClose" aria-label="도움말 닫기">✕</button></div><p class="foodlife-help">설명받을 기능을 선택하세요. 실제 화면에서 해당 위치를 강조하며 한 단계씩 알려드려요.</p><nav id="helpCategoryList" class="help-categories" aria-label="도움말 주제"></nav><article id="helpCategoryContent" class="help-article"></article><div class="help-actions"><button type="button" id="launchGuidedTour" class="outline-button">선택한 기능 안내 시작</button><button type="button" id="helpModalDone" class="primary-button">닫기</button></div></div></div>
 <div aria-hidden="true" class="alert-modal" id="alertModal"><div class="alert-modal-card"><div class="alert-modal-icon">!</div><div class="section-kicker">CHECK BEFORE RECORDING</div><h2>기록보다 먼저 확인이 필요해요</h2><p>해당 증상은 앱으로 원인을 판단할 수 없습니다. 신속히 의료기관에서 상담받으세요. 심한 출혈이나 실신·심한 어지럼증이 동반되면 응급진료를 받으세요.</p><div class="alert-modal-actions"><button id="dismissAlert">알겠습니다</button><button id="continueRecord">그래도 기록하기</button></div></div></div>
@@ -1093,13 +1109,14 @@ const HABIT_LABELS=[
  {key:'sleep',label:'수면',choices:['부족','보통','충분']},
  {key:'stress',label:'스트레스',choices:['낮음','보통','높음']}
 ];
-let foodLifeState={foods:[],lifestyle:{}};
+let foodLifeState={foods:[],lifestyle:{},digestiveOverrides:{}};
 function foodLifeRecord(data,key){return data.records.find(r=>r?.date===key&&!r.aggregateOfEvents&&(r.kind==='daily-context'||Number(r.bristol)>=1&&Number(r.bristol)<=7));}
 function renderFoodLife(data){
  const field=document.getElementById('foodlifeDate');if(!field)return;
  const selected=field.value||today();const record=foodLifeRecord(data,selected);
- foodLifeState={foods:Array.isArray(record?.foods)?[...record.foods]:[],lifestyle:{...(record?.lifestyle||{})}};
+ foodLifeState={foods:Array.isArray(record?.foods)?[...record.foods]:[],lifestyle:{...(record?.lifestyle||{})},digestiveOverrides:jangValidOverrides(record?.digestiveOverrides,record?.foods)};
  refreshFoodCatalogChoices(data);
+ jangDigestPanel('dailyDigestEditor',foodLifeState.foods,foodLifeState.digestiveOverrides,'daily');
  const chosen=new Set(foodLifeState.foods);
  document.querySelectorAll('#foodlifeFoodChoices button').forEach(b=>{const isChosen=chosen.has(b.dataset.food);b.setAttribute('aria-pressed',String(isChosen));b.classList.toggle('selected',isChosen);});
  document.querySelectorAll('#foodlifeLifestyleChoices button').forEach(b=>{const current=foodLifeState.lifestyle[b.dataset.habit];const chosen=Number(current)===Number(b.dataset.level)&&current!=null;b.setAttribute('aria-pressed',String(chosen));b.classList.toggle('selected',chosen);});
@@ -1116,7 +1133,7 @@ function initFoodLife(){
  const habitsNode=document.getElementById('foodlifeLifestyleChoices');
  habitsNode.innerHTML=HABIT_LABELS.map(h=>`<div class="foodlife-habit-row"><strong>${h.label}</strong><div class="foodlife-habit-options" role="group" aria-label="${h.label}">${h.choices.map((x,i)=>`<button type="button" data-habit="${h.key}" data-level="${i}" aria-pressed="false">${x}</button>`).join('')}</div></div>`).join('');
  dateInput.addEventListener('change',()=>{if(!dateInput.value){dateInput.value=today();}renderFoodLife(readData());});
- foodsNode.onclick=e=>{const b=e.target.closest('[data-food]');if(!b)return;const food=b.dataset.food;foodLifeState.foods=foodLifeState.foods.includes(food)?foodLifeState.foods.filter(x=>x!==food):[...foodLifeState.foods,food];foodsNode.querySelectorAll('button').forEach(button=>{const on=foodLifeState.foods.includes(button.dataset.food);button.classList.toggle('selected',on);button.setAttribute('aria-pressed',String(on));});};
+ foodsNode.onclick=e=>{const b=e.target.closest('[data-food]');if(!b)return;const food=b.dataset.food;foodLifeState.foods=foodLifeState.foods.includes(food)?foodLifeState.foods.filter(x=>x!==food):[...foodLifeState.foods,food];foodsNode.querySelectorAll('button').forEach(button=>{const on=foodLifeState.foods.includes(button.dataset.food);button.classList.toggle('selected',on);button.setAttribute('aria-pressed',String(on));});jangDigestPanel('dailyDigestEditor',foodLifeState.foods,foodLifeState.digestiveOverrides,'daily');};
  habitsNode.onclick=e=>{const b=e.target.closest('[data-habit]');if(!b)return;const key=b.dataset.habit,level=Number(b.dataset.level);if(foodLifeState.lifestyle[key]===level){delete foodLifeState.lifestyle[key];}else foodLifeState.lifestyle[key]=level;habitsNode.querySelectorAll('[data-habit]').forEach(btn=>{const on=foodLifeState.lifestyle[btn.dataset.habit]===Number(btn.dataset.level);btn.classList.toggle('selected',on);btn.setAttribute('aria-pressed',String(on));});};
  async function savePart(part){
   const key=dateInput.value;
@@ -1125,7 +1142,7 @@ function initFoodLife(){
   if(data.demo){showToast('데모 기록을 지운 후 실제 기록을 저장해 주세요.');return;}
   let record=foodLifeRecord(data,key);
   if(!record){record={date:key,kind:'daily-context',foods:[],lifestyle:{}};data.records.push(record);}
-  if(part==='food'){record.foods=[...foodLifeState.foods];record.foodLogged=true;}
+  if(part==='food'){record.foods=[...foodLifeState.foods];record.foodLogged=true;record.digestiveOverrides=jangValidOverrides(foodLifeState.digestiveOverrides,record.foods);}
   if(part==='life'){record.lifestyle={...foodLifeState.lifestyle};const v=document.getElementById('lifeAt')?.value;const d=v?new Date(v):null;if(d&&Number.isFinite(d.getTime())&&d.getTime()<=Date.now()+60000)record.lifestyleAt=d.toISOString();}
   if(await writeData(data)){refreshAllViews();showToast(part==='food'?'음식 기록을 저장했어요.':'생활 기록을 저장했어요.');}
  }
@@ -1347,6 +1364,7 @@ async function closeTour(completed=false){
  if(mode==='intro'||mode==='help')window.__jangilgiTourClosed?.();
  const screen=document.getElementById('tourScreen');screen.hidden=true;screen.setAttribute('aria-hidden','true');
  activeTour=-1;document.getElementById('tourHighlight').style.display='none';
+  if(mode==='update'&&typeof jangRefreshAnnouncement==='function')jangRefreshAnnouncement();
  if(completed){navigate(jangGuideReturnView);if(mode==='update'&&jangUpdateSuggested&&!readData().profile?.firstRunGuideSeen){jangUpdateSuggested=false;setTimeout(()=>window.__jangilgiStartIntroGuide?.(),200);}}
  else if(mode==='update'){jangUpdateSuggested=false;}
  prevFocus?.focus?.();
@@ -1542,11 +1560,12 @@ function timedMeals(data){return (data?.records||[]).filter(r=>r?.kind==='meal'&
 function mealId(){return (typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():`meal-${Date.now()}-${Math.random().toString(36).slice(2)}`;}
 function priorBowelAt(data,at,exceptId){return [...(data.events||[])].filter(e=>e.id!==exceptId&&Number.isFinite(Date.parse(e.at))&&Date.parse(e.at)<Date.parse(at)).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at))[0]?.at||null;}
 function mealsInCurrentBowelInterval(data,at){const prior=priorBowelAt(data,at,editingEventId);const start=prior?Date.parse(prior):Date.parse(at)-72*ANALYSIS_HOUR;return timedMeals(data).filter(m=>Date.parse(m.at)>start&&Date.parse(m.at)<=Date.parse(at));}
-let mealEditorId=null,mealDraftFoods=[],returnToBowel=false;
+let mealEditorId=null,mealDraftFoods=[],mealDraftTagOverrides={},returnToBowel=false;
 function renderTimedMeals(data){
  const dateEl=document.getElementById('foodlifeDate'),mealAt=document.getElementById('mealAt'),date=mealAt?.value?dateKey(new Date(mealAt.value)):today(),list=document.getElementById('mealList');if(!list)return;
  refreshFoodCatalogChoices(data);
  const foods=new Set(mealDraftFoods);
+ jangDigestPanel('mealDigestEditor',mealDraftFoods,mealDraftTagOverrides,'meal');
  document.querySelectorAll('#mealFoodChoices [data-timed-food]').forEach(b=>{const on=foods.has(b.dataset.timedFood);b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});
  const meals=timedMeals(data).filter(m=>dateKey(m.at)===date);
  list.innerHTML=meals.length?meals.map(m=>`<div class="meal-row"><span>${escapeHTML(formatTime(m.at))} · ${escapeHTML(m.foods.join(', '))}</span><button type="button" data-meal-edit="${escapeHTML(m.id)}">수정</button><button type="button" data-meal-delete="${escapeHTML(m.id)}">삭제</button></div>`).join(''):'<span class="analysis-subtle">이 날짜에 시각까지 기록된 식사가 없어요.</span>';
@@ -1558,18 +1577,18 @@ function initTimedMeals(){
  atInput.value=localDateTime(new Date());
  atInput.addEventListener('change',()=>renderTimedMeals(readData()));
  node.addEventListener('click',e=>{const b=e.target.closest('[data-timed-food]');if(!b)return;const f=b.dataset.timedFood;applyMealDraft(mealDraftFoods.includes(f)?mealDraftFoods.filter(x=>x!==f):[...mealDraftFoods,f]);});
- dateEl.addEventListener('change',()=>{mealEditorId=null;applyMealDraft([]);const d=dateEl.value||today(),now=new Date();atInput.value=`${d}T${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;document.getElementById('mealSave').textContent='식사 기록 추가';document.getElementById('mealCancelEdit').hidden=true;});
- const resetMeal=(keepDate=false)=>{const previous=atInput.value;mealEditorId=null;mealDraftFoods=[];document.getElementById('mealCustomFood').value='';atInput.value=keepDate?previous:localDateTime(new Date());document.getElementById('mealCancelEdit').hidden=true;document.getElementById('mealSave').textContent='식사 기록 추가';renderTimedMeals(readData());};
+ dateEl.addEventListener('change',()=>{mealEditorId=null;mealDraftTagOverrides={};applyMealDraft([]);const d=dateEl.value||today(),now=new Date();atInput.value=`${d}T${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;document.getElementById('mealSave').textContent='식사 기록 추가';document.getElementById('mealCancelEdit').hidden=true;});
+ const resetMeal=(keepDate=false)=>{const previous=atInput.value;mealEditorId=null;mealDraftFoods=[];mealDraftTagOverrides={};document.getElementById('mealCustomFood').value='';atInput.value=keepDate?previous:localDateTime(new Date());document.getElementById('mealCancelEdit').hidden=true;document.getElementById('mealSave').textContent='식사 기록 추가';renderTimedMeals(readData());};
  document.getElementById('mealCancelEdit').onclick=resetMeal;
  document.getElementById('mealSave').onclick=async()=>{
   const at=atInput.value,date=new Date(at);if(!at||!Number.isFinite(date.getTime())||date.getTime()>Date.now()+60000){showToast('실제 식사 시각을 확인해 주세요.');return;}
   const custom=[]; // 식사 기록은 선택칸에서 선택한 음식만 저장합니다.
   const foods=[...new Set([...mealDraftFoods,...custom])].slice(0,20);
-  if(!foods.length){showToast('먹은 음식을 선택해 주세요. 내 선택칸에서 항목을 추가할 수도 있어요.');return;}
+  if(!foods.length){showToast('먹은 음식을 선택해 주세요. 없다면 「메뉴 추가 요청」을 이용해 주세요.');return;}
   const data=readData();if(data.demo){showToast('데모 기록을 지운 후 저장해 주세요.');return;}
   let meal=data.records.find(r=>r?.kind==='meal'&&r.id===mealEditorId);
   if(!meal){meal={kind:'meal',id:mealId(),at:date.toISOString(),foods:[]};data.records.push(meal);}
-  meal.at=date.toISOString();meal.date=dateKey(date);meal.foods=foods;
+  meal.at=date.toISOString();meal.date=dateKey(date);meal.foods=foods;meal.digestiveOverrides=jangValidOverrides(mealDraftTagOverrides,foods);
   const button=document.getElementById('mealSave');button.disabled=true;
   try{if(await writeData(data)){const goBack=returnToBowel;returnToBowel=false;dateEl.value=dateKey(date);resetMeal(true);refreshAllViews();if(goBack){navigate('record');window.__jangilgiScreen?.('record',1);openMealReview();}showToast('식사 시각과 음식 종류를 저장했어요.');}}
   finally{button.disabled=false;}
@@ -1579,7 +1598,7 @@ function initTimedMeals(){
   const m=timedMeals(readData()).find(r=>r.id===(edit?.dataset.mealEdit||del?.dataset.mealDelete));if(!m)return;
   if(del){if(!confirm('이 식사 기록을 삭제할까요?'))return;const d=readData();d.records=d.records.filter(r=>!(r.kind==='meal'&&r.id===m.id));if(await writeData(d)){refreshAllViews();showToast('식사 기록을 삭제했어요.');}return;}
   if(typeof window.__jangilgiOpenRecordManager==='function'){window.__jangilgiOpenRecordManager('meal',m.id);return;}
-  mealEditorId=m.id;mealDraftFoods=[...m.foods];document.getElementById('mealCustomFood').value='';dateEl.value=dateKey(m.at);atInput.value=localDateTime(m.at);document.getElementById('mealSave').textContent='식사 수정 저장';document.getElementById('mealCancelEdit').hidden=false;renderTimedMeals(readData());
+  mealEditorId=m.id;mealDraftFoods=[...m.foods];mealDraftTagOverrides=jangValidOverrides(m.digestiveOverrides,m.foods);document.getElementById('mealCustomFood').value='';dateEl.value=dateKey(m.at);atInput.value=localDateTime(m.at);document.getElementById('mealSave').textContent='식사 수정 저장';document.getElementById('mealCancelEdit').hidden=false;renderTimedMeals(readData());
  };
  renderTimedMeals(readData());
 }
@@ -1634,7 +1653,7 @@ function prepareAnalysisRows(data,days,now=Date.now()){
  return {events,meals,segments,lagRows:ANALYSIS_LAGS.map(lag=>{
   const sampled=events.filter(e=>covered(segments,Date.parse(e.at)-lag.hi*ANALYSIS_HOUR,Date.parse(e.at)-lag.lo*ANALYSIS_HOUR));
   return {lag,rows:sampled.map(e=>{
-   const end=Date.parse(e.at),foods=[...new Set(meals.filter(m=>{const elapsed=(end-Date.parse(m.at))/ANALYSIS_HOUR;return elapsed>=lag.lo&&elapsed<lag.hi;}).flatMap(m=>m.foods))];
+   const end=Date.parse(e.at),foods=[...new Set(meals.filter(m=>{const elapsed=(end-Date.parse(m.at))/ANALYSIS_HOUR;return elapsed>=lag.lo&&elapsed<lag.hi;}).flatMap(m=>jangFeatureSet(m.foods,m.digestiveOverrides)))];
    return {event:e,foods,at:end,day:dateKey(e.at)};
   })};
  })};
@@ -1677,7 +1696,7 @@ function analyzeFoodPatterns(data,days,now=Date.now()){
  const prepared=prepareAnalysisRows(data,days,now),results=[];
  for(const item of prepared.lagRows){
   const rows=item.rows;if(rows.length<16)continue;
-  const candidates=[...new Set(prepared.meals.flatMap(m=>m.foods))].filter(f=>typeof f==='string'&&f.length<=40).slice(0,100);
+  const candidates=[...new Set(rows.flatMap(r=>r.foods))].filter(f=>JANG_DIGEST_SET.has(f));
   for(const food of candidates){
    for(const outcome of ANALYSIS_OUTCOMES){
     const trainSize=Math.max(1,Math.floor(rows.length*.7)),train=rows.slice(0,trainSize),valid=rows.slice(trainSize),tr=analyzeOne(train,food,outcome);
@@ -1701,8 +1720,8 @@ function renderPersonalAnalysis(data){
  change.innerHTML=`<h2>내 기록의 최근 변화</h2><p class="analysis-subtle">최근 30일과 그 이전 60일의 배변 기록 통계를 비교합니다. 기록하지 않은 날은 배변하지 않은 날로 간주하지 않습니다.</p><div class="analysis-comparison"><div>최근 30일<b>${a.count}회</b>1~2형 ${a.hard} · 3~4형 ${a.formed} · 6~7형 ${a.loose}</div><div>이전 60일<b>${b.count}회</b>1~2형 ${b.hard} · 3~4형 ${b.formed} · 6~7형 ${b.loose}</div></div>${a.count>=8&&b.count>=12?`<p>6~7형 비율: 최근 ${analysisFraction(a.loose,a.count)}, 이전 ${analysisFraction(b.loose,b.count)}. 이는 관찰된 분포 차이이며 의학적 판정은 아닙니다.</p>`:'<p class="analysis-subtle">시기별 형태 분포를 비교하기에 기록 수가 충분하지 않아요. 분석용 내부 조건은 최근 8건·이전 12건입니다.</p>'}`;
  const days=selectedAnalysisDays(data),{prepared,results,qualified}=analyzeFoodPatterns(data,days);
  const home=pane.querySelector('.food-card'),panel=pane.querySelector('#foodPatternBody');if(!home||!panel)return;
- home.querySelector('h2').textContent='음식·배변 연관성 탐색';
- home.querySelector('.food-desc').textContent='식사 시각·동시 섭취·개인별 배변 형태를 함께 확인';
+ home.querySelector('h2').textContent='소화 특성·배변 연관성 탐색';
+ home.querySelector('.food-desc').textContent='소화 특성·식사 시각·동시 섭취·배변 형태를 함께 확인';
  const name=home.querySelector('.food-name'),rate=home.querySelector('.food-rate strong'),compare=home.querySelector('.food-rate span');
  const count=home.querySelector('#foodObservationCount'),symptoms=home.querySelector('#foodSymptomCount'),confidence=home.querySelector('#foodConfidence'),lock=home.querySelector('.lock-badge'),note=home.querySelector('#foodExplanation');
  const legacy=(data.records||[]).filter(r=>r?.foodLogged===true&&r.kind!=='meal').length;
@@ -1722,8 +1741,8 @@ function renderPersonalAnalysis(data){
   home.querySelector('.food-emoji').textContent='🍽';home.querySelector('.progress-track span').style.width='0%';
  }
  home.querySelector('#foodAccuracy').textContent=best?(best.confound?'구분 어려움':best.verified?'후속 검증됨':'검증 전'):'자료 부족';
- const all=results.map(r=>`<div class="analysis-result"><strong>${escapeHTML(r.food)} · ${escapeHTML(r.lag)} · ${escapeHTML(r.outcome)}</strong><span class="analysis-status">${r.confound?'음식 구분 어려움':r.verified?'후속 구간에서도 관찰':'새 기록 검증 중'}</span><p>섭취 후 ${r.full.exposedCases}/${r.full.exposed}회 (${analysisFraction(r.full.exposedCases,r.full.exposed)}) · 비교 기록 ${r.full.otherCases}/${r.full.other}회 (${analysisFraction(r.full.otherCases,r.full.other)})</p>${r.confound?`<p class="analysis-subtle">${escapeHTML(r.confound)}</p>`:''}<p class="analysis-subtle">학습 기록 ${r.train.exposed+r.train.other}건 / 이후 검증 ${r.valid.exposed+r.valid.other}건. 연관성을 원인으로 해석할 수 없어요.</p></div>`).join('');
- panel.innerHTML=`<div class="analysis-card"><h2>개인별 탐색 결과</h2><p class="analysis-subtle">최근 ${days}일 기준 · 기록된 음식군·음식명 × 시간차 4구간 × 배변·불편 유형 5종 탐색. 확정된 의학 기준이 아닌 개발용 관찰 조건입니다.</p>${all||'<p>서로 다른 식사 조합과 확인된 배변 기록이 쌓이면 이곳에 비교 결과가 표시돼요. 현재는 어느 음식이 원인이라고 판단하지 않습니다.</p>'}<p class="analysis-subtle">음식 미기록 구간은 미섭취로 처리하지 않아요. 하루 단위의 과거 음식 기록 ${legacy}건은 식사 시각을 알 수 없어 이 분석에서 제외돼요.</p><p class="analysis-subtle">초기 통계 조건: 학습 부분 섭취·비섭취 각 5건 이상, 관찰 차이 20%p 이상. 후속 부분에서 각 3건 이상이고 같은 방향이어야 '재현' 표기. 수치는 의학적 기준이 아닙니다.</p></div>`;
+ const all=results.map(r=>`<div class="analysis-result"><strong>${escapeHTML(r.food)} · ${escapeHTML(r.lag)} · ${escapeHTML(r.outcome)}</strong><span class="analysis-status">${r.confound?'특성 구분 어려움':r.verified?'후속 구간에서도 관찰':'새 기록 검증 중'}</span><p>섭취 후 ${r.full.exposedCases}/${r.full.exposed}회 (${analysisFraction(r.full.exposedCases,r.full.exposed)}) · 비교 기록 ${r.full.otherCases}/${r.full.other}회 (${analysisFraction(r.full.otherCases,r.full.other)})</p>${r.confound?`<p class="analysis-subtle">${escapeHTML(r.confound)}</p>`:''}<p class="analysis-subtle">학습 기록 ${r.train.exposed+r.train.other}건 / 이후 검증 ${r.valid.exposed+r.valid.other}건. 연관성을 원인으로 해석할 수 없어요.</p></div>`).join('');
+ panel.innerHTML=`<div class="analysis-card"><h2>개인별 탐색 결과</h2><p class="analysis-subtle">최근 ${days}일 기준 · 소화 관련 특성 × 시간차 4구간 × 배변·불편 유형 5종 탐색. 확정된 의학 기준이 아닌 개발용 관찰 조건입니다.</p>${all||'<p>서로 다른 식사 조합과 확인된 배변 기록이 쌓이면 이곳에 비교 결과가 표시돼요. 현재는 어느 음식이 원인이라고 판단하지 않습니다.</p>'}<p class="analysis-subtle">음식 미기록 구간은 미섭취로 처리하지 않아요. 하루 단위의 과거 음식 기록 ${legacy}건은 식사 시각을 알 수 없어 이 분석에서 제외돼요.</p><p class="analysis-subtle">초기 통계 조건: 학습 부분 섭취·비섭취 각 5건 이상, 관찰 차이 20%p 이상. 후속 부분에서 각 3건 이상이고 같은 방향이어야 '재현' 표기. 수치는 의학적 기준이 아닙니다.</p></div>`;
  home.querySelector('.food-footnote').textContent='통계적 연관성은 질환이나 원인 음식 판정이 아니며 식사 제한을 권하지 않아요.';
 }
 function initPersonalAnalysis(){
@@ -1980,8 +1999,20 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.1.0';
+const JANGILGI_VERSION='1.2.0';
+const JANGILGI_RELEASE_STEPS=[
+ ['카테고리별 게임식 도움말','11개 안내 주제를 선택하고 실제 기능을 한 칸씩 강조하며 따라갈 수 있어요.'],
+ ['업데이트 확인과 새 버전 안내','v1.1.0부터 추가된 기능을 한 번에 설명하고, 새 버전 첫 로그인에서는 안내가 자동으로 나타나요.'],
+ ['홈 기록 바로가기와 통합 수정','배변·식사·생활 바로가기, 기록 요약, 모든 기록 수정 화면을 이용할 수 있어요.'],
+ ['음식 299개 메뉴와 소화 특성','밥·국·면 등 17개 카테고리를 유지하면서 소화 관련 특성을 자동 분류해요. 한 메뉴에 특성이 여러 개 있을 수 있어요.'],
+ ['기존 기록의 자동 분류','과거 음식명은 그대로 보관돼요. 이전 기록에는 분석할 때 기본 소화 특성을 적용하며, 실제 먹은 조리법이 다르면 기록 수정에서 변경할 수 있어요.'],
+ ['분류 특성 중심의 개인 분석','음식 이름 299개를 각각 독립 변수로 취급하지 않고, 공통 특성의 섭취 여부를 시간 구간별 배변 기록과 비교해요.'],
+ ['메뉴 추가 요청','개인 메뉴·선택칸 제작 대신 「메뉴 추가 요청」으로 문의 화면을 열고 새로운 음식 등록을 요청할 수 있어요.'],
+ ['운영 공지와 새로고침','홈의 공지에서 최근 변경 내용을 확인하고, 실행 중에 새 배포가 감지되면 새로고침하여 적용할 수 있어요.'],
+ ['개인 기록과 보안 유지','Firebase 인증, 암호화된 저장 구조, 복구 키는 이전 버전을 유지하며 저장된 사용자 기록을 일괄 변환하지 않아요.']
+];
 const JANGILGI_CHANGELOG=[
+ {version:'1.2.0',date:'2026-10-25',title:'소화 특성별 기록 분석과 공지 기능',details:JANGILGI_RELEASE_STEPS.map(x=>x[1])},
  {version:'1.1.0',date:'2026-10-25',title:'사용 설명서와 기록 관리 개편',details:[
   '기능별로 나눈 상세 도움말과 화면 따라하기를 추가했습니다.',
   '버전 번호, 업데이트 확인 버튼, 이전 버전과 달라진 사항을 설명하는 알림을 추가했습니다.',
@@ -2016,6 +2047,40 @@ const JANGILGI_FOOD_CATALOG=[
  ['음료·카페인',['물','탄산수','콜라','사이다','과일주스','스무디','이온음료','커피','아메리카노','라떼','카페인 없는 커피','에너지음료','녹차','홍차','보리차','허브차','코코아','식혜']],
  ['양념·소스·기타',['고추장','된장','간장','마요네즈','케첩','머스터드','매운 소스','식초','설탕','꿀','인공감미료','올리브유','참기름','들기름','고춧가루','후추','기타 음식']]
 ];
+// 기본 분류는 저장된 기존 기록을 변경하지 않고 해석 단계에서만 사용합니다.
+// '별도 특성 미지정', '구성·조리법 확인 필요'는 통계적 분석군이 아닙니다.
+const JANG_DIGEST_TAGS=["정제 전분·저섬유","통곡·식이섬유","식물성 식이섬유","밀·프럭탄 후보","양파·마늘 프럭탄","콩·발효성 올리고당","과당·폴리올 후보","유당","지방 함량·튀김","매운 음식","카페인","탄산","당분 많은 간식·음료","발효·절임","수분·무카페인 음료"];
+const JANG_DIGEST_DEFAULTS={"흰쌀밥":["정제 전분·저섬유"],"잡곡밥":["통곡·식이섬유"],"현미밥":["통곡·식이섬유"],"흑미밥":["통곡·식이섬유"],"보리밥":["통곡·식이섬유"],"콩밥":["통곡·식이섬유","콩·발효성 올리고당"],"귀리밥":["통곡·식이섬유"],"찰밥":["정제 전분·저섬유"],"볶음밥":["정제 전분·저섬유"],"김치볶음밥":["정제 전분·저섬유","발효·절임"],"비빔밥":["정제 전분·저섬유"],"주먹밥":["정제 전분·저섬유"],"김밥":["정제 전분·저섬유"],"초밥":["정제 전분·저섬유"],"유부초밥":["정제 전분·저섬유"],"리소토":["정제 전분·저섬유"],"죽":["정제 전분·저섬유"],"누룽지":["정제 전분·저섬유"],"떡국":["정제 전분·저섬유"],"떡":["정제 전분·저섬유"],"오트밀":["통곡·식이섬유"],"시리얼":["당분 많은 간식·음료"],"미역국":["식물성 식이섬유"],"된장국":["콩·발효성 올리고당","발효·절임"],"북엇국":[],"콩나물국":["식물성 식이섬유"],"소고기뭇국":["식물성 식이섬유"],"김칫국":["식물성 식이섬유","매운 음식","발효·절임"],"계란국":[],"순두부찌개":["식물성 식이섬유","콩·발효성 올리고당","매운 음식"],"된장찌개":["식물성 식이섬유","콩·발효성 올리고당","발효·절임"],"김치찌개":["식물성 식이섬유","매운 음식","발효·절임"],"부대찌개":["지방 함량·튀김","매운 음식"],"청국장":["식물성 식이섬유","콩·발효성 올리고당","발효·절임"],"감자탕":["식물성 식이섬유","지방 함량·튀김"],"갈비탕":["지방 함량·튀김"],"설렁탕":[],"곰탕":[],"육개장":["식물성 식이섬유","매운 음식"],"삼계탕":[],"해물탕":[],"매운탕":["매운 음식"],"라면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"컵라면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"국수":["정제 전분·저섬유","밀·프럭탄 후보"],"잔치국수":["정제 전분·저섬유","밀·프럭탄 후보"],"비빔국수":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"냉면":["정제 전분·저섬유"],"밀면":["정제 전분·저섬유","밀·프럭탄 후보"],"칼국수":["정제 전분·저섬유","밀·프럭탄 후보"],"수제비":["정제 전분·저섬유","밀·프럭탄 후보"],"우동":["정제 전분·저섬유","밀·프럭탄 후보"],"소바":["밀·프럭탄 후보"],"쌀국수":["정제 전분·저섬유"],"파스타":["정제 전분·저섬유","밀·프럭탄 후보"],"짜장면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"짬뽕":["정제 전분·저섬유","밀·프럭탄 후보","매운 음식"],"볶음면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"빵":["정제 전분·저섬유","밀·프럭탄 후보"],"식빵":["정제 전분·저섬유","밀·프럭탄 후보"],"크루아상":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"베이글":["정제 전분·저섬유","밀·프럭탄 후보"],"도넛":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"피자":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"햄버거":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"샌드위치":["정제 전분·저섬유","밀·프럭탄 후보"],"만두":["정제 전분·저섬유","밀·프럭탄 후보"],"소고기":[],"돼지고기":[],"닭고기":[],"오리고기":["지방 함량·튀김"],"양고기":["지방 함량·튀김"],"삼겹살":["지방 함량·튀김"],"목살":[],"갈비":["지방 함량·튀김"],"불고기":["양파·마늘 프럭탄"],"제육볶음":["양파·마늘 프럭탄","매운 음식"],"수육":[],"보쌈":[],"족발":["지방 함량·튀김"],"치킨":["지방 함량·튀김"],"닭갈비":["양파·마늘 프럭탄","지방 함량·튀김","매운 음식"],"닭볶음탕":["양파·마늘 프럭탄","매운 음식"],"돈가스":["지방 함량·튀김"],"스테이크":[],"햄":["지방 함량·튀김"],"소시지":["지방 함량·튀김"],"베이컨":["지방 함량·튀김"],"내장류":[],"고등어":["지방 함량·튀김"],"갈치":[],"삼치":["지방 함량·튀김"],"연어":["지방 함량·튀김"],"참치":[],"광어":[],"우럭":[],"대구":[],"명태":[],"조기":[],"꽁치":["지방 함량·튀김"],"멸치":[],"장어":["지방 함량·튀김"],"정어리":["지방 함량·튀김"],"방어":["지방 함량·튀김"],"농어":[],"도미":[],"생선회":[],"생선구이":[],"훈제생선":[],"새우":[],"게":[],"꽃게":[],"대게":[],"킹크랩":[],"가재":[],"바닷가재":[],"조개":[],"바지락":[],"홍합":[],"굴":[],"전복":[],"가리비":[],"소라":[],"꼬막":[],"키조개":[],"문어":[],"오징어":[],"낙지":[],"주꾸미":[],"해삼":[],"멍게":[],"달걀":[],"삶은 달걀":[],"계란말이":[],"계란찜":[],"두부":[],"순두부":[],"콩":["콩·발효성 올리고당"],"검은콩":["콩·발효성 올리고당"],"두유":["콩·발효성 올리고당"],"콩나물":["식물성 식이섬유"],"병아리콩":["콩·발효성 올리고당"],"렌틸콩":["콩·발효성 올리고당"],"아몬드":["지방 함량·튀김"],"호두":["지방 함량·튀김"],"땅콩":["지방 함량·튀김"],"캐슈넛":["콩·발효성 올리고당","지방 함량·튀김"],"피스타치오":["콩·발효성 올리고당","지방 함량·튀김"],"참깨":["지방 함량·튀김"],"땅콩버터":["지방 함량·튀김"],"배추":["식물성 식이섬유"],"양배추":["식물성 식이섬유"],"상추":["식물성 식이섬유"],"시금치":["식물성 식이섬유"],"깻잎":["식물성 식이섬유"],"부추":["식물성 식이섬유","양파·마늘 프럭탄"],"대파":["식물성 식이섬유","양파·마늘 프럭탄"],"양파":["식물성 식이섬유","양파·마늘 프럭탄"],"마늘":["식물성 식이섬유","양파·마늘 프럭탄"],"고추":["식물성 식이섬유","매운 음식"],"파프리카":["식물성 식이섬유"],"오이":["식물성 식이섬유"],"당근":["식물성 식이섬유"],"무":["식물성 식이섬유"],"감자":["정제 전분·저섬유"],"고구마":["통곡·식이섬유"],"토마토":["식물성 식이섬유"],"브로콜리":["식물성 식이섬유"],"콜리플라워":["식물성 식이섬유","과당·폴리올 후보"],"가지":["식물성 식이섬유"],"호박":["식물성 식이섬유"],"아스파라거스":["식물성 식이섬유","과당·폴리올 후보"],"팽이버섯":["식물성 식이섬유","과당·폴리올 후보"],"새송이버섯":["식물성 식이섬유","과당·폴리올 후보"],"표고버섯":["식물성 식이섬유","과당·폴리올 후보"],"미역":["식물성 식이섬유"],"김":["식물성 식이섬유"],"다시마":["식물성 식이섬유"],"샐러드":["식물성 식이섬유"],"사과":["식물성 식이섬유","과당·폴리올 후보"],"배":["식물성 식이섬유","과당·폴리올 후보"],"바나나":["식물성 식이섬유"],"귤":["식물성 식이섬유"],"오렌지":["식물성 식이섬유"],"자몽":["식물성 식이섬유"],"포도":["식물성 식이섬유"],"딸기":["식물성 식이섬유"],"블루베리":["식물성 식이섬유"],"라즈베리":["식물성 식이섬유"],"복숭아":["식물성 식이섬유","과당·폴리올 후보"],"자두":["식물성 식이섬유","과당·폴리올 후보"],"체리":["식물성 식이섬유","과당·폴리올 후보"],"망고":["식물성 식이섬유","과당·폴리올 후보"],"파인애플":["식물성 식이섬유"],"키위":["식물성 식이섬유"],"수박":["식물성 식이섬유","과당·폴리올 후보"],"참외":["식물성 식이섬유"],"멜론":["식물성 식이섬유"],"감":["식물성 식이섬유","과당·폴리올 후보"],"무화과":["식물성 식이섬유","과당·폴리올 후보"],"아보카도":["식물성 식이섬유","지방 함량·튀김"],"건포도":["식물성 식이섬유","과당·폴리올 후보"],"대추":["식물성 식이섬유","과당·폴리올 후보"],"우유":["유당"],"저지방 우유":["유당"],"무유당 우유":[],"요구르트":["유당","발효·절임"],"그릭요거트":["유당","발효·절임"],"액상 요구르트":["유당","당분 많은 간식·음료","발효·절임"],"치즈":["지방 함량·튀김"],"모차렐라":["지방 함량·튀김"],"크림치즈":["유당","지방 함량·튀김"],"버터":["지방 함량·튀김"],"생크림":["유당","지방 함량·튀김"],"아이스크림":["유당","지방 함량·튀김","당분 많은 간식·음료"],"두유 대체음료":[],"오트음료":[],"아몬드음료":[],"배추김치":["식물성 식이섬유","매운 음식","발효·절임"],"깍두기":["식물성 식이섬유","매운 음식","발효·절임"],"총각김치":["식물성 식이섬유","매운 음식","발효·절임"],"열무김치":["식물성 식이섬유","매운 음식","발효·절임"],"파김치":["식물성 식이섬유","매운 음식","발효·절임"],"오이소박이":["식물성 식이섬유","매운 음식","발효·절임"],"동치미":["식물성 식이섬유","발효·절임"],"장아찌":["식물성 식이섬유","발효·절임"],"단무지":["식물성 식이섬유","발효·절임"],"피클":["식물성 식이섬유","발효·절임"],"젓갈":["발효·절임"],"낫토":["콩·발효성 올리고당","발효·절임"],"사우어크라우트":["식물성 식이섬유","발효·절임"],"마라탕":["지방 함량·튀김","매운 음식"],"마라샹궈":["지방 함량·튀김","매운 음식"],"떡볶이":["정제 전분·저섬유","매운 음식"],"불닭볶음면":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","매운 음식"],"매운 닭발":["매운 음식"],"매운 찜":["매운 음식"],"고추장 양념":["매운 음식"],"튀김":["지방 함량·튀김"],"감자튀김":["정제 전분·저섬유","지방 함량·튀김"],"핫도그":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김"],"어묵":["정제 전분·저섬유"],"냉동식품":[],"즉석식품":[],"통조림":[],"가공육":[],"양념치킨":["지방 함량·튀김","매운 음식","당분 많은 간식·음료"],"감자칩":["정제 전분·저섬유","지방 함량·튀김"],"과자":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"초콜릿":["지방 함량·튀김","당분 많은 간식·음료"],"사탕":["당분 많은 간식·음료"],"젤리":["당분 많은 간식·음료"],"쿠키":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"케이크":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"마카롱":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"푸딩":["유당","당분 많은 간식·음료"],"와플":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"팬케이크":["정제 전분·저섬유","밀·프럭탄 후보","당분 많은 간식·음료"],"붕어빵":["정제 전분·저섬유","밀·프럭탄 후보","당분 많은 간식·음료"],"호떡":["정제 전분·저섬유","밀·프럭탄 후보","지방 함량·튀김","당분 많은 간식·음료"],"찹쌀떡":["정제 전분·저섬유","당분 많은 간식·음료"],"팥빙수":["유당","당분 많은 간식·음료"],"팝콘":["정제 전분·저섬유","지방 함량·튀김"],"에너지바":["정제 전분·저섬유","당분 많은 간식·음료"],"물":["수분·무카페인 음료"],"탄산수":["탄산"],"콜라":["탄산","당분 많은 간식·음료"],"사이다":["탄산","당분 많은 간식·음료"],"과일주스":["과당·폴리올 후보","당분 많은 간식·음료"],"스무디":["과당·폴리올 후보","당분 많은 간식·음료"],"이온음료":["당분 많은 간식·음료"],"커피":["카페인"],"아메리카노":["카페인"],"라떼":["유당","카페인"],"카페인 없는 커피":["수분·무카페인 음료"],"에너지음료":["카페인","당분 많은 간식·음료"],"녹차":["카페인"],"홍차":["카페인"],"보리차":["수분·무카페인 음료"],"허브차":["수분·무카페인 음료"],"코코아":["당분 많은 간식·음료"],"식혜":["당분 많은 간식·음료"],"고추장":["매운 음식","발효·절임"],"된장":["콩·발효성 올리고당","발효·절임"],"간장":["발효·절임"],"마요네즈":["지방 함량·튀김"],"케첩":["당분 많은 간식·음료"],"머스터드":[],"매운 소스":["매운 음식"],"식초":["발효·절임"],"설탕":["당분 많은 간식·음료"],"꿀":["과당·폴리올 후보","당분 많은 간식·음료"],"인공감미료":[],"올리브유":["지방 함량·튀김"],"참기름":["지방 함량·튀김"],"들기름":["지방 함량·튀김"],"고춧가루":["매운 음식"],"후추":[],"기타 음식":[]};
+const JANG_DIGEST_SET=new Set(JANG_DIGEST_TAGS);
+function jangDefaultTags(food){return Array.isArray(JANG_DIGEST_DEFAULTS[food])?[...JANG_DIGEST_DEFAULTS[food]]:[];}
+function jangEffectiveTags(food,overrides){
+ const own=overrides&&typeof overrides==='object'&&Object.prototype.hasOwnProperty.call(overrides,food);
+ return own&&Array.isArray(overrides[food])?[...new Set(overrides[food].filter(t=>JANG_DIGEST_SET.has(t)))]:jangDefaultTags(food);
+}
+function jangValidOverrides(raw,foods){
+ const result={},allowed=new Set(Array.isArray(foods)?foods:[]);
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))return result;
+ for(const name of allowed){if(typeof name!=='string'||name.length>40)continue;
+   if(!Object.prototype.hasOwnProperty.call(raw,name)||!Array.isArray(raw[name]))continue;
+   const tags=[...new Set(raw[name].filter(x=>JANG_DIGEST_SET.has(x)))].slice(0,JANG_DIGEST_TAGS.length);
+   if(JSON.stringify(tags.slice().sort())!==JSON.stringify(jangDefaultTags(name).sort()))result[name]=tags;
+ }
+ return result;
+}
+function jangFeatureSet(foodNames,overrides){const result=new Set();for(const f of foodNames||[])for(const t of jangEffectiveTags(f,overrides))result.add(t);return [...result];}
+function jangTagEditorHTML(foodNames,overrides,mode){
+ const foods=[...new Set((foodNames||[]).filter(f=>typeof f==='string'&&f.trim()))];
+ if(!foods.length)return '<p class="digest-muted">먼저 음식을 선택하면 기본 소화 특성이 여기에 표시돼요.</p>';
+ return foods.map(food=>{
+  const tags=jangEffectiveTags(food,overrides),changed=Object.prototype.hasOwnProperty.call(overrides||{},food);
+  return `<details class="digest-food-row" data-digest-food="${escapeHTML(food)}"><summary><strong>${escapeHTML(food)}</strong><span>${escapeHTML(tags.join(' · ')||'기본 특성 없음')} ${changed?'· 직접 수정됨':'· 기본값'}</span></summary><div class="digest-tag-grid">${JANG_DIGEST_TAGS.map(tag=>`<label><input type="checkbox" data-digest-mode="${mode}" data-digest-food="${escapeHTML(food)}" data-digest-tag="${escapeHTML(tag)}" ${tags.includes(tag)?'checked':''}>${escapeHTML(tag)}</label>`).join('')}</div><button type="button" class="digest-reset" data-digest-reset="${escapeHTML(food)}" data-digest-mode="${mode}">기본 분류로 되돌리기</button></details>`;
+ }).join('');
+}
+function jangUpdateOverrides(override,food,tag,checked){
+ const current=jangEffectiveTags(food,override);const next=checked?[...new Set([...current,tag])]:current.filter(t=>t!==tag);
+ const defaults=jangDefaultTags(food);if(JSON.stringify([...next].sort())===JSON.stringify([...defaults].sort()))delete override[food];else override[food]=next;
+}
+function jangDigestPanel(id,foods,overrides,mode){const root=document.getElementById(id);if(root)root.innerHTML=jangTagEditorHTML(foods,overrides,mode);}
 const JANGILGI_HELP=[
  {id:'first',label:'처음 시작',title:'처음 이용하는 방법',steps:[
   '회원가입 후 이메일 인증을 완료하고 로그인합니다. 최초 접속 시 프로필(이름·연령대·선택적 성별)을 입력합니다.',
@@ -2032,14 +2097,14 @@ const JANGILGI_HELP=[
   '홈의 「식사 기록 작성」에서 실제 식사 시각을 입력하거나 「현재 시각」을 사용합니다.',
   '검색창으로 음식명을 찾거나 밥·국·면·생선·갑각류·패류·음료 등의 카테고리를 펼칩니다.',
   '한 끼에 먹은 여러 음식을 모두 선택합니다. 예: 흰쌀밥 + 김치찌개 + 계란말이.',
-  '「식사 기록 추가」로 저장합니다. 배변 직후 누락된 식사가 있다면 배변 화면의 식사 확인 안내에서 추가할 수 있습니다.',
-  '과거 버전에서 날짜만 저장한 음식 기록은 날짜별 자료로 별도 유지되며, 섭취 시간이 확인되지 않으므로 시간차 분석에서는 제외됩니다.' ],note:'음식 목록의 선택 여부는 실제 섭취 기록을 나타냅니다. 기록이 없다고 해서 해당 음식을 먹지 않았다는 의미는 아닙니다.'},
- {id:'custom',label:'음식 선택칸',title:'나만의 음식 선택칸 만들기',steps:[
-  '식사 화면의 「내 음식 선택칸 편집」을 누릅니다.',
-  '「학교 급식」, 「자주 먹는 메뉴」처럼 선택칸 이름을 입력해 새 카테고리를 만듭니다.',
-  '선택칸마다 항목을 추가하고, 항목의 이름을 수정하거나 제거할 수 있습니다.',
-  '추가한 항목은 계정의 암호화된 프로필에 저장되므로 같은 계정으로 다른 기기에서 접속해도 사용할 수 있습니다.',
-  '선택칸을 삭제하거나 이름을 변경하더라도 이미 저장된 식사 기록의 음식명은 자동으로 변경되거나 삭제되지 않습니다.' ],note:'개인 항목은 예를 들어 「급식 A세트」처럼 구체적인 음식 묶음을 나타낼 수 있습니다. 원인 음식 분석에는 구성 음식을 구체적으로 기록하는 편이 유리합니다.'},
+  '선택한 메뉴에는 기본 소화 특성이 자동 적용됩니다. 실제 조리법과 다르면 펼쳐서 특성을 바꾼 후 저장할 수 있습니다.',
+  '과거 음식명은 변경하지 않고 기본 특성을 적용하며, 기록 수정에서 특성을 바꿀 수 있습니다. 날짜만 있는 예전 기록은 시간차 분석에서 제외합니다.' ],note:'음식 목록의 선택 여부는 실제 섭취 기록을 나타냅니다. 기록이 없다고 해서 해당 음식을 먹지 않았다는 의미는 아닙니다.'},
+  {id:'custom',label:'소화 특성·메뉴 요청',title:'기본 소화 특성과 메뉴 추가 요청',steps:[
+   '밥·국·면 등 17개 항목에서 메뉴를 선택하면 여러 소화 특성이 자동 적용됩니다.',
+   '흰쌀밥과 현미밥처럼 소화 특성이 다른 메뉴는 서로 다르게 분류합니다.',
+   '한 끼에 매운 음식이 여러 개 있어도 분석에서는 해당 특성이 포함된 식사 1회로 취급합니다.',
+   '실제 조리법이 다른 식사 기록은 「기록 수정」에서 메뉴별 특성을 변경하고 저장할 수 있습니다.',
+   '원하는 메뉴가 없다면 「메뉴 추가 요청」을 눌러 문의 화면에서 등록을 요청합니다.' ],note:'기존 사용자 음식 선택칸에 저장된 음식명은 과거 기록에서 유지됩니다. 기본 특성은 진단이나 원인 확정이 아닙니다.'},
  {id:'life',label:'생활 기록',title:'하루 생활습관 남기기',steps:[
   '홈의 「생활 기록 작성」을 눌러 날짜를 선택합니다.',
   '수분 섭취·채소 섭취·과일 섭취·수면·스트레스 항목을 기억나는 만큼 선택합니다.',
@@ -2049,7 +2114,7 @@ const JANGILGI_HELP=[
  {id:'edit',label:'기록 수정·삭제',title:'모든 기록을 한 곳에서 수정',steps:[
   '화면 상단 「✎ 기록 수정」을 눌러 통합 기록 관리로 이동합니다.',
   '배변·식사·생활·이전 기록 탭 중 원하는 종류를 고르고 필요하면 날짜로 검색합니다.',
-  '목록에서 기록을 선택해 날짜·시각·형태·증상 또는 음식 항목 등 수정 가능한 부분을 변경합니다.',
+  '목록에서 기록을 선택해 날짜·시각·형태·증상 또는 카테고리별 음식 항목과 소화 특성을 수정합니다.',
   '「수정 내용 저장」을 눌러 변경 사항을 암호화된 기록에 반영합니다.',
   '삭제는 해당 기록 한 건만 대상으로 하며 확인 창이 나타납니다. 삭제 후에는 복구하기 어려우므로 신중하게 결정합니다.' ],note:'과거 자료를 임의로 새 버전의 기록 형식으로 변환하지 않습니다. 수정·삭제 전에는 홈의 JSON 백업 기능을 확인해 주세요.'},
  {id:'home',label:'홈·통계',title:'홈의 기록 요약 보기',steps:[
@@ -2059,8 +2124,8 @@ const JANGILGI_HELP=[
   '기록이 없는 날짜는 배변이나 식사가 없었던 날짜로 가정하지 않습니다.',
   '과거 기록을 파일로 보관하려면 홈의 JSON 다운로드를 사용합니다.' ],note:'JSON 백업 파일은 복호화된 개인정보가 포함될 수 있으므로 다른 사람에게 공유하지 말고 안전하게 보관하세요.'},
  {id:'analysis',label:'음식 분석',title:'개인별 연관성 탐색 이해하기',steps:[
-  '식사의 음식명과 섭취 시각, 배변 기록의 시각과 형태를 연결해 여러 시간 구간의 경향을 살핍니다.',
-  '여러 음식을 항상 함께 먹었다면 개별 음식의 영향을 구분하기 어렵다고 안내합니다.',
+  '식사의 자동 분류된 소화 특성과 섭취 시각을 배변 기록의 시간·형태에 연결해 여러 시간 구간을 비교합니다.',
+  '한 식사에 같은 특성의 음식을 여러 번 선택해도 분석군은 한 번만 세며, 특성이 동시에 나타나 구별이 어렵다면 그 한계를 안내합니다.',
   '최근 30/60/90/180일 등 비교할 기록 기간을 설정에서 변경할 수 있습니다.',
   '기록이 충분하지 않거나 이후 기록에서 재현되지 않으면 분석 결과를 확정하지 않습니다.',
   '현재 통계와 분석 결과는 건강 점수·알레르기·질병 진단이나 원인 음식의 확정 판정이 아닙니다.' ],note:'분석 결과만 보고 임의로 식사량을 줄이거나 주요 식품군을 제한하지 마세요.'},
@@ -2085,30 +2150,28 @@ const JANGILGI_HELP=[
 ];
 
 function jangFoodGroups(data){
- const profile=data?.profile||{};
- const customs=Array.isArray(profile.foodChoiceGroups)?profile.foodChoiceGroups.filter(g=>g&&typeof g.name==='string'&&Array.isArray(g.foods)) : [];
- const groupList=[...customs.map(g=>[g.name,g.foods.filter(x=>typeof x==='string')]),...JANGILGI_FOOD_CATALOG,['이전 버전 음식군',FOOD_LABELS]];
+ const groupList=[...JANGILGI_FOOD_CATALOG,['이전 버전 음식군',FOOD_LABELS]];
  const listed=new Set(groupList.flatMap(g=>g[1]));
+ // 이전에 개인 선택칸을 사용한 사용자의 기록은 선택 목록에 계속 표시합니다.
  const oldNames=[...(data?.records||[]).flatMap(r=>Array.isArray(r?.foods)?r.foods:[]),...mealDraftFoods,...(foodLifeState?.foods||[])];
- const unlisted=[...new Set(oldNames.filter(x=>typeof x==='string'&&!listed.has(x)&&x.trim().length))];
+ const unlisted=[...new Set(oldNames.filter(x=>typeof x==='string'&&x.length<=40&&x.trim()&&!listed.has(x)))];
  if(unlisted.length)groupList.push(['기존 기록에만 있는 음식',unlisted]);
  return groupList;
 }
 function foodCatalogHTML(groups,attr){
  return groups.map(([name,foods],i)=>{
-  const unique=[...new Set(foods.filter(f=>typeof f==='string'&&f.trim()&&f.length<=40))];
-  return `<details class="food-catalog-group" data-food-group="${escapeHTML(name)}" ${i<2?'open':''}><summary>${escapeHTML(name)} <small>(${unique.length})</small></summary><div class="food-catalog-items">${unique.map(f=>`<button type="button" ${attr}="${escapeHTML(f)}" aria-pressed="false">${escapeHTML(f)}</button>`).join('')}</div></details>`;
+   const unique=[...new Set(foods.filter(f=>typeof f==='string'&&f.trim()&&f.length<=40))];
+   return `<details class="food-catalog-group" data-food-group="${escapeHTML(name)}" ${i<2?'open':''}><summary>${escapeHTML(name)} <small>(${unique.length})</small></summary><div class="food-catalog-items">${unique.map(f=>`<button type="button" ${attr}="${escapeHTML(f)}" aria-pressed="false">${escapeHTML(f)}</button>`).join('')}</div></details>`;
  }).join('');
 }
 function refreshFoodCatalogChoices(data){
- const groups=jangFoodGroups(data);
+ const groups=jangFoodGroups(data),sig=JSON.stringify(groups);
  for(const [id,attr] of [['mealFoodChoices','data-timed-food'],['foodlifeFoodChoices','data-food']]){
-  const root=document.getElementById(id);if(!root)return;
-  const sig=JSON.stringify(groups);
+  const root=document.getElementById(id);if(!root)continue;
   if(root.dataset.foodSignature===sig)continue;
   const opened=new Set([...root.querySelectorAll('.food-catalog-group[open]')].map(g=>g.dataset.foodGroup));
   root.innerHTML=foodCatalogHTML(groups,attr);
-  if(root.dataset.foodSignature){root.querySelectorAll('.food-catalog-group').forEach(g=>g.open=opened.has(g.dataset.foodGroup));}
+  if(root.dataset.foodSignature)root.querySelectorAll('.food-catalog-group').forEach(g=>g.open=opened.has(g.dataset.foodGroup));
   root.dataset.foodSignature=sig;
  }
  for(const [rootId,searchId] of [['mealFoodChoices','mealFoodSearch'],['foodlifeFoodChoices','legacyFoodSearch']]){
@@ -2118,70 +2181,41 @@ function refreshFoodCatalogChoices(data){
 function filterFoodOptions(root,raw){
  const q=raw.trim().toLocaleLowerCase('ko-KR');
  root.querySelectorAll('.food-catalog-group').forEach(group=>{
-  const matchedGroup=group.dataset.foodGroup.toLocaleLowerCase('ko-KR').includes(q);
-  let any=false;
-  group.querySelectorAll('button').forEach(b=>{const matches=!q||matchedGroup||b.textContent.toLocaleLowerCase('ko-KR').includes(q);b.hidden=!matches;if(matches)any=true;});
-  group.hidden=!!q&&!any;
-  if(q&&any)group.open=true;
+  const matchedGroup=group.dataset.foodGroup.toLocaleLowerCase('ko-KR').includes(q);let any=false;
+  group.querySelectorAll('button').forEach(b=>{const ok=!q||matchedGroup||b.textContent.toLocaleLowerCase('ko-KR').includes(q);b.hidden=!ok;if(ok)any=true;});
+  group.hidden=!!q&&!any;if(q&&any)group.open=true;
  });
 }
-let jangFoodSaving=false;
-async function jangSaveFoodGroupEdit(nextGroups,reason){
- if(jangFoodSaving)return false;
- const d=readData();d.profile={...(d.profile||{}),foodChoiceGroups:nextGroups};
- jangFoodSaving=true;
- const status=document.getElementById('customFoodStatus');status.textContent='내 선택칸 저장 중…';
- try{
-  if(await writeData(d)){status.textContent=reason+' · 과거 식사 기록은 그대로 유지됩니다.';renderCustomFoodGroups();refreshFoodCatalogChoices(d);refreshAllViews();return true;}
-  status.textContent='저장에 실패했어요. 기존 선택칸은 유지됩니다.';return false;
- }finally{jangFoodSaving=false;}
+function openMenuRequest(){
+  navigate('support');
+  document.getElementById('supportCategory').value='feature';
+  document.getElementById('supportSubject').value='이 메뉴를 추가해주세요';
+  document.getElementById('supportMessage').value='추가를 원하는 메뉴명: \n\n희망하는 음식 카테고리: \n\n메뉴의 특징·주요 재료(선택): ';
+  document.getElementById('supportStatus').textContent='요청할 메뉴를 작성한 뒤 「문의 보내기」를 눌러주세요.';
+  document.getElementById('supportMessage').focus();
 }
-function customFoodGroups(){return (readData().profile?.foodChoiceGroups||[]).map(g=>({...g,foods:[...g.foods]}));}
-function renderCustomFoodGroups(){
- const root=document.getElementById('customFoodGroupList');if(!root)return;
- const groups=customFoodGroups();
- root.innerHTML=groups.length?groups.map(g=>`<section class="custom-food-row" data-custom-id="${escapeHTML(g.id)}"><h3>${escapeHTML(g.name)} (${g.foods.length}개)</h3><div class="custom-food-controls"><input data-group-name maxlength="30" aria-label="선택칸 이름 수정" value="${escapeHTML(g.name)}"><button data-group-rename type="button">이름 저장</button><button data-group-delete type="button" class="manager-danger">선택칸 삭제</button></div><div class="custom-food-list">${g.foods.map((food,i)=>`<span>${escapeHTML(food)} <button type="button" data-food-rename="${i}" aria-label="${escapeHTML(food)} 이름 바꾸기">✎</button><button type="button" data-food-remove="${i}" aria-label="${escapeHTML(food)} 항목 제거">×</button></span>`).join('')}</div><div class="custom-food-controls"><input data-group-add maxlength="40" placeholder="새 음식 또는 메뉴 이름"><button data-food-add type="button">+ 음식 추가</button></div></section>`).join(''):'<p class="foodlife-help">아직 직접 만든 선택칸이 없어요. 위에서 원하는 이름으로 만들어 보세요.</p>';
-}
-function validateFoodName(name,max=40){const s=String(name||'').trim().replace(/\s+/g,' ');return s.length>=1&&s.length<=max?s:null;}
-function initCustomFoods(){
- const modal=document.getElementById('foodChoicesModal'),root=document.getElementById('customFoodGroupList');
- document.querySelectorAll('.food-manage-open').forEach(b=>b.onclick=()=>{renderCustomFoodGroups();modal.hidden=false;document.getElementById('customFoodStatus').textContent='';document.getElementById('newFoodGroupName').focus();});
- document.getElementById('foodChoicesClose').onclick=()=>modal.hidden=true;
+function initMenuRequest(){
+ document.querySelectorAll('.menu-request-open').forEach(button=>button.addEventListener('click',openMenuRequest));
  document.querySelectorAll('#mealFoodSearch,#legacyFoodSearch').forEach(input=>input.addEventListener('input',()=>filterFoodOptions(document.getElementById(input.id==='mealFoodSearch'?'mealFoodChoices':'foodlifeFoodChoices'),input.value)));
- document.getElementById('newFoodGroupBtn').onclick=async()=>{
-  const input=document.getElementById('newFoodGroupName'),name=validateFoodName(input.value,30),groups=customFoodGroups();
-  if(!name){showToast('선택칸 이름을 1~30자로 입력해 주세요.');return;}
-  if(groups.length>=15){showToast('내 선택칸은 최대 15개까지 만들 수 있어요.');return;}
-  if(groups.some(g=>g.name===name)){showToast('이미 같은 이름의 선택칸이 있어요.');return;}
-  groups.push({id:(crypto.randomUUID?.()||`food-${Date.now()}-${Math.random().toString(36).slice(2)}`),name,foods:[]});if(await jangSaveFoodGroupEdit(groups,'선택칸 생성 완료'))input.value='';
- };
- root.onclick=async e=>{
-  const b=e.target.closest('button'),section=b?.closest('[data-custom-id]');if(!b||!section||jangFoodSaving)return;
-  const groups=customFoodGroups(),g=groups.find(x=>x.id===section.dataset.customId);if(!g)return;
-  let reason='선택칸 변경 완료';
-  if(b.hasAttribute('data-group-rename')){
-   const name=validateFoodName(section.querySelector('[data-group-name]').value,30);if(!name)return showToast('선택칸 이름은 1~30자여야 해요.');
-   if(groups.some(x=>x.id!==g.id&&x.name===name))return showToast('동일한 이름의 선택칸이 있어요.');g.name=name;
-  }else if(b.hasAttribute('data-group-delete')){
-   if(!confirm(`「${g.name}」 선택칸을 삭제할까요? 과거 기록의 음식명은 그대로 유지됩니다.`))return;
-   groups.splice(groups.indexOf(g),1);reason='선택칸 삭제 완료';
-  }else if(b.hasAttribute('data-food-add')){
-   const input=section.querySelector('[data-group-add]'),food=validateFoodName(input.value);
-   if(!food)return showToast('음식 이름을 1~40자로 입력해 주세요.');
-   if(g.foods.length>=40)return showToast('한 선택칸에 최대 40개까지 추가할 수 있어요.');
-   if(g.foods.includes(food))return showToast('이미 들어 있는 음식이에요.');g.foods.push(food);
-  }else if(b.hasAttribute('data-food-remove')){
-   const idx=Number(b.dataset.foodRemove);if(!Number.isInteger(idx)||idx<0||idx>=g.foods.length)return;
-   if(!confirm(`「${g.foods[idx]}」 선택 항목을 제거할까요? 이전 식사 기록은 유지됩니다.`))return;g.foods.splice(idx,1);
-  }else if(b.hasAttribute('data-food-rename')){
-   const idx=Number(b.dataset.foodRename);if(!Number.isInteger(idx)||idx<0||idx>=g.foods.length)return;
-   const renamed=prompt('새 음식 이름을 입력해 주세요. 과거 기록의 이름은 변경되지 않습니다.',g.foods[idx]);
-   if(renamed===null)return;
-   const food=validateFoodName(renamed);if(!food)return showToast('음식 이름을 1~40자로 입력해 주세요.');
-   if(g.foods.some((x,i)=>x===food&&i!==idx))return showToast('이미 동일한 음식이 있어요.');g.foods[idx]=food;
-  }else return;
-  await jangSaveFoodGroupEdit(groups,reason);
- };
+}
+function initDigestiveEditors(){
+ for(const [id,mode] of [['dailyDigestEditor','daily'],['mealDigestEditor','meal']]){
+  const node=document.getElementById(id);
+  node.addEventListener('change',e=>{
+   const c=e.target.closest('[data-digest-tag]');if(!c||!JANG_DIGEST_SET.has(c.dataset.digestTag))return;
+   const ov=mode==='meal'?mealDraftTagOverrides:foodLifeState.digestiveOverrides;
+   jangUpdateOverrides(ov,c.dataset.digestFood,c.dataset.digestTag,c.checked);
+   const row=c.closest('.digest-food-row'),desc=row?.querySelector('summary span');
+   if(desc)desc.textContent=(jangEffectiveTags(c.dataset.digestFood,ov).join(' · ')||'기본 특성 없음')+' · '+(Object.prototype.hasOwnProperty.call(ov,c.dataset.digestFood)?'직접 수정됨':'기본값');
+  });
+  node.addEventListener('click',e=>{
+   const b=e.target.closest('[data-digest-reset]');if(!b)return;
+   const ov=mode==='meal'?mealDraftTagOverrides:foodLifeState.digestiveOverrides;
+   delete ov[b.dataset.digestReset];
+   jangDigestPanel(id,mode==='meal'?mealDraftFoods:foodLifeState.foods,ov,mode);
+   const row=[...node.querySelectorAll('.digest-food-row')].find(x=>x.dataset.digestFood===b.dataset.digestReset);if(row)row.open=true;
+  });
+ }
 }
 let jangCurrentHelp='first';
 // Each help category has one highlighted target per brief instruction.
@@ -2189,7 +2223,7 @@ const JANG_HELP_TARGETS={
  first:[['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','.home-main-shortcuts'],['dashboard','#editHistoryButton']],
  bowel:[['record','#quickTimeBlock'],['record','#quickShapeBlock'],['record','#quickSymptomBlock'],['record','#quickFlagsBlock'],['record','#recordView .quick-actions']],
  food:[['foodlife','#mealAt'],['foodlife','#mealFoodSearch'],['foodlife','#mealFoodChoices'],['foodlife','#timedMealPanel'],['foodlife','#timedMealPanel']],
- custom:[['foodlife','#foodlifeView .food-manage-open'],['foodlife','#mealFoodChoices'],['foodlife','#mealFoodChoices'],['foodlife','#foodlifeView .food-manage-open'],['foodlife','#foodlifeView .food-manage-open']],
+ custom:[['foodlife','#foodlifeView .menu-request-open'],['foodlife','#mealFoodChoices'],['foodlife','#mealDigestEditor'],['foodlife','#foodlifeView .menu-request-open'],['foodlife','#foodlifeView .menu-request-open']],
  life:[['lifestyle','#lifestyleView'],['lifestyle','#lifestyleView'],['lifestyle','#lifestyleView'],['lifestyle','#lifestyleView'],['recordManager','#managerTabs']],
  edit:[['recordManager','#managerTabs'],['recordManager','#managerTabs'],['recordManager','#managerEntries'],['recordManager','#managerEditor'],['recordManager','#managerEditor']],
  home:[['dashboard','.home-summary-grid'],['dashboard','.home-summary-grid'],['report','#reportTrendCard'],['dashboard','.home-summary-grid'],['dashboard','.home-bottom-links']],
@@ -2202,14 +2236,14 @@ const JANG_HELP_TITLES={
  first:['계정과 프로필','개인 기록 보호','홈에서 바로 기록','수정과 업데이트'],
  bowel:['배변 시각','대변 형태','증상 선택','주의 증상','식사 확인 후 저장'],
  food:['식사 시간','음식 찾기','한 끼에 먹은 음식','식사 저장','예전 기록은 그대로'],
- custom:['선택칸 편집하기','자주 먹는 메뉴 묶기','항목 관리','다른 기기에서도 사용','이전 기록 보호'],
+ custom:['메뉴 선택','소화 특성 자동 적용','중복 특성 통합','기록별 특성 수정','메뉴 추가 요청'],
  life:['생활 기록 화면','생활 상태 선택','미기록 유지','날짜별 저장','예전 값 수정'],
  edit:['기록 종류 고르기','날짜로 찾기','수정할 기록 선택','변경 사항 저장','삭제 전 확인'],
  home:['오늘의 기록','요약 카드 활용','통계 살펴보기','미기록의 의미','기록 백업'],
  analysis:['식사와 배변의 관계','함께 먹은 음식 구분','비교 기간 설정','자료 부족 안내','결과의 한계'],
  support:['문의 화면 열기','문의 유형 고르기','문의 보내기','답변 확인','민감정보 주의'],
  account:['프로필 설정','이메일 변경','비밀번호 변경','복구 키 보관','기록 삭제 주의'],
- version:['업데이트 확인 버튼','첫 접속 안내','확인 상태 저장','배포된 사이트 확인','화면 설정']
+ version:['업데이트 확인 버튼','첫 접속 안내','확인 상태 저장','운영 공지와 새로고침','화면 설정']
 };
 function jangHelpTour(id){
  const item=JANGILGI_HELP.find(x=>x.id===id)||JANGILGI_HELP[0];
@@ -2235,21 +2269,22 @@ function initDetailedHelp(){
  document.getElementById('launchGuidedTour').onclick=()=>startHelpCategory(jangCurrentHelp);
 }
 const JANG_UPDATE_TARGETS=[
- ['dashboard','#openHelp','카테고리별 사용 안내'],
+ ['dashboard','#openHelp','카테고리별 게임식 도움말'],
  ['dashboard','#openUpdates','업데이트 확인'],
- ['dashboard','#openUpdates','새 버전 첫 접속 안내'],
- ['foodlife','#mealFoodChoices','세분화된 음식 목록'],
- ['foodlife','#foodlifeView .food-manage-open','내 음식 선택칸 편집'],
- ['recordManager','#managerTabs','모든 기록 수정'],
- ['dashboard','#accountMenuButton','기존 기록과 보안 유지']
+ ['dashboard','.home-main-shortcuts','홈과 통합 기록 수정'],
+ ['foodlife','#mealFoodChoices','299개 상세 음식 메뉴'],
+ ['recordManager','#managerDigestEditor','과거 기록 기본 특성 수정'],
+ ['analysis','#foodPatternBody','소화 특성별 분석'],
+ ['foodlife','#foodlifeView .menu-request-open','메뉴 추가 요청'],
+ ['dashboard','#releaseNotice','업데이트 공지와 새로고침'],
+ ['dashboard','#accountMenuButton','개인 기록 보관 유지']
 ];
 let jangUpdateSuggested=false;
 function showUpdateNotes(auto=false){
  const data=window.__jangilgiSecurityRead?.();
  if(!data){showToast('먼저 로그인해 주세요.');return;}
  const last=data.profile?.lastSeenAppVersion||'1.0.0';
- const version=JANGILGI_CHANGELOG.find(x=>x.version===JANGILGI_VERSION);
- const items=version?.details||[];
+ const items=JANGILGI_RELEASE_STEPS.map(x=>x[1]);
  const guided=items.map((desc,i)=>({view:JANG_UPDATE_TARGETS[i]?.[0]||'dashboard',selector:JANG_UPDATE_TARGETS[i]?.[1]||'#openUpdates',title:JANG_UPDATE_TARGETS[i]?.[2]||'업데이트된 기능',text:desc}));
  if(guided.length)guided[0].text=`${auto?'업데이트 이후 첫 접속이에요. ':'현재 장일기 v'+JANGILGI_VERSION+'입니다. '}${last!==JANGILGI_VERSION?'이전 확인 버전 v'+last+'에서 달라진 기능을 하나씩 살펴보세요. ':''}${guided[0].text}`;
  jangUpdateSuggested=auto;
@@ -2269,7 +2304,49 @@ function initUpdates(){
  document.getElementById('appVersionChip').textContent='v'+JANGILGI_VERSION;
  document.getElementById('openUpdates').onclick=()=>showUpdateNotes(false);
 }
-let managerTab='bowel',managerKey=null;
+let jangRemoteVersion=null,jangCheckingUpdate=false;
+function jangCompareVersion(left,right){
+ const a=String(left||'').split('.').map(x=>parseInt(x,10)||0),b=String(right||'').split('.').map(x=>parseInt(x,10)||0);
+ for(let i=0;i<Math.max(a.length,b.length);i++){const diff=(a[i]||0)-(b[i]||0);if(diff)return Math.sign(diff);}return 0;
+}
+function jangRefreshAnnouncement(){
+ const headline=document.getElementById('releaseHeadline'),desc=document.getElementById('releaseText'),card=document.getElementById('releaseNotice');
+ if(!card)return;
+ const unseen=readData()?.profile?.lastSeenAppVersion!==JANGILGI_VERSION;
+ if(jangRemoteVersion&&jangCompareVersion(jangRemoteVersion,JANGILGI_VERSION)>0){
+  headline.textContent=`새 버전 v${jangRemoteVersion}이 배포됐어요`;
+  desc.textContent='운영 공지: 변경된 앱을 사용하려면 「새로고침」을 눌러 최신 화면으로 이동해 주세요. 저장하지 않은 입력은 새로고침 전에 저장해 주세요.';
+  card.classList.add('release-new');return;
+ }
+ headline.textContent=unseen?'📢 장일기 v1.2.0 업데이트 안내':'📢 장일기 최신 공지 · v1.2.0';
+ desc.textContent='v1.1.0부터 개선된 도움말·기록 수정, 소화 특성 분석, 메뉴 추가 요청 기능을 확인하세요. 기존 기록은 유지됩니다.';
+ card.classList.toggle('release-new',unseen);
+}
+async function jangCheckRemoteVersion(){
+ if(jangCheckingUpdate)return;
+ jangCheckingUpdate=true;
+ try{
+  const response=await fetch('version.json?check='+Date.now(),{cache:'no-store'});
+  if(!response.ok||!response.headers.get('content-type')?.includes('json'))return;
+  const manifest=await response.json();
+  if(typeof manifest?.version==='string'&&/^\d+\.\d+\.\d+$/.test(manifest.version))jangRemoteVersion=manifest.version;
+  jangRefreshAnnouncement();
+ }catch(e){console.info('Version check unavailable',e?.message||e);}
+ finally{jangCheckingUpdate=false;}
+}
+function initReleaseNotices(){
+ const open=document.getElementById('releaseOpenGuide'),reload=document.getElementById('releaseReload');
+ open.addEventListener('click',()=>showUpdateNotes(false));
+ reload.addEventListener('click',()=>{
+   if(!confirm('작성 중이지만 아직 저장하지 않은 입력이 있다면 사라질 수 있어요. 저장 후 새로고침할까요?'))return;
+   const url=new URL(location.href);url.searchParams.set('app_refresh',String(Date.now()));location.assign(url.toString());
+ });
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)jangCheckRemoteVersion();});
+ window.addEventListener('focus',()=>jangCheckRemoteVersion());
+ setInterval(()=>{if(!document.hidden)jangCheckRemoteVersion();},180000);
+ jangRefreshAnnouncement();jangCheckRemoteVersion();
+}
+let managerTab='bowel',managerKey=null,managerDigestDraft={},managerDigestKey=null;
 const jangKindOptions=[['bowel','배변'],['meal','식사'],['daily','생활·날짜별'],['legacy','이전 기록']];
 function managerRecords(d){
  if(managerTab==='bowel')return (d.events||[]).map(x=>({key:'e:'+x.id,date:dateKey(x.at),title:`${x.bristol}형 · ${formatTime(x.at)}`,summary:`통증 ${x.pain??'—'} / 잔변감 ${x.strain??'—'}`,sort:Date.parse(x.at)}));
@@ -2286,7 +2363,13 @@ function managerFind(d,key){
  return null;
 }
 function optionsHTML(values,chosen){return values.map(([value,label])=>`<option value="${escapeHTML(value)}" ${String(value)===String(chosen)?'selected':''}>${escapeHTML(label)}</option>`).join('');}
-function managerFoodCheckboxes(d,selected){const g=jangFoodGroups(d),used=new Set();return `<div class="manager-food-checks">${g.flatMap(([name,foods])=>foods.map(f=>({name,f}))).filter(x=>{if(used.has(x.f))return false;used.add(x.f);return true;}).map(({f})=>`<label><input type="checkbox" name="managerFood" value="${escapeHTML(f)}" ${selected.includes(f)?'checked':''}>${escapeHTML(f)}</label>`).join('')}</div>`;}
+function managerFoodCheckboxes(d,selected){
+ const groups=jangFoodGroups(d);const seen=new Set();
+ return `<div class="manager-food-toolbar"><label>음식 찾기<input type="search" id="managerFoodSearch" placeholder="메뉴명으로 검색"></label><button type="button" class="outline-button menu-request-open" id="managerMenuRequest">＋ 메뉴 추가 요청</button></div><div class="manager-food-checks food-catalog" id="managerFoodOptions">${groups.map(([cat,items],i)=>{
+  const foods=[...new Set(items)].filter(f=>{if(seen.has(f))return false;seen.add(f);return true;});
+  return `<details class="food-catalog-group" data-food-group="${escapeHTML(cat)}" ${i===0?'open':''}><summary>${escapeHTML(cat)} <small>(${foods.length})</small></summary><div class="food-catalog-items">${foods.map(food=>`<label class="manager-food-option"><input type="checkbox" name="managerFood" value="${escapeHTML(food)}" ${selected.includes(food)?'checked':''}> ${escapeHTML(food)}</label>`).join('')}</div></details>`;
+ }).join('')}</div><div class="digestive-editor"><h3>음식별 소화 특성 <small>기존 음식은 기본값 · 필요하면 여기서 변경</small></h3><div id="managerDigestEditor">${jangTagEditorHTML(selected,managerDigestDraft,'manager')}</div></div>`;
+}
 function managerFieldLayout(d,item){
  const painVals=[['0','없음'],['1','약간'],['2','보통'],['3','심함']];
  let html='';
@@ -2310,6 +2393,7 @@ function renderRecordManager(){
  list.innerHTML=`<h2>${jangKindOptions.find(x=>x[0]===managerTab)?.[1]} 기록 ${records.length}건</h2>`+(records.length?records.map(x=>`<div class="manager-row"><div><strong>${escapeHTML(x.title)}</strong><small>${escapeHTML(x.date)} · ${escapeHTML(x.summary)}</small></div><button type="button" data-manager-key="${escapeHTML(x.key)}" class="${x.key===managerKey?'selected':''}">수정</button></div>`).join(''):'<p class="foodlife-help">조건에 맞는 저장 기록이 없어요.</p>');
  const item=managerFind(d,managerKey);
  if(!item||!records.some(x=>x.key===managerKey)){editor.innerHTML='<p class="foodlife-help">왼쪽에서 수정할 기록을 선택해 주세요. 저장하지 않은 변경 사항은 반영되지 않습니다.</p>';return;}
+ if(managerDigestKey!==managerKey){managerDigestKey=managerKey;managerDigestDraft=jangValidOverrides(item.digestiveOverrides,item.foods);}
  editor.innerHTML=`<h2>선택한 기록 수정</h2>${managerFieldLayout(d,item)}`;
 }
 function managerLog(d,item,changes){d.history=Array.isArray(d.history)?d.history:[];d.history.push({date:item?.date||dateKey(item?.at||new Date()),changes,changedAt:new Date().toLocaleString('ko-KR')});}
@@ -2322,15 +2406,15 @@ async function managerSave(e){
   if(!Number.isFinite(date.getTime())||date.getTime()>Date.now()+60000)return showToast('과거 또는 현재의 유효한 시각을 선택해 주세요.');
   item.at=date.toISOString();
   if(isEvent){item.bristol=Number(form.elements.bristol.value);item.pain=Number(form.elements.pain.value);item.strain=Number(form.elements.strain.value);item.redFlags=[...form.querySelectorAll('input[name="redFlag"]:checked')].map(x=>x.value);item.reviewedFromAt=priorBowelAt(d,item.at,item.id)||new Date(date.getTime()-72*3600000).toISOString();d.events.sort((a,b)=>a.at.localeCompare(b.at));}
-  if(isMeal){const foods=managerCollectedFoods(form);if(!foods.length||foods.length>20)return showToast('음식을 1~20개 선택해 주세요.');item.foods=foods;item.date=dateKey(date);}
+  if(isMeal){const foods=managerCollectedFoods(form);if(!foods.length||foods.length>20)return showToast('음식을 1~20개 선택해 주세요.');item.foods=foods;item.digestiveOverrides=jangValidOverrides(managerDigestDraft,foods);item.date=dateKey(date);}
  }else{
   if(form.elements.bristol)item.bristol=Number(form.elements.bristol.value);
-  item.foods=managerCollectedFoods(form);item.foodLogged=true;
+  item.foods=managerCollectedFoods(form);item.foodLogged=true;item.digestiveOverrides=jangValidOverrides(managerDigestDraft,item.foods);
   item.lifestyle={...(item.lifestyle||{})};for(const h of HABIT_LABELS){const v=form.elements['life_'+h.key].value;if(v==='')delete item.lifestyle[h.key];else item.lifestyle[h.key]=Number(v);}
  }
  managerLog(d,item,['통합 기록 관리에서 '+jangKindOptions.find(x=>x[0]===managerTab)[1]+' 항목 수정']);
  const submit=form.querySelector('[type="submit"]');submit.disabled=true;
- try{if(await writeData(d)){refreshAllViews();renderRecordManager();showToast('수정 내용을 암호화해 저장했어요.');}}finally{submit.disabled=false;}
+ try{if(await writeData(d)){managerDigestKey=null;refreshAllViews();renderRecordManager();showToast('수정 내용을 암호화해 저장했어요.');}}finally{submit.disabled=false;}
 }
 async function managerDelete(){
  const d=readData(),item=managerFind(d,managerKey);if(!item)return;
@@ -2339,13 +2423,32 @@ async function managerDelete(){
  else if(managerKey.startsWith('m:'))d.records=d.records.filter(x=>!(x.kind==='meal'&&x.id===item.id));
  else d.records.splice(Number(managerKey.slice(2)),1);
  managerLog(d,item,['통합 기록 관리에서 기록 한 건 삭제']);
- if(await writeData(d)){managerKey=null;refreshAllViews();renderRecordManager();showToast('선택한 기록만 삭제했어요.');}
+ if(await writeData(d)){managerKey=null;managerDigestKey=null;refreshAllViews();renderRecordManager();showToast('선택한 기록만 삭제했어요.');}
 }
 window.__jangilgiOpenRecordManager=(category,key)=>{
  managerTab=category==='meal'?'meal':category==='daily'?'daily':category==='legacy'?'legacy':'bowel';
  managerKey=typeof key==='string'?(category==='bowel'?'e:':category==='meal'?'m:':key.startsWith('r:')?'':'r:')+key:null;
  document.getElementById('managerDate').value='';navigate('recordManager');renderRecordManager();
 };
+function initManagerDigestEditor(){
+ const editor=document.getElementById('managerEditor');
+ editor.addEventListener('input',e=>{if(e.target.id==='managerFoodSearch')filterManagerFoods(e.target.value);});
+ editor.addEventListener('change',e=>{
+  const food=e.target.closest('input[name="managerFood"]');
+  if(food){jangDigestPanel('managerDigestEditor',managerCollectedFoods(editor.querySelector('#managerEditForm')),managerDigestDraft,'manager');return;}
+  const tag=e.target.closest('[data-digest-tag]');if(tag&&JANG_DIGEST_SET.has(tag.dataset.digestTag)){
+   jangUpdateOverrides(managerDigestDraft,tag.dataset.digestFood,tag.dataset.digestTag,tag.checked);
+   const desc=tag.closest('.digest-food-row')?.querySelector('summary span');if(desc)desc.textContent=(jangEffectiveTags(tag.dataset.digestFood,managerDigestDraft).join(' · ')||'기본 특성 없음')+' · '+(Object.prototype.hasOwnProperty.call(managerDigestDraft,tag.dataset.digestFood)?'직접 수정됨':'기본값');
+  }
+ });
+ editor.addEventListener('click',e=>{
+  const request=e.target.closest('#managerMenuRequest');if(request){openMenuRequest();return;}
+  const reset=e.target.closest('[data-digest-reset]');if(!reset)return;
+  delete managerDigestDraft[reset.dataset.digestReset];jangDigestPanel('managerDigestEditor',managerCollectedFoods(editor.querySelector('#managerEditForm')),managerDigestDraft,'manager');
+  const row=[...editor.querySelectorAll('.digest-food-row')].find(x=>x.dataset.digestFood===reset.dataset.digestReset);if(row)row.open=true;
+ });
+}
+function filterManagerFoods(q){const root=document.getElementById('managerFoodOptions');if(!root)return;const s=q.trim().toLocaleLowerCase('ko-KR');root.querySelectorAll('details').forEach(g=>{let count=0;g.querySelectorAll('label').forEach(l=>{const match=!s||l.textContent.toLocaleLowerCase('ko-KR').includes(s);l.hidden=!match;if(match)count++;});g.hidden=!!s&&!count;if(s&&count)g.open=true;});}
 function initRecordManager(){
  const open=document.getElementById('editHistoryButton');open.onclick=()=>window.__jangilgiOpenRecordManager('bowel');
  document.getElementById('managerTabs').onclick=e=>{const b=e.target.closest('[data-manager-tab]');if(!b)return;managerTab=b.dataset.managerTab;managerKey=null;renderRecordManager();};
@@ -2354,17 +2457,18 @@ function initRecordManager(){
  document.getElementById('managerEntries').onclick=e=>{const b=e.target.closest('[data-manager-key]');if(b){managerKey=b.dataset.managerKey;renderRecordManager();}};
  document.getElementById('managerEditor').addEventListener('submit',e=>{if(e.target.id==='managerEditForm')managerSave(e);});
  document.getElementById('managerEditor').onclick=e=>{if(e.target.closest('#managerDeleteOne'))managerDelete();};
+ initManagerDigestEditor();
  // All edit entry points lead to one dedicated screen.
  editBowel=id=>window.__jangilgiOpenRecordManager('bowel',id);
  const originalRefresh=refreshAllViews;
- refreshAllViews=function(){originalRefresh();if(document.getElementById('recordManagerView').classList.contains('active-view'))renderRecordManager();};
+ refreshAllViews=function(){originalRefresh();if(document.getElementById('recordManagerView').classList.contains('active-view'))renderRecordManager();if(typeof jangRefreshAnnouncement==='function')jangRefreshAnnouncement();};
 }
 (function attachJangilgi110(){
  const oldInitialize=initialize;
- initialize=function(){oldInitialize();initCustomFoods();initDetailedHelp();initUpdates();initRecordManager();refreshFoodCatalogChoices(readData());};
+ initialize=function(){oldInitialize();initMenuRequest();initDigestiveEditors();initDetailedHelp();initUpdates();initReleaseNotices();initRecordManager();refreshFoodCatalogChoices(readData());};
  // Ensure a cloud signout never leaves an open modal showing the previous account's data.
  const originalClear=window.__jangilgiClear;
- window.__jangilgiClear=function(){if(activeTour>=0){document.getElementById('tourScreen').hidden=true;document.getElementById('tourScreen').setAttribute('aria-hidden','true');activeTour=-1;}for(const id of ['foodChoicesModal','detailedHelpModal','updateNotesModal']){const x=document.getElementById(id);if(x)x.hidden=true;}managerKey=null;managerTab='bowel';jangUpdateSuggested=false;mealDraftFoods=[];mealEditorId=null;foodLifeState={foods:[],lifestyle:{}};for(const id of ['mealFoodChoices','foodlifeFoodChoices']){const el=document.getElementById(id);if(el){el.innerHTML='';delete el.dataset.foodSignature;}}originalClear?.();};
+ window.__jangilgiClear=function(){if(activeTour>=0){document.getElementById('tourScreen').hidden=true;document.getElementById('tourScreen').setAttribute('aria-hidden','true');activeTour=-1;}for(const id of ['foodChoicesModal','detailedHelpModal','updateNotesModal']){const x=document.getElementById(id);if(x)x.hidden=true;}managerKey=null;managerTab='bowel';jangUpdateSuggested=false;mealDraftFoods=[];mealDraftTagOverrides={};mealEditorId=null;managerDigestDraft={};managerDigestKey=null;foodLifeState={foods:[],lifestyle:{},digestiveOverrides:{}};for(const id of ['mealFoodChoices','foodlifeFoodChoices']){const el=document.getElementById(id);if(el){el.innerHTML='';delete el.dataset.foodSignature;}}originalClear?.();};
 })();
 
 </script>
