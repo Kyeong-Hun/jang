@@ -789,6 +789,33 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 #mealDayView .jg-day-meals-list .event-time{min-width:74px}
 @media(max-width:640px){#mealDayView .jg-day-meals-toolbar{padding:12px}#mealDayView #mealDayAdd{width:100%}#mealDayView .jg-day-meals-panel{padding:9px 12px}#mealDayView .jg-day-meals-list .event-time{min-width:55px}}
 </style>
+<style id="jg-json-import-style">
+#editHistoryButton[hidden],#jsonImportModal[hidden]{display:none!important}
+#backupRestoreSettingsCard{min-width:0}
+.jg-backup-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.jg-backup-actions button{width:auto;flex:1;min-width:min(200px,100%);min-height:42px;border-radius:10px;font-size:12px;cursor:pointer}
+.jg-import-footnote{margin-top:12px;color:#a34c3e;font-size:11px;line-height:1.6}
+.jg-import-modal{position:fixed;inset:0;z-index:9900;background:rgba(15,27,21,.76);padding:14px;display:grid;place-items:center;overflow-y:auto}
+.jg-import-dialog{width:min(530px,100%);max-height:calc(100dvh - 28px);overflow:auto;box-sizing:border-box;background:var(--surface,#fff);border-radius:18px;padding:clamp(17px,3vw,27px);color:var(--ink,#233c2b);box-shadow:0 24px 70px #07140a66}
+.jg-import-heading{display:flex;gap:12px;align-items:center}
+.jg-import-heading>span{font-size:27px;color:#bb543e}.jg-import-heading h2{font-size:clamp(17px,3vw,22px);margin:4px 0}
+#jsonImportWarning{font-size:13px;line-height:1.75;margin:14px 0;color:var(--ink)}
+#jsonImportWarning strong{color:#a63c31}
+.jg-import-file{font-size:11px;overflow-wrap:anywhere;color:var(--muted);background:var(--paper,#f5f8f3);border-radius:8px;padding:9px 11px}
+.jg-import-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:13px 0}
+.jg-import-compare>div{min-width:0;border:1px solid var(--line,#d5e3d6);border-radius:10px;padding:11px;background:var(--paper,#f7f9f7);display:grid;gap:5px}
+.jg-import-compare span{font-size:10px;color:var(--muted)}.jg-import-compare strong{font-size:12px;line-height:1.65;white-space:pre-line;overflow-wrap:anywhere}
+.jg-import-scope{font-size:11px;line-height:1.7;color:var(--muted)}
+.jg-import-backup{border:1px solid var(--line,#ddd);background:var(--surface,#fff);color:var(--ink);border-radius:8px;padding:10px;width:100%;cursor:pointer;font-size:12px}
+.jg-import-label{display:block;margin-top:15px;font-size:12px}.jg-import-label strong{color:#b34032}
+#jsonImportPhrase{margin:7px 0 0;width:100%;box-sizing:border-box;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;min-height:42px;padding:9px 11px;font-size:14px}
+.jg-import-status{min-height:18px;line-height:1.6;color:#a43d36;font-size:11px;margin:9px 0}
+.jg-import-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.jg-import-actions button{min-height:44px;border-radius:10px;border:1px solid var(--line);font-weight:700;cursor:pointer;background:var(--surface);color:var(--ink);font-size:12px}
+.jg-import-actions .jg-import-danger{background:#ae4138;color:#fff;border-color:#ae4138}
+.jg-import-actions button:disabled{opacity:.45;cursor:default}
+@media(max-width:480px){.jg-import-dialog{padding:16px}.jg-import-compare{gap:6px}.jg-import-compare>div{padding:8px}.jg-backup-actions{flex-direction:column}}
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -806,7 +833,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <div class="breadcrumb"><button id="breadcrumbHome" type="button" title="홈으로 돌아가기">⌂ 장일기</button><b>/</b><strong id="pageTitle">홈</strong></div>
 <div class="top-actions">
 <button class="help-button support-top-btn" type="button" data-view="support">✉ 문의</button><button aria-label="카테고리별 상세 도움말 열기" class="help-button" id="openHelp" type="button">? 도움말</button>
-<div class="history-control"><span>변경 이력 기록됨</span><button aria-label="모든 기록 수정 화면 열기" class="settings-button" id="editHistoryButton">✎ 기록 수정</button></div>
+<button type="button" id="editHistoryButton" hidden aria-hidden="true" tabindex="-1"></button>
 <div class="account-menu-holder">
   <button class="avatar-small account-avatar" id="accountMenuButton" aria-label="내 계정과 프로필 열기" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu" type="button"><span id="accountAvatarLetter" aria-hidden="true">나</span></button>
   <div class="account-menu" id="accountMenu" role="region" aria-label="내 계정 및 프로필" hidden>
@@ -819,7 +846,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.4.4</strong><p id="releaseText">v1.1.0~v1.4.0 변경 사항을 볼 수 있어요. 기존 기록은 보존됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.5.0</strong><p id="releaseText">v1.1.0~v1.5.0 변경 사항을 볼 수 있어요. JSON 복원은 확인 후에만 실행됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -914,6 +941,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <div class="appearance-choices analysis-window-choices" role="group" aria-label="분석에 사용할 최근 기록 기간">
 <button type="button" data-analysis-days="30">30일</button><button type="button" data-analysis-days="60">60일</button><button type="button" data-analysis-days="90">90일</button><button type="button" data-analysis-days="180">180일</button></div>
 <p class="appearance-description">초기값 90일은 의학적 권고값이 아닌 탐색용 설정이에요. 연관성은 새로운 기록에서 재현되는지 따로 확인합니다.</p></article>
+<article class="settings-card card-surface" id="backupRestoreSettingsCard"><span class="section-kicker">DATA BACKUP &amp; RESTORE</span><h2>데이터 백업·복원</h2><p class="appearance-description">배변·식사·생활 기록과 변경 이력, 프로필·설정을 JSON으로 보관하거나 가져올 수 있어요. 백업 파일은 암호화되지 않습니다.</p><div class="jg-backup-actions"><button type="button" id="exportSettings" class="outline-button">↓ 전체 기록 JSON 다운로드</button><button type="button" id="openJsonImport" class="primary-button">↑ JSON 가져오기 · 전체 교체</button></div><p class="jg-import-footnote">가져오기는 현재 계정 데이터를 파일 속 데이터로 <strong>완전히 교체</strong>합니다. 백업에 없는 기존 기록도 사라져요.</p><input type="file" id="jsonImportFile" accept=".json,application/json" hidden aria-label="장일기 JSON 백업 파일 선택"></article>
 <article class="settings-card card-surface" id="accountSupportSettings"><span class="section-kicker">PRIVACY &amp; SUPPORT</span><h2>계정과 문의</h2><p class="appearance-description">이름·연령대·성별은 암호화된 내 계정 기록에 저장돼요. 개발자에게 직접 보낸 문의 내용만 운영자가 볼 수 있어요.</p><div class="settings-support-actions"><button id="settingsProfileBtn" type="button">내 프로필 수정</button><button type="button" data-view="support">개발자에게 문의</button></div></article></div><p class="appearance-footnote">선택한 테마와 배경은 로그인한 계정에 저장돼요. 연령대·이메일 변경은 오른쪽 위 프로필에서 관리할 수 있어요. 건강 참고 정보는 왼쪽 참고 메뉴에서 확인할 수 있어요.</p></section>
 <section class="view" id="supportView" aria-label="개발자에게 문의">
 <div class="jg-subpage-head"><h1>개발자에게 문의</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
@@ -973,6 +1001,20 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
     </div>
     <button type="button" id="checkUpdatedEmail" class="email-check-button">새 이메일 인증 완료 확인</button>
   </form>
+</div>
+<div class="jg-import-modal" id="jsonImportModal" hidden>
+ <div class="jg-import-dialog" role="dialog" aria-modal="true" aria-labelledby="jsonImportTitle" aria-describedby="jsonImportWarning">
+  <div class="jg-import-heading"><span aria-hidden="true">⚠</span><div><span class="section-kicker">RESTORE · OVERWRITE ALL</span><h2 id="jsonImportTitle">전체 데이터를 교체하시겠습니까?</h2></div></div>
+  <p id="jsonImportWarning">현재 로그인한 계정의 <strong>배변·식사·생활 기록, 변경 이력, 프로필 및 설정</strong>이 JSON 백업 파일의 데이터로 교체됩니다. <strong>파일에 없는 기존 기록은 삭제되며 되돌릴 수 없습니다.</strong></p>
+  <p class="jg-import-file" id="jsonImportFileLabel"></p>
+  <div class="jg-import-compare"><div><span>현재 계정</span><strong id="jsonImportBefore">확인 중</strong></div><div><span>가져올 파일</span><strong id="jsonImportAfter">확인 중</strong></div></div>
+  <p class="jg-import-scope">Firebase 로그인 계정·비밀번호·문의 기록은 교체하지 않으며, 가져온 기록은 현재 계정의 암호화 키로 다시 암호화해 저장합니다. 네트워크 저장이 실패하면 기존 기록은 유지됩니다.</p>
+  <button type="button" id="jsonImportBackupCurrent" class="jg-import-backup">먼저 현재 기록 JSON 다운로드 (권장)</button>
+  <label class="jg-import-label" for="jsonImportPhrase">교체하려면 아래 칸에 <strong>교체</strong>를 입력하세요.</label>
+  <input type="text" id="jsonImportPhrase" autocomplete="off" placeholder="교체" maxlength="2" spellcheck="false">
+  <p id="jsonImportStatus" class="jg-import-status" role="status" aria-live="polite"></p>
+  <div class="jg-import-actions"><button type="button" id="jsonImportCancel">취소</button><button type="button" id="jsonImportConfirm" class="jg-import-danger" disabled>현재 데이터 전체 교체</button></div>
+ </div>
 </div>
 <div class="clear-modal" id="clearRecordsModal" role="presentation" hidden>
   <div class="clear-dialog" role="dialog" aria-modal="true" aria-labelledby="clearRecordsTitle" aria-describedby="clearRecordsMessage">
@@ -1042,6 +1084,96 @@ function setSyncStatus(message){const el=document.querySelector('#syncStatus');i
 let toastTimer=0;
 function showToast(message){const el=document.querySelector('#toast');if(!el)return;el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800);}
 function downloadData(){if(!confirm('내보낼 JSON 파일에는 복호화된 개인 건강 기록이 포함돼요. 이 파일 자체는 암호화되지 않습니다. 안전한 곳에 저장하시겠어요?'))return;const blob=new Blob([JSON.stringify(readData(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jangilgi-records-UNENCRYPTED.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);showToast('암호화되지 않은 JSON 백업을 내려받았어요. 공유하지 마세요.');}
+/* v1.5.0: validated, explicitly confirmed full JSON replacement; no changes to Firebase vault keys. */
+let pendingJsonRestore=null;
+const JG_JSON_IMPORT_MAX_BYTES=12*1024*1024;
+function isJsonObject(value){return value!==null&&typeof value==='object'&&!Array.isArray(value);}
+function validateJangJsonBackup(payload){
+ if(!isJsonObject(payload))throw Error('JSON 최상위 값은 장일기 백업 데이터 객체여야 해요.');
+ for(const key of ['profile','records','events','history','eventBaselines','demo']){
+  if(!Object.prototype.hasOwnProperty.call(payload,key))throw Error(`필수 항목 ${key}이(가) 없어 전체 백업으로 확인할 수 없어요.`);
+ }
+ if(!isJsonObject(payload.profile)||!isJsonObject(payload.eventBaselines)||!Array.isArray(payload.records)||!Array.isArray(payload.events)||!Array.isArray(payload.history)||typeof payload.demo!=='boolean')throw Error('장일기 백업의 기록·프로필 형식이 올바르지 않아요.');
+ const isValidDate=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&(()=>{const [y,m,d]=s.split('-').map(Number);const day=new Date(Date.UTC(y,m-1,d));return day.getUTCFullYear()===y&&day.getUTCMonth()===m-1&&day.getUTCDate()===d;})();
+ const isValidInstant=s=>typeof s==='string'&&s.trim().length>0&&Number.isFinite(Date.parse(s));
+ for(const [i,r] of payload.records.entries()){
+  if(!isJsonObject(r))throw Error(`식사·생활·이전 기록 ${i+1}번째 항목이 올바르지 않아요.`);
+  if(r.date!=null&&!isValidDate(r.date))throw Error(`기록 ${i+1}번째 날짜 형식이 올바르지 않아요.`);
+  if(r.at!=null&&!isValidInstant(r.at))throw Error(`기록 ${i+1}번째 시각 형식이 올바르지 않아요.`);
+  if(r.kind==='meal'&&(!isValidInstant(r.at)||!Array.isArray(r.foods)||r.foods.some(x=>typeof x!=='string')))throw Error(`식사 기록 ${i+1}번째의 시각 또는 음식 목록이 올바르지 않아요.`);
+  if(r.kind==='daily-context'&&(!isValidDate(r.date)||!isJsonObject(r.lifestyle)))throw Error(`생활 기록 ${i+1}번째의 날짜 또는 생활 항목이 올바르지 않아요.`);
+ }
+ for(const [i,e] of payload.events.entries()){
+  if(!isJsonObject(e)||!isValidInstant(e.at)||!Number.isFinite(Number(e.bristol))||Number(e.bristol)<1||Number(e.bristol)>7)throw Error(`배변 기록 ${i+1}번째의 시각 또는 브리스톨 유형이 올바르지 않아요.`);
+ }
+ if(payload.history.some(x=>!isJsonObject(x)))throw Error('변경 이력 항목의 형식이 올바르지 않아요.');
+ if(Object.values(payload.eventBaselines).some(x=>x!=null&&!isJsonObject(x)))throw Error('과거 기록 비교 기준의 형식이 올바르지 않아요.');
+ if(payload.records.some(x=>Object.prototype.hasOwnProperty.call(x,'score'))||Object.values(payload.eventBaselines).some(x=>isJsonObject(x)&&Object.prototype.hasOwnProperty.call(x,'score')))throw Error('이 백업에는 현재 앱에서 제외하는 과거 점수(score) 필드가 있어요. 손실 없는 복원을 위해 가져오기를 중단했어요.');
+ return normalizeData(payload);
+}
+function jangJsonDataSummary(data){
+ const meals=data.records.filter(r=>r.kind==='meal').length;
+ const lifestyle=data.records.filter(r=>r.kind==='daily-context').length;
+ const legacy=data.records.length-meals-lifestyle;
+ return `배변 ${data.events.length}건 · 식사 ${meals}건\n생활 ${lifestyle}일 · 이전 기록 ${legacy}건\n변경 이력 ${data.history.length}건`;
+}
+function closeJsonImportModal(){
+ const modal=document.getElementById('jsonImportModal');
+ if(modal.dataset.busy==='true')return;
+ modal.hidden=true;pendingJsonRestore=null;document.getElementById('jsonImportPhrase').value='';
+ document.getElementById('jsonImportStatus').textContent='';
+}
+function initJsonImport(){
+ const input=document.getElementById('jsonImportFile'),modal=document.getElementById('jsonImportModal');
+ const phrase=document.getElementById('jsonImportPhrase'),confirmBtn=document.getElementById('jsonImportConfirm'),cancelBtn=document.getElementById('jsonImportCancel');
+ document.getElementById('exportSettings').addEventListener('click',()=>{if(!accountReady)return showToast('먼저 로그인해 주세요.');downloadData();});
+ document.getElementById('openJsonImport').addEventListener('click',()=>{
+  if(!accountReady)return showToast('먼저 로그인해 주세요.');
+  input.value='';input.click();
+ });
+ input.addEventListener('change',async()=>{
+  const file=input.files?.[0];input.value='';if(!file)return;
+  if(!accountReady){showToast('먼저 로그인해 주세요.');return;}
+  if(file.size>JG_JSON_IMPORT_MAX_BYTES){showToast('백업 파일은 12MB 이하만 선택할 수 있어요.');return;}
+  if(file.size===0){showToast('비어 있는 JSON 파일은 가져올 수 없어요.');return;}
+  try{
+   const parsed=JSON.parse(await file.text());
+   const validated=validateJangJsonBackup(parsed);
+   if(!accountReady)throw Error('로그인 상태가 변경되었어요. 다시 시도해 주세요.');
+   pendingJsonRestore={data:validated,email:cloudUserEmail};
+   document.getElementById('jsonImportFileLabel').textContent=`선택한 파일: ${file.name}`;
+   document.getElementById('jsonImportBefore').textContent=jangJsonDataSummary(readData());
+   document.getElementById('jsonImportAfter').textContent=jangJsonDataSummary(validated);
+   document.getElementById('jsonImportStatus').textContent='';
+   phrase.value='';confirmBtn.disabled=true;modal.dataset.busy='false';modal.hidden=false;phrase.focus();
+  }catch(e){pendingJsonRestore=null;showToast('가져오기 중단: '+(e?.message||'유효하지 않은 JSON 파일입니다.'));}
+ });
+ phrase.addEventListener('input',()=>{confirmBtn.disabled=modal.dataset.busy==='true'||phrase.value.trim()!=='교체'||!pendingJsonRestore;});
+ cancelBtn.addEventListener('click',closeJsonImportModal);
+ modal.addEventListener('click',e=>{if(e.target===modal)closeJsonImportModal();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden){e.preventDefault();closeJsonImportModal();}});
+ document.getElementById('jsonImportBackupCurrent').addEventListener('click',downloadData);
+ confirmBtn.addEventListener('click',async()=>{
+  const pending=pendingJsonRestore;
+  if(!pending||!accountReady||modal.dataset.busy==='true'||phrase.value.trim()!=='교체')return;
+  if(pending.email!==cloudUserEmail){document.getElementById('jsonImportStatus').textContent='로그인 계정이 변경되었어요. 가져오기를 취소하고 다시 시작해 주세요.';return;}
+  modal.dataset.busy='true';confirmBtn.disabled=true;cancelBtn.disabled=true;phrase.disabled=true;
+  document.getElementById('jsonImportStatus').textContent='암호화된 계정 기록 전체를 교체하여 저장하는 중…';
+  let ok=false;
+  try{ok=await writeData(pending.data);}catch(e){console.error('JSON restore failed',e);}
+  modal.dataset.busy='false';cancelBtn.disabled=false;phrase.disabled=false;
+  if(!ok){document.getElementById('jsonImportStatus').textContent='저장에 실패했습니다. 기존 데이터는 변경되지 않았어요. 네트워크 또는 권한을 확인해 주세요.';confirmBtn.disabled=phrase.value.trim()!=='교체';return;}
+  closeJsonImportModal();
+  try{
+   if(typeof foodLifeState!=='undefined')foodLifeState={foods:[],lifestyle:{},digestiveOverrides:{}};
+   if(typeof mealDraftFoods!=='undefined')mealDraftFoods=[];
+   if(typeof mealEditorId!=='undefined')mealEditorId=null;
+   adoptCloudData(pending.data,cloudUserEmail);
+   navigate('dashboard');
+   showToast('JSON 데이터를 현재 계정에 암호화하여 복원했어요.');
+  }catch(e){console.error('Restore UI refresh failed',e);showToast('데이터 저장은 완료됐어요. 화면을 새로고침해 기록을 확인해 주세요.');}
+ });
+}
 function eventObservations(data){
  const real=data.events.filter(e=>e&&Number.isFinite(Number(e.bristol))&&Number(e.bristol)>=1&&Number(e.bristol)<=7&&Number.isFinite(new Date(e.at).getTime())).map(e=>({...e,date:dateKey(e.at)}));
  const dates=new Set(real.map(e=>e.date));
@@ -1401,7 +1533,7 @@ let activeTour=-1,prevFocus=null;
 let jangGuideMode='intro',jangGuideCategory='first',jangGuideReturnView='dashboard',jangGuideSaving=false;
 async function jangMarkUpdateSeen(){
  const data=window.__jangilgiSecurityRead?.();if(!data)return false;
- if(['1.4.0','1.4.1','1.4.2','1.4.3',JANGILGI_VERSION].includes(data.profile?.lastSeenAppVersion))return true;
+ if(data.profile?.lastSeenAppVersion===JANGILGI_VERSION)return true;
  const next={...data,profile:{...(data.profile||{}),lastSeenAppVersion:JANGILGI_VERSION}};
  return !!await writeData(next);
 }
@@ -1478,7 +1610,7 @@ function jangBeginGuide(steps,mode='help',category='first'){
 }
 function initTutorial(){document.querySelector('#openHelp').onclick=()=>{prevFocus=document.activeElement;activeTour=-1;moveTour(1);};document.querySelector('#tourExit').onclick=()=>closeTour(false);document.querySelector('#tourNext').onclick=()=>moveTour(1);document.querySelector('#tourPrev').onclick=()=>moveTour(-1);document.addEventListener('keydown',e=>{if(activeTour>=0&&e.key==='Escape')closeTour();});}
 let lastSeenDate=today();
-function initialize(){initNav();initEmailChangeDialog();initClearRecordsDialog();initFoodLife();initQuickForm();initHistoryEditor();initTutorial();refreshAllViews();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAllViews();});setInterval(()=>{if(today()!==lastSeenDate){lastSeenDate=today();refreshAllViews();}else renderTimeline(readData());},60000);}
+function initialize(){initNav();initEmailChangeDialog();initClearRecordsDialog();initJsonImport();initFoodLife();initQuickForm();initHistoryEditor();initTutorial();refreshAllViews();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAllViews();});setInterval(()=>{if(today()!==lastSeenDate){lastSeenDate=today();refreshAllViews();}else renderTimeline(readData());},60000);}
 window.__jangilgiStart = (data,email,writer) => {
  cloudWrite=writer;
  if(!window.__jangilgiInitialized){initialize();window.__jangilgiInitialized=true;}
@@ -1531,9 +1663,9 @@ window.__jangilgiClear = () => {clearCloudSession();};
  rgrid.remove();addPageSwitcher('report',report,['빈도','형태','증상'],reportPanes,rhead);
  const settings=document.getElementById('settingsView'),sg=settings.querySelector('.appearance-grid'),sh=settings.querySelector('.record-header');
  const settingCards=Array.from(sg.querySelectorAll('.settings-card'));
- const sPanes=[makePane('테마',[settingCards[0]]),makePane('배경',[settingCards[1]]),makePane('분석·계정',settingCards.slice(2))];
+ const sPanes=[makePane('테마',[settingCards[0]]),makePane('배경',[settingCards[1]]),makePane('분석·계정',settingCards.slice(2).filter(c=>c.id!=='backupRestoreSettingsCard')),makePane('데이터 관리',[document.getElementById('backupRestoreSettingsCard')])];
  const foot=settings.querySelector('.appearance-footnote');if(foot)sPanes[1].appendChild(foot);
- sg.remove();addPageSwitcher('settings',settings,['테마 색상','배경 스타일','음식·생활'],sPanes,sh);
+ sg.remove();addPageSwitcher('settings',settings,['테마 색상','배경 스타일','분석 설정','데이터 관리'],sPanes,sh);
  const foodlife=document.getElementById('foodlifeView');
  const foodAnalysis=foodlife.querySelector('#foodlifeAnalysisPane');
  foodAnalysis.appendChild(dgrid.querySelector('.food-card'));
@@ -2111,8 +2243,10 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.4.4';
+const JANGILGI_VERSION='1.5.0';
 const JANGILGI_RELEASE_STEPS=[
+ ["v1.5.0 · JSON 데이터 전체 복원", "설정의 '데이터 백업·복원'에서 장일기 JSON 파일을 검사하고 가져올 수 있어요. 현재 계정 기록이 파일의 내용으로 완전히 교체되므로 먼저 백업하세요."],
+ ["v1.5.0 · 중복 버튼 정리", "홈 상단의 중복된 '기록 수정' 버튼을 없앴어요. 배변·식사·생활 기록 조회 화면에서 바로 수정할 수 있어요."],
  ["v1.4.0 · 식사 기록 전용 화면", "홈의 오늘 식사 기록 카드는 저장된 기록 조회로, 식사 기록 작성 바로가기는 입력 화면으로 연결돼요. 음식 검색에는 일치하는 메뉴만 나타납니다."],
  ["v1.4.0 · 통계 기간 선택", "배변 통계 상세 화면은 7일과 30일 탭을 제공하고, 설정에서는 홈 카드에 표시할 기본 기간을 고를 수 있어요."],
  ["v1.4.0 · 자료·디자인·프로필", "참고 자료를 왼쪽 메뉴에 모으고, 테마와 아이콘을 개선했어요. 계정 사진이 있다면 표시하고 직접 사진을 설정할 수도 있어요."],
@@ -2130,6 +2264,11 @@ const JANGILGI_RELEASE_STEPS=[
  ["안전하게 기록 계속하기", "원래 저장된 식사 이름과 배변 데이터, 로그인·암호화·복구 키는 유지돼요. 실제 먹은 조리법이 기본 분류와 다르면 해당 기록만 수정해 주세요."]
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.5.0',date:'2026-10-28',title:'JSON 전체 데이터 복원 및 기록 관리 정리',details:[
+  '설정의 데이터 백업·복원에서 JSON을 업로드하고 기존 데이터를 전체 교체할 수 있습니다.',
+  '파일 검사·복원 전후 건수 비교·직접 확인 단계를 거치며, 저장 실패 시 기존 암호화 기록을 유지합니다.',
+  '홈 상단의 중복된 기록 수정 버튼을 제거했습니다. 기록 조회 화면의 바로 수정을 사용하세요.'
+ ]},
  {version:'1.4.0',date:'2026-10-25',title:'식사 기록, 통계, 화면 설정과 프로필 개선',details:[
   '식사 기록용 전용 화면을 제공하고 음식 검색 결과는 일치하는 메뉴만 표시합니다.',
   '최근 배변 통계에서 7일·30일 보기를 전환하며, 홈 카드의 기본 기간을 설정할 수 있습니다.',
@@ -2284,7 +2423,7 @@ const JANGILGI_HELP=[
   '회원가입 후 이메일 인증을 완료하고 로그인합니다. 최초 접속 시 프로필(이름·연령대·선택적 성별)을 입력합니다.',
   '기록을 안전하게 보관하는 암호화 키와 복구 키 안내를 읽고 복구 키를 안전한 장소에 보관합니다. 복구 키는 비밀번호 분실 시 필요할 수 있습니다.',
   '홈의 배변·식사·생활 기록 바로가기를 사용합니다. 각 기록은 한꺼번에 작성할 필요 없이 발생할 때마다 남길 수 있습니다.',
-  '화면 오른쪽의 「기록 수정」으로 이전 기록을 확인하고, 홈 공지의 「변경 사항 보기」로 기능 변경을 확인합니다.' ],note:'기록은 사용자 기기에서 암호화된 후 Firebase에 저장됩니다. 복구 키와 계정 비밀번호는 다른 사람에게 공유하지 마세요.'},
+  '배변·식사·생활 기록 조회 화면에서 이전 기록을 확인·수정하고, 홈 공지의 「변경 사항 보기」로 기능 변경을 확인합니다.' ],note:'기록은 사용자 기기에서 암호화된 후 Firebase에 저장됩니다. JSON 백업 파일은 암호화되지 않으니 공유하지 마세요.'},
  {id:'bowel',label:'배변 기록',title:'배변 직후 기록하기',steps:[
   '홈의 「배변 기록 작성」을 눌러 실제 배변 날짜와 시각을 확인합니다. 늦게 입력했다면 기록 시각을 수정합니다.',
   '브리스톨 대변 형태 1~7형 중 실제 형태와 가장 가까운 항목을 고릅니다. 1~2형은 단단한 형태, 3~4형은 형태가 유지된 변, 6~7형은 묽은 형태입니다.',
@@ -2308,19 +2447,19 @@ const JANGILGI_HELP=[
   '수분 섭취·채소 섭취·과일 섭취·수면·스트레스 항목을 기억나는 만큼 선택합니다.',
   '미선택 항목은 「미기록」으로 유지되므로 추측해서 입력할 필요가 없습니다.',
   '「생활 기록 저장」을 누르면 기존 날짜의 다른 기록은 유지하면서 생활 값만 갱신됩니다.',
-  '이전에 작성한 값을 수정하려면 상단 「기록 수정」의 「생활·날짜별」을 이용합니다.' ],note:'자기 평가의 높음·낮음은 의학적 진단값이 아니라 개인적인 기록 기준입니다.'},
+  '이전에 작성한 값은 생활 기록 조회 화면에서 날짜를 변경하여 바로 수정합니다.' ],note:'자기 평가의 높음·낮음은 의학적 진단값이 아니라 개인적인 기록 기준입니다.'},
  {id:'edit',label:'기록 수정·삭제',title:'모든 기록을 한 곳에서 수정',steps:[
-  '화면 상단 「✎ 기록 수정」을 눌러 통합 기록 관리로 이동합니다.',
+  '각 기록 조회 화면에서 해당 날짜를 선택하고 기록별 수정 버튼을 누릅니다.',
   '배변·식사·생활·이전 기록 탭 중 원하는 종류를 고르고 필요하면 날짜로 검색합니다.',
   '목록에서 기록을 선택해 날짜·시각·형태·증상 또는 카테고리별 음식 항목과 소화 특성을 수정합니다.',
   '「수정 내용 저장」을 눌러 변경 사항을 암호화된 기록에 반영합니다.',
-  '삭제는 해당 기록 한 건만 대상으로 하며 확인 창이 나타납니다. 삭제 후에는 복구하기 어려우므로 신중하게 결정합니다.' ],note:'과거 자료를 임의로 새 버전의 기록 형식으로 변환하지 않습니다. 수정·삭제 전에는 홈의 JSON 백업 기능을 확인해 주세요.'},
+  '삭제는 선택한 기록 한 건에만 적용됩니다. 전체 JSON 복원은 현재 계정 기록을 모두 교체하므로 설정에서 신중하게 확인하세요.' ],note:'과거 자료를 임의로 새 버전의 기록 형식으로 변환하지 않습니다. 수정·삭제 전에는 홈의 JSON 백업 기능을 확인해 주세요.'},
  {id:'home',label:'홈·통계',title:'홈의 기록 요약 보기',steps:[
   '홈 카드에서 오늘 배변·식사·생활 기록과 최근 7일 통계를 확인합니다.',
   '요약 카드를 누르면 실제 기록이나 통계 상세 화면으로 이동합니다.',
   '배변 형태 분포와 횟수는 저장된 관찰 데이터에서 계산됩니다.',
   '기록이 없는 날짜는 배변이나 식사가 없었던 날짜로 가정하지 않습니다.',
-  '과거 기록을 파일로 보관하려면 홈의 JSON 다운로드를 사용합니다.' ],note:'JSON 백업 파일은 복호화된 개인정보가 포함될 수 있으므로 다른 사람에게 공유하지 말고 안전하게 보관하세요.'},
+  '전체 기록을 백업하거나 복원하려면 설정의 「데이터 백업·복원」을 사용합니다.' ],note:'JSON 백업 파일은 복호화된 개인정보가 포함될 수 있으므로 다른 사람에게 공유하지 말고 안전하게 보관하세요.'},
  {id:'analysis',label:'음식 분석',title:'개인별 연관성 탐색 이해하기',steps:[
   '식사의 자동 분류된 소화 특성과 섭취 시각을 배변 기록의 시간·형태에 연결해 여러 시간 구간을 비교합니다.',
   '한 식사에 같은 특성의 음식을 여러 번 선택해도 분석군은 한 번만 세며, 특성이 동시에 나타나 구별이 어렵다면 그 한계를 안내합니다.',
@@ -2421,7 +2560,7 @@ function initDigestiveEditors(){
 let jangCurrentHelp='first';
 // Each help category has one highlighted target per brief instruction.
 const JANG_HELP_TARGETS={
- first:[['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','.home-main-shortcuts'],['dashboard','#editHistoryButton']],
+ first:[['dashboard','#accountMenuButton'],['dashboard','#accountMenuButton'],['dashboard','.home-main-shortcuts'],['settings','#backupRestoreSettingsCard']],
  bowel:[['record','#quickTimeBlock'],['record','#quickShapeBlock'],['record','#quickSymptomBlock'],['record','#quickFlagsBlock'],['record','#recordView .quick-actions']],
  food:[['foodlife','#mealAt'],['foodlife','#mealFoodSearch'],['foodlife','#mealFoodChoices'],['foodlife','#timedMealPanel'],['foodlife','#timedMealPanel']],
  custom:[['foodlife','#foodlifeView .menu-request-open'],['foodlife','#mealFoodChoices'],['foodlife','#mealDigestEditor'],['foodlife','#foodlifeView .menu-request-open'],['foodlife','#foodlifeView .menu-request-open']],
@@ -2470,6 +2609,8 @@ function initDetailedHelp(){
  document.getElementById('launchGuidedTour').onclick=()=>startHelpCategory(jangCurrentHelp);
 }
 const JANG_UPDATE_TARGETS=[
+ ["settings", "#backupRestoreSettingsCard", "JSON 백업·전체 복원"],
+ ["mealDay", "#mealDayView", "기록 화면에서 바로 수정"],
  ["dashboard", "#openHelp", "상세 도움말"],
  ["recordManager", "#managerTabs", "통합 기록 관리"],
  ["dashboard", "#openHelp", "게임식 따라하기"],
@@ -2497,7 +2638,7 @@ function showUpdateNotes(auto=false){
 }
 window.__jangilgiMaybeShowUpdate=data=>{
  if(!data?.profile?.onboardingComplete)return false;
- if(['1.4.0','1.4.1','1.4.2','1.4.3',JANGILGI_VERSION].includes(data.profile?.lastSeenAppVersion))return false;
+ if(data.profile?.lastSeenAppVersion===JANGILGI_VERSION)return false;
  showUpdateNotes(true);return true;
 };
 window.__jangilgiStartIntroGuide=()=>{if(activeTour<0)jangBeginGuide(jangHelpTour('first'),'intro','first');};
@@ -2515,14 +2656,14 @@ function jangCompareVersion(left,right){
 function jangRefreshAnnouncement(){
  const headline=document.getElementById('releaseHeadline'),desc=document.getElementById('releaseText'),card=document.getElementById('releaseNotice');
  if(!card)return;
- const unseen=!['1.4.0','1.4.1','1.4.2','1.4.3',JANGILGI_VERSION].includes(readData()?.profile?.lastSeenAppVersion);
+ const unseen=readData()?.profile?.lastSeenAppVersion!==JANGILGI_VERSION;
  if(jangRemoteVersion&&jangCompareVersion(jangRemoteVersion,JANGILGI_VERSION)>0){
   headline.textContent=`새 버전 v${jangRemoteVersion}이 배포됐어요`;
   desc.textContent='운영 공지: 변경된 앱을 사용하려면 「새로고침」을 눌러 최신 화면으로 이동해 주세요. 저장하지 않은 입력은 새로고침 전에 저장해 주세요.';
   card.classList.add('release-new');return;
  }
- headline.textContent=unseen?'📢 장일기 업데이트 안내':'📢 장일기 최신 공지 · v1.4.4';
- desc.textContent='v1.1.0~v1.4.0 변경 사항을 확인할 수 있어요. 기존 기록은 유지됩니다.';
+ headline.textContent=unseen?'📢 장일기 업데이트 안내':'📢 장일기 최신 공지 · v1.5.0';
+ desc.textContent='v1.1.0~v1.5.0 변경 사항을 확인할 수 있어요. JSON 가져오기는 명시적으로 확인해야만 데이터를 교체합니다.';
  card.classList.toggle('release-new',unseen);
 }
 async function jangCheckRemoteVersion(){
