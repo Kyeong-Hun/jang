@@ -819,7 +819,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.4.2</strong><p id="releaseText">v1.1.0~v1.4.0 변경 사항을 볼 수 있어요. 기존 기록은 보존됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.4.3</strong><p id="releaseText">v1.1.0~v1.4.0 변경 사항을 볼 수 있어요. 기존 기록은 보존됩니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1401,7 +1401,7 @@ let activeTour=-1,prevFocus=null;
 let jangGuideMode='intro',jangGuideCategory='first',jangGuideReturnView='dashboard',jangGuideSaving=false;
 async function jangMarkUpdateSeen(){
  const data=window.__jangilgiSecurityRead?.();if(!data)return false;
- if(['1.4.0','1.4.1',JANGILGI_VERSION].includes(data.profile?.lastSeenAppVersion))return true;
+ if(['1.4.0','1.4.1','1.4.2',JANGILGI_VERSION].includes(data.profile?.lastSeenAppVersion))return true;
  const next={...data,profile:{...(data.profile||{}),lastSeenAppVersion:JANGILGI_VERSION}};
  return !!await writeData(next);
 }
@@ -1879,7 +1879,7 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  const mealHistoryRows=document.createElement('div');mealHistoryRows.id='weekMealHistoryRows';mealHistoryRows.className='jg-food-history-list';foodHistory.appendChild(mealHistoryRows);
  window.__jangMealPeriod=7;
  mealPeriodTabs.addEventListener('click',e=>{const b=e.target.closest('[data-meal-period]');if(!b)return;window.__jangMealPeriod=Number(b.dataset.mealPeriod)===30?30:7;homeStats(readData());});
- mealHistoryRows.onclick=e=>{const b=e.target.closest('[data-meal-visit]');if(!b)return;const d=new Date(b.dataset.mealVisit);if(Number.isNaN(d.getTime()))return;byId('mealDayDate').value=dateKey(d);renderDayMeals(readData());navigate('mealDay');};
+ mealHistoryRows.onclick=e=>{const b=e.target.closest('[data-meal-visit]');if(!b)return;const d=new Date(b.dataset.mealVisit);if(Number.isNaN(d.getTime()))return;window.__jangSetMealDate?.(dateKey(d));navigate('mealDay');};
  const heading=document.createElement('h2');heading.className='home-summary-title';heading.innerHTML='나의 기록 한눈에 <span>카드를 누르면 자세히 볼 수 있어요</span>';
  const grid=document.createElement('div');grid.className='home-summary-grid';
  const cards=[
@@ -1891,6 +1891,8 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  const hero=byId('homeQuickAction');if(hero)hero.after(heading,grid);else dashboard.append(homeActions,heading,grid);
  // The today-card always resets its date to today, even after browsing older meals.
  grid.querySelector('.home-detail-card[data-view="mealDay"]')?.addEventListener('click',()=>{mealDayDate.value=today();renderDayMeals(readData());});
+ grid.querySelector('.home-detail-card[data-view="bowelHistory"]')?.addEventListener('click',()=>window.__jangSetBowelDate?.(today()));
+ grid.querySelector('.home-detail-card[data-view="lifestyle"]')?.addEventListener('click',()=>window.__jangSetLifeDate?.(today(),false));
  // Current time shortcuts: keep current form fields and storage shape untouched.
  const bowelAt=byId('eventAt'),mealAt=byId('mealAt'),lifeDate=byId('foodlifeDate');
  const lifeAtLabel=document.createElement('label');lifeAtLabel.className='jg-life-time-label';lifeAtLabel.textContent='생활 기록 시각';
@@ -1936,7 +1938,7 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
   const id=edit?.dataset.dayMealEdit||del?.dataset.dayMealDelete;
   const meal=timedMeals(readData()).find(m=>m.id===id);
   if(!meal)return;
-  if(edit){window.__jangilgiOpenRecordManager?.('meal',meal.id);return;}
+  if(edit){window.__jangInlineMealEdit?.(meal.id);return;}
   if(!confirm('선택한 식사 기록 한 건을 삭제할까요?'))return;
   const d=readData();if(d.demo){showToast('데모 기록은 삭제할 수 없어요.');return;}
   d.records=d.records.filter(r=>!(r?.kind==='meal'&&r.id===meal.id));
@@ -1944,6 +1946,7 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
   try{if(await writeData(d)){refreshAllViews();showToast('선택한 식사 기록을 삭제했어요.');}}
   finally{del.disabled=false;}
  });
+  window.__jangRenderDayMeals=renderDayMeals;
  function homeStats(data){
   const records=eventObservations(data).real;
   const meals=timedMeals(data);
@@ -2108,7 +2111,7 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.4.2';
+const JANGILGI_VERSION='1.4.3';
 const JANGILGI_RELEASE_STEPS=[
  ["v1.4.0 · 식사 기록 전용 화면", "홈의 오늘 식사 기록 카드는 저장된 기록 조회로, 식사 기록 작성 바로가기는 입력 화면으로 연결돼요. 음식 검색에는 일치하는 메뉴만 나타납니다."],
  ["v1.4.0 · 통계 기간 선택", "배변 통계 상세 화면은 7일과 30일 탭을 제공하고, 설정에서는 홈 카드에 표시할 기본 기간을 고를 수 있어요."],
@@ -2494,7 +2497,7 @@ function showUpdateNotes(auto=false){
 }
 window.__jangilgiMaybeShowUpdate=data=>{
  if(!data?.profile?.onboardingComplete)return false;
- if(['1.4.0','1.4.1',JANGILGI_VERSION].includes(data.profile?.lastSeenAppVersion))return false;
+ if(['1.4.0','1.4.1','1.4.2',JANGILGI_VERSION].includes(data.profile?.lastSeenAppVersion))return false;
  showUpdateNotes(true);return true;
 };
 window.__jangilgiStartIntroGuide=()=>{if(activeTour<0)jangBeginGuide(jangHelpTour('first'),'intro','first');};
@@ -2512,13 +2515,13 @@ function jangCompareVersion(left,right){
 function jangRefreshAnnouncement(){
  const headline=document.getElementById('releaseHeadline'),desc=document.getElementById('releaseText'),card=document.getElementById('releaseNotice');
  if(!card)return;
- const unseen=!['1.4.0','1.4.1',JANGILGI_VERSION].includes(readData()?.profile?.lastSeenAppVersion);
+ const unseen=!['1.4.0','1.4.1','1.4.2',JANGILGI_VERSION].includes(readData()?.profile?.lastSeenAppVersion);
  if(jangRemoteVersion&&jangCompareVersion(jangRemoteVersion,JANGILGI_VERSION)>0){
   headline.textContent=`새 버전 v${jangRemoteVersion}이 배포됐어요`;
   desc.textContent='운영 공지: 변경된 앱을 사용하려면 「새로고침」을 눌러 최신 화면으로 이동해 주세요. 저장하지 않은 입력은 새로고침 전에 저장해 주세요.';
   card.classList.add('release-new');return;
  }
- headline.textContent=unseen?'📢 장일기 업데이트 안내':'📢 장일기 최신 공지 · v1.4.2';
+ headline.textContent=unseen?'📢 장일기 업데이트 안내':'📢 장일기 최신 공지 · v1.4.3';
  desc.textContent='v1.1.0~v1.4.0 변경 사항을 확인할 수 있어요. 기존 기록은 유지됩니다.';
  card.classList.toggle('release-new',unseen);
 }
@@ -3113,6 +3116,201 @@ body[data-theme="lavender"] .nav-item.active,body[data-theme="rose"] .nav-item.a
   const d=readData();if(!d.profile?.avatarDataUrl){status.textContent='직접 등록한 사진이 없어요.';return;}
   delete d.profile.avatarDataUrl;if(await writeData(d)){updateAvatarImage();status.textContent='직접 등록한 사진을 제거했어요.';}
  });
+})();
+</script>
+
+<style id="jg-v143-day-browse">
+/* 날짜별 조회와 화면 내부 편집: 기존 기록 저장 구조는 변경하지 않습니다. */
+.jg-day-nav{display:flex;align-items:center;justify-content:center;gap:9px;max-width:100%;min-width:0;padding:10px 13px;border:1px solid var(--line);background:var(--surface);border-radius:13px;touch-action:pan-y}
+.jg-day-nav strong{font-size:12px;white-space:nowrap;color:var(--ink)}
+.jg-day-nav input[type=date]{width:153px;min-width:0;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:9px 6px;font-size:13px;font-weight:700}
+.jg-day-nav button{display:grid;place-items:center;width:39px;height:39px;flex:0 0 39px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font-size:24px;cursor:pointer}
+.jg-day-nav button:disabled{opacity:.35;cursor:not-allowed}
+.jg-day-nav button:focus-visible,.jg-inline-actions button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.jg-day-nav .jg-day-today{width:auto;min-width:48px;flex:0 0 auto;padding:0 10px;font-size:11px;font-weight:700}
+.jg-day-hint{margin:0!important;color:var(--muted);font-size:11px;text-align:center}
+.jg-inline-edit{padding:15px;margin:8px 0 13px;border:1px solid var(--line);border-radius:13px;background:var(--paper);color:var(--ink);min-width:0}
+.jg-inline-edit h3{font-size:14px;margin:0 0 10px}
+.jg-inline-edit form{display:grid;gap:12px}
+.jg-inline-edit label{display:grid;gap:5px;font-size:12px;font-weight:650}
+.jg-inline-edit input:not([type=checkbox]),.jg-inline-edit select{min-width:0;width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--line);padding:9px;border-radius:9px;color:var(--ink);font:inherit}
+.jg-inline-edit .jg-inline-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.jg-inline-edit .jg-inline-flags{display:flex;flex-wrap:wrap;gap:9px}
+.jg-inline-edit .jg-inline-flags label{display:flex;align-items:center;gap:5px}
+.jg-inline-edit .jg-inline-flags input{width:auto}
+.jg-inline-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px}
+.jg-inline-actions button,.jg-life-summary-actions button{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 13px;border-radius:10px;font-weight:700;cursor:pointer}
+.jg-inline-actions .jg-save,.jg-life-summary-actions .jg-save{background:var(--green);color:#fff;border-color:var(--green)}
+.jg-day-meals-panel .jg-inline-edit{width:100%;box-sizing:border-box}
+.jg-inline-foods{display:flex;flex-wrap:wrap;gap:7px;max-height:175px;overflow-y:auto;padding:5px 0}
+.jg-inline-foods label{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px;font-weight:500;cursor:pointer}
+.jg-inline-foods label[hidden]{display:none}
+.jg-inline-foods input{width:auto}
+.jg-inline-edit .digest-food-row{max-width:100%}
+.jg-inline-edit .digest-tag-grid label{display:flex;align-items:center;gap:7px}
+#bowelHistoryView #eventTimeline .event-line,#mealDayView #mealDayRows .event-line{position:relative}
+.jg-day-card-edit{margin:0 0 10px}
+#lifestyleView #jgLifeSummary{padding:14px 16px;min-height:110px;height:max-content!important;max-height:none!important;flex:none!important;overflow:visible!important;display:block!important}
+.jg-life-summary h2{font-size:15px;margin:0 0 10px}
+.jg-life-values{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px}
+.jg-life-values>div{padding:10px;background:var(--paper);border-radius:9px;display:grid;gap:4px}
+.jg-life-values small{color:var(--muted);font-size:11px}
+.jg-life-values strong{font-size:13px}
+.jg-life-summary-actions{display:flex;justify-content:flex-end;margin-top:12px}
+#lifestyleView #foodlifeLifePanel[hidden],#lifestyleView #foodlifeDateBlock[hidden],#bowelHistoryView #todayFeedback[hidden],.jg-inline-edit[hidden]{display:none!important}
+#lifestyleView .jg-life-edit-date{padding:8px 0 10px}
+#lifestyleView .jg-life-edit-date label{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#lifestyleView .jg-life-edit-date button{display:none}
+#lifestyleView #foodlifeLifePanel{overflow:visible!important}
+#bowelHistoryView.active-view,#mealDayView.active-view,#lifestyleView.active-view{overflow-y:auto!important}
+@media(max-width:600px){.jg-day-nav{gap:5px;padding:8px 5px}.jg-day-nav strong{display:none}.jg-day-nav input[type=date]{width:135px;font-size:12px}.jg-day-nav button{width:35px;height:37px;flex-basis:35px}.jg-day-nav .jg-day-today{min-width:41px;padding:0 6px}.jg-inline-edit{padding:10px}.jg-inline-edit .jg-inline-grid{grid-template-columns:1fr}.jg-life-values{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script id="jg-v143-day-controller">
+(function(){'use strict';
+ const el=id=>document.getElementById(id);
+ const bowelView=el('bowelHistoryView'), mealView=el('mealDayView'),lifeView=el('lifestyleView');
+ if(!bowelView||!mealView||!lifeView)return;
+ const dayState={bowel:today(),meal:today(),life:today()};
+ const dayParser=key=>{const [y,m,d]=String(key).split('-').map(Number);return new Date(y,m-1,d,12);};
+ const plusDay=(key,delta)=>dateKey(addDays(dayParser(key),delta));
+ const validDay=key=>/^\d{4}-\d{2}-\d{2}$/.test(key)&&dateKey(dayParser(key))===key&&key<=today();
+ const dateLabel=key=>key===today()?'오늘':key===plusDay(today(),-1)?'어제':key;
+ const currentDay=kind=>dayState[kind]||today();
+ let bowelEditing=null,mealEditing=null,mealDraftFoods=[],mealDraftOverrides={};
+ let lifeEditing=false;
+ const makeNavigator=(view,kind,onDate)=>{
+  const nav=document.createElement('div');nav.className='jg-day-nav';nav.setAttribute('aria-label',`${kind==='bowel'?'배변':kind==='meal'?'식사':'생활'} 기록 날짜 이동`);
+  nav.innerHTML=`<button type="button" data-day-step="-1" aria-label="전날 기록">‹</button><strong>조회 날짜</strong><input type="date" aria-label="조회 날짜 선택"><button type="button" data-day-step="1" aria-label="다음 날 기록">›</button><button type="button" class="jg-day-today" data-day-today>오늘</button>`;
+  const input=nav.querySelector('input');input.max=today();input.value=today();
+  function set(key){if(!validDay(key)){showToast('오늘 또는 과거 날짜를 선택해 주세요.');input.value=currentDay(kind);return;}if(key!==currentDay(kind)&&(kind==='bowel'?!!bowelEditing:kind==='meal'?!!mealEditing:lifeEditing)&&!confirm('작성 중인 수정 내용을 저장하지 않고 날짜를 이동할까요?')){input.value=currentDay(kind);return;}dayState[kind]=key;input.max=today();input.value=key;nav.querySelector('[data-day-step="1"]').disabled=key>=today();nav.querySelector('[data-day-today]').disabled=key===today();onDate(key);}
+  nav.addEventListener('click',e=>{const step=e.target.closest('[data-day-step]');if(step){set(plusDay(currentDay(kind),Number(step.dataset.dayStep)));return;}if(e.target.closest('[data-day-today]'))set(today());});
+  input.addEventListener('change',()=>set(input.value));
+  nav.addEventListener('keydown',e=>{if(e.target===input)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();set(plusDay(currentDay(kind),e.key==='ArrowLeft'?-1:1));}});
+  view.querySelector('.jg-subpage-head')?.after(nav);
+  const hint=document.createElement('p');hint.className='jg-day-hint';hint.textContent='‹ › 화살표 또는 기록 목록을 좌우로 스와이프해 날짜를 바꿀 수 있어요.';nav.after(hint);
+  return {set,nav};
+ };
+ const wireSwipe=(element,set,kind)=>{
+  if(!element)return;let start=null;
+  element.addEventListener('touchstart',e=>{if(e.touches.length!==1||e.target.closest('input,textarea,select,button,form,.jg-inline-edit')){start=null;return;}start={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+  element.addEventListener('touchend',e=>{if(!start||e.changedTouches.length!==1)return;const dx=e.changedTouches[0].clientX-start.x,dy=e.changedTouches[0].clientY-start.y;start=null;if(Math.abs(dx)<55||Math.abs(dx)<=Math.abs(dy)*1.35)return;set(plusDay(currentDay(kind),dx<0?1:-1));},{passive:true});
+ };
+ // Bowel: preserve home/today summaries and only replace the dedicated detail list.
+ const bowelOut=el('eventTimeline'),badge=el('eventCountBadge');
+ const bowelEditor=document.createElement('div');bowelEditor.id='jgBowelInlineEditor';bowelEditor.className='jg-inline-edit';bowelEditor.hidden=true;bowelOut.after(bowelEditor);
+ function renderBowelDay(data){
+  const key=currentDay('bowel'),items=eventObservations(data).real.filter(e=>e.date===key).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at));
+  bowelView.querySelector('.jg-subpage-head h1').textContent=`${dateLabel(key)}의 배변 기록`;
+  el('recentEventsBlock').querySelector('.card-heading h2').textContent=`${dateLabel(key)}의 배변 기록`;
+  badge.textContent=`${items.length}건`;
+  bowelOut.innerHTML=items.length?items.map(e=>`<div class="event-line"><span class="event-time">${escapeHTML(formatTime(e.at))}</span><div class="event-main"><strong>${safeInt(e.bristol,1,7)}형</strong><small>복부 불편 ${['없음','약간','보통','심함'][safeInt(e.pain,0,3)]} · 잔변감 ${['없음','약간','보통','심함'][safeInt(e.strain,0,3)]}</small>${e.redFlags?.length?'<small class="warning-ink">주의 증상 기록 있음</small>':''}</div><button class="event-edit" type="button" data-event-edit="${escapeHTML(e.id)}">수정</button><button class="event-delete" type="button" data-event-delete="${escapeHTML(e.id)}">삭제</button></div>`).join(''):'<p class="empty-events">이 날짜에 저장된 배변 기록이 없어요.</p>';
+  el('todayFeedback').hidden=key!==today();
+ }
+ const oldRenderTimeline=renderTimeline;
+ renderTimeline=function(data){oldRenderTimeline(data);renderBowelDay(data);};
+ const bowelNav=makeNavigator(bowelView,'bowel',()=>{closeBowel();renderBowelDay(readData());});
+ window.__jangSetBowelDate=bowelNav.set;
+ wireSwipe(el('recentEventsBlock'),bowelNav.set,'bowel');
+ function closeBowel(){bowelEditing=null;bowelEditor.hidden=true;bowelEditor.replaceChildren();}
+ function openBowel(id){
+  const item=readData().events.find(e=>e.id===id);if(!item)return;
+  if(bowelEditing===id){closeBowel();return;}
+  bowelEditing=id;const levels=[['0','없음'],['1','약간'],['2','보통'],['3','심함']];
+  const select=(name,vals,current)=>`<select name="${name}" required>${vals.map(([v,t])=>`<option value="${v}" ${String(v)===String(current)?'selected':''}>${escapeHTML(t)}</option>`).join('')}</select>`;
+  bowelEditor.innerHTML=`<h3>배변 기록 바로 수정</h3><form id="jgBowelInlineForm"><label>실제 배변 시각<input name="at" type="datetime-local" required value="${escapeHTML(localDateTime(item.at))}"></label><div class="jg-inline-grid"><label>브리스톨 대변 형태${select('bristol',bristolInfo.map((x,i)=>[String(i+1),`${i+1}형 · ${x[1]}`]),item.bristol)}</label><label>복부 통증·불편${select('pain',levels,item.pain)}</label><label>힘주기·잔변감${select('strain',levels,item.strain)}</label></div><strong>주의 증상 (해당 시 선택)</strong><div class="jg-inline-flags">${flagValues.map(f=>`<label><input type="checkbox" name="flag" value="${escapeHTML(f)}" ${(item.redFlags||[]).includes(f)?'checked':''}>${escapeHTML(f)}</label>`).join('')}</div><div class="jg-inline-actions"><button type="button" data-inline-cancel>취소</button><button type="submit" class="jg-save">수정 내용 저장</button></div></form>`;
+  bowelEditor.hidden=false;bowelEditor.querySelector('input[name=at]').focus({preventScroll:true});bowelEditor.scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
+ bowelOut.addEventListener('click',e=>{const b=e.target.closest('[data-event-edit]');if(b){e.stopImmediatePropagation();openBowel(b.dataset.eventEdit);}},true);
+ bowelEditor.addEventListener('click',e=>{if(e.target.closest('[data-inline-cancel]'))closeBowel();});
+ bowelEditor.addEventListener('submit',async e=>{
+  if(e.target.id!=='jgBowelInlineForm')return;e.preventDefault();
+  const f=e.target,at=new Date(f.elements.at.value);if(!Number.isFinite(at.getTime())||at.getTime()>Date.now()+60000)return showToast('현재 또는 과거의 올바른 시각을 선택해 주세요.');
+  const d=readData();if(d.demo)return showToast('데모 기록은 수정할 수 없어요.');const item=d.events.find(x=>x.id===bowelEditing);if(!item)return;
+  const prev=item.at;item.at=at.toISOString();item.bristol=Number(f.elements.bristol.value);item.pain=Number(f.elements.pain.value);item.strain=Number(f.elements.strain.value);item.redFlags=[...f.querySelectorAll('input[name=flag]:checked')].map(x=>x.value).filter(x=>flagValues.includes(x));
+  if(prev!==item.at)item.reviewedFromAt=priorBowelAt(d,item.at,item.id)||new Date(at.getTime()-72*3600000).toISOString();
+  d.events.sort((a,b)=>a.at.localeCompare(b.at));d.history.push({date:dateKey(at),changes:['배변 조회 화면에서 기록 수정'],changedAt:new Date().toLocaleString('ko-KR')});
+  const btn=f.querySelector('[type=submit]');btn.disabled=true;try{if(await writeData(d)){closeBowel();refreshAllViews();showToast('배변 기록을 수정했어요.');}}finally{btn.disabled=false;}
+ });
+ // Meal: keep day picker and event list, modify only the selected item in-place.
+ const mealOut=el('mealDayRows'),mealDate=el('mealDayDate');
+ const originalMealDate=mealDate.parentElement;originalMealDate.hidden=true;
+ const mealNavigator=makeNavigator(mealView,'meal',key=>{closeMeal();mealDate.value=key;window.__jangRenderDayMeals?.(readData());});
+ window.__jangSetMealDate=mealNavigator.set;
+ const originalMealDateChange=()=>{const key=mealDate.value;if(validDay(key))mealNavigator.set(key);};
+ mealDate.addEventListener('change',originalMealDateChange);
+ wireSwipe(el('mealDayRows'),mealNavigator.set,'meal');
+ const mealEditor=document.createElement('div');mealEditor.className='jg-inline-edit';mealEditor.id='jgMealInlineEditor';mealEditor.hidden=true;
+ mealOut.after(mealEditor);
+ function mealCheckMarkup(){const d=readData(),all=[...new Set(jangFoodGroups(d).flatMap(g=>g[1]))];return all.map(f=>`<label data-jg-food-name="${escapeHTML(f.toLocaleLowerCase('ko-KR'))}"><input type="checkbox" name="jgInlineFood" value="${escapeHTML(f)}" ${mealDraftFoods.includes(f)?'checked':''}>${escapeHTML(f)}</label>`).join('');}
+ function renderMealTags(){jangDigestPanel('jgInlineMealDigest',mealDraftFoods,mealDraftOverrides,'inline');}
+ function openMeal(id){
+  const item=timedMeals(readData()).find(x=>x.id===id);if(!item)return;
+  if(mealEditing===id){closeMeal();return;}
+  mealEditing=id;mealDraftFoods=[...item.foods];mealDraftOverrides=jangValidOverrides(item.digestiveOverrides,item.foods);
+  mealEditor.innerHTML=`<h3>식사 기록 바로 수정</h3><form id="jgMealInlineForm"><label>식사 시각<input type="datetime-local" name="at" required value="${escapeHTML(localDateTime(item.at))}"></label><label>섭취한 음식 찾기<input type="search" id="jgInlineMealSearch" placeholder="음식 이름을 검색하세요"></label><div id="jgInlineMealChoices" class="jg-inline-foods">${mealCheckMarkup()}</div><div class="digestive-editor"><h3>실제 조리 상태 · 소화 특성</h3><div id="jgInlineMealDigest"></div></div><div class="jg-inline-actions"><button type="button" data-inline-cancel>취소</button><button type="submit" class="jg-save">수정 내용 저장</button></div></form>`;
+  mealEditor.hidden=false;renderMealTags();mealEditor.scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
+ window.__jangInlineMealEdit=openMeal;
+ function closeMeal(){mealEditing=null;mealEditor.hidden=true;mealEditor.replaceChildren();}
+ // Meal item selection, search, tags and cooking overrides use the same existing validation rules.
+ mealEditor.addEventListener('click',e=>{
+  if(e.target.closest('[data-inline-cancel]')){closeMeal();return;}
+  const b=e.target.closest('[data-digest-reset]');if(b){delete mealDraftOverrides[b.dataset.digestReset];renderMealTags();}
+ });
+ mealEditor.addEventListener('input',e=>{
+  if(e.target.id!=='jgInlineMealSearch')return;
+  const q=e.target.value.trim().toLocaleLowerCase('ko-KR');mealEditor.querySelectorAll('[data-jg-food-name]').forEach(row=>row.hidden=!!q&&!row.dataset.jgFoodName.includes(q));
+ });
+ mealEditor.addEventListener('change',e=>{
+  const food=e.target.closest('input[name=jgInlineFood]');if(food){mealDraftFoods=[...new Set([...mealEditor.querySelectorAll('input[name=jgInlineFood]:checked')].map(x=>x.value))];mealDraftOverrides=jangValidOverrides(mealDraftOverrides,mealDraftFoods);renderMealTags();return;}
+  const tag=e.target.closest('[data-digest-prep]');if(tag&&JANG_PREP_FACTS[tag.dataset.digestPrep]){jangChangePrep(mealDraftOverrides,tag.dataset.digestFood,tag.dataset.digestPrep,tag.checked);jangRefreshPrepRow(tag,mealDraftOverrides);}
+ });
+ mealEditor.addEventListener('submit',async e=>{
+  if(e.target.id!=='jgMealInlineForm')return;e.preventDefault();const f=e.target,at=new Date(f.elements.at.value);
+  if(!Number.isFinite(at.getTime())||at.getTime()>Date.now()+60000)return showToast('현재 또는 과거의 올바른 식사 시각을 선택해 주세요.');
+  if(mealDraftFoods.length<1||mealDraftFoods.length>20)return showToast('음식은 1~20개 선택해 주세요.');
+  const d=readData();if(d.demo)return showToast('데모 기록은 수정할 수 없어요.');const item=d.records.find(x=>x.kind==='meal'&&x.id===mealEditing);if(!item)return;
+  item.at=at.toISOString();item.date=dateKey(at);item.foods=[...mealDraftFoods];item.digestiveOverrides=jangValidOverrides(mealDraftOverrides,item.foods);
+  d.history.push({date:item.date,changes:['식사 조회 화면에서 기록 수정'],changedAt:new Date().toLocaleString('ko-KR')});
+  const btn=f.querySelector('[type=submit]');btn.disabled=true;try{if(await writeData(d)){closeMeal();refreshAllViews();showToast('식사 기록을 수정했어요.');}}finally{btn.disabled=false;}
+ });
+ // Clear an open editor on a date change, including changes made by the existing date input.
+ mealDate.addEventListener('change',()=>{closeMeal();},true);
+ // Life: show saved values first; reveal existing same-page editor only when requested.
+ const lifePanel=el('foodlifeLifePanel'),lifeDate=el('foodlifeDate');
+ const lifeSummary=document.createElement('article');lifeSummary.id='jgLifeSummary';lifeSummary.className='jg-life-summary card-surface';
+ const dateBlock=el('foodlifeDateBlock');dateBlock.after(lifeSummary);dateBlock.hidden=true;
+ function closeLife(){lifeEditing=false;lifePanel.hidden=true;}
+ function renderLifeSummary(data){
+  const key=currentDay('life'),rec=foodLifeRecord(data,key),saved=HABIT_LABELS.filter(h=>rec?.lifestyle?.[h.key]!=null);
+  lifeView.querySelector('.jg-subpage-head h1').textContent=`${dateLabel(key)}의 생활 기록`;const heading=lifePanel.querySelector('.card-heading h2');if(heading)heading.textContent=`${dateLabel(key)}의 생활 습관 수정`;
+  lifeSummary.innerHTML=`<h2>${dateLabel(key)}의 생활습관 <small>· ${saved.length}/${HABIT_LABELS.length}항목</small></h2><div class="jg-life-values">${saved.length?saved.map(h=>`<div><small>${escapeHTML(h.label)}</small><strong>${escapeHTML(h.choices[rec.lifestyle[h.key]]||'미기록')}</strong></div>`).join(''):'<p class="empty-events">이 날짜에는 저장된 생활 기록이 없어요.</p>'}</div><div class="jg-life-summary-actions"><button type="button" class="jg-save" id="jgLifeEditButton">${saved.length?'이 날짜 기록 수정':'이 날짜 기록 추가'}</button></div>`;
+ }
+ const lifeNav=makeNavigator(lifeView,'life',key=>{
+  closeLife();lifeDate.value=key;lifeDate.dispatchEvent(new Event('change',{bubbles:true}));
+  const rec=foodLifeRecord(readData(),key),at=el('lifeAt');if(at)at.value=rec?.lifestyleAt?localDateTime(rec.lifestyleAt):key===today()?localDateTime(new Date()):`${key}T12:00`;
+  renderLifeSummary(readData());
+ });
+ window.__jangSetLifeDate=lifeNav.set;
+ lifeDate.addEventListener('change',()=>{if(validDay(lifeDate.value)&&currentDay('life')!==lifeDate.value)lifeNav.set(lifeDate.value);});
+ lifeSummary.addEventListener('click',e=>{if(!e.target.closest('#jgLifeEditButton'))return;lifeEditing=true;lifePanel.hidden=false;lifePanel.scrollIntoView({block:'nearest',behavior:'smooth'});});
+ const lifeTime=el('lifeAt')?.closest('.jg-life-time-label');if(lifeTime){const now=el('lifeNow');const wrap=document.createElement('div');wrap.className='jg-life-edit-date';lifePanel.prepend(wrap);wrap.appendChild(lifeTime);if(now)wrap.appendChild(now);}
+ lifePanel.hidden=true;
+ const lifeCancel=document.createElement('button');lifeCancel.type='button';lifeCancel.className='outline-button';lifeCancel.textContent='수정 취소';el('foodlifeSaveLife').before(lifeCancel);lifeCancel.addEventListener('click',()=>{renderFoodLife(readData());closeLife();});
+ wireSwipe(lifeSummary,lifeNav.set,'life');
+ // Both the existing async write and account rehydration refresh this same-page summary.
+ const previousRefresh=refreshAllViews;
+ refreshAllViews=function(){previousRefresh();const d=readData();if(bowelEditing&&!d.events.some(x=>x.id===bowelEditing))closeBowel();if(mealEditing&&!d.records.some(x=>x.kind==='meal'&&x.id===mealEditing))closeMeal();renderBowelDay(d);renderLifeSummary(d);};
+ // Keep home actions usable for new records, but hide the inline form on card navigation.
+ const lifeShortcut=document.querySelector('.home-main-shortcuts [data-view="lifestyle"]');
+ lifeShortcut?.addEventListener('click',()=>{lifeNav.set(today());lifeEditing=true;lifePanel.hidden=false;});
+ const oldLifeSave=el('foodlifeSaveLife');oldLifeSave.addEventListener('click',()=>{
+  // The original save handler runs first and validates/persists the existing record.
+  // Avoid pre-emptive UI changes; only close after refresh succeeds.
+  // The original save routine remains responsible for persistence.
+  // A successful refresh updates the same-page summary without navigation.
+ });
+ bowelNav.set(today());mealNavigator.set(today());lifeNav.set(today());closeBowel();closeMeal();closeLife();
 })();
 </script>
 </body>
