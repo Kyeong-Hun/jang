@@ -55,8 +55,7 @@ service cloud.firestore {
     match /users/{uid}/private/{documentId} {
       allow get: if documentId == 'state' && isOwner(uid);
       allow list: if false;
-      // New documents must be encrypted. Legacy plaintext documents may only
-      // transition to the encrypted version; reverting to plaintext is denied.
+      // These encrypted health record rules are unchanged from the repository.
       allow create: if documentId == 'state' && isOwner(uid) && validEncryptedState();
       allow update: if documentId == 'state' && isOwner(uid)
         && resource.data.schemaVersion in [1, 2]
@@ -64,8 +63,6 @@ service cloud.firestore {
       allow delete: if documentId == 'state' && isOwner(uid);
     }
 
-    // Support inbox and encrypted health records remain entirely separate.
-    // No second Firebase Authentication account and no paid Cloud Functions.
     function supportUser() {
       return request.auth != null && request.auth.token.email_verified == true;
     }
@@ -74,15 +71,10 @@ service cloud.firestore {
         && request.auth.token.email == 'louis1004kkh@gmail.com';
     }
 
-    // Created manually through Firebase Console. Nobody may read or write this
-    // verifier using the web/mobile client SDK, including the administrator.
     match /adminSecurity/{configId} {
       allow read, write: if false;
     }
 
-    // The password-derived proof is compared SERVER-SIDE with a private verifier.
-    // Session is associated with Firebase's verified sign-in auth_time claim.
-    // This is an app-level extra password, not a Firebase multi-factor credential.
     match /adminSessions/{uid} {
       allow get, list: if false;
       allow create, update: if primaryAdmin()
@@ -106,6 +98,12 @@ service cloud.firestore {
            get(/databases/$(database)/documents/adminSecurity/config).data.passwordVerifier;
     }
 
+    function ticketOwner(ticketId) {
+      return supportUser()
+        && exists(/databases/$(database)/documents/supportTickets/$(ticketId))
+        && get(/databases/$(database)/documents/supportTickets/$(ticketId)).data.ownerUid == request.auth.uid;
+    }
+
     match /supportTickets/{ticketId} {
       allow create: if supportUser()
         && request.resource.data.keys().hasAll(['ownerUid','email','category','subject','message','reply','status','createdAt','updatedAt'])
@@ -126,12 +124,50 @@ service cloud.firestore {
       allow get: if supportAdmin() || (supportUser() && resource.data.ownerUid == request.auth.uid);
       allow list: if request.query.limit <= 100
         && (supportAdmin() || (supportUser() && resource.data.ownerUid == request.auth.uid));
-      allow update: if supportAdmin()
+      // Admin may answer; ticket owner may only reopen the ticket after posting.
+      allow update: if (
+        supportAdmin()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply','status','updatedAt'])
         && request.resource.data.reply is string
         && request.resource.data.reply.size() >= 1
         && request.resource.data.reply.size() <= 2000
         && request.resource.data.status == 'replied'
+        && request.resource.data.updatedAt == request.time
+      ) || (
+        supportUser()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt'])
+        && request.resource.data.status == 'open'
+        && request.resource.data.updatedAt == request.time
+      );
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow get: if supportAdmin() || ticketOwner(ticketId);
+        allow list: if request.query.limit <= 100 && (supportAdmin() || ticketOwner(ticketId));
+        allow create: if (supportAdmin() || ticketOwner(ticketId))
+          && request.resource.data.keys().hasAll(['senderUid','senderRole','text','createdAt'])
+          && request.resource.data.keys().hasOnly(['senderUid','senderRole','text','createdAt'])
+          && request.resource.data.senderUid == request.auth.uid
+          && request.resource.data.senderRole == (ticketOwner(ticketId) ? 'user' : 'admin')
+          && request.resource.data.text is string
+          && request.resource.data.text.size() >= 1
+          && request.resource.data.text.size() <= 2000
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+
+    match /publicContent/{contentType} {
+      allow get: if contentType in ['help','releases'] && supportUser();
+      allow list: if false;
+      allow create, update: if contentType in ['help','releases'] && supportAdmin()
+        && request.resource.data.keys().hasAll(['items','updatedBy','updatedAt'])
+        && request.resource.data.keys().hasOnly(['items','updatedBy','updatedAt'])
+        && request.resource.data.items is list
+        && request.resource.data.items.size() >= 1
+        && request.resource.data.items.size() <= 35
+        && request.resource.data.updatedBy == request.auth.uid
         && request.resource.data.updatedAt == request.time;
       allow delete: if false;
     }

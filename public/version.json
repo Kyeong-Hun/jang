@@ -1,8 +1,8 @@
 {
-  "version": "1.6.1",
-  "date": "2026-10-28",
+  "version": "1.6.2",
+  "date": "2026-10-29",
   "notice": "",
-  "releasedAt": "2026-10-28",
-  "headline": "장일기 v1.6.1 음식 메뉴 업데이트",
-  "description": "리조또 표기 정정, 유부장국·우동맛장국·후리가케밥 추가"
+  "releasedAt": "2026-10-29",
+  "headline": "장일기 v1.6.2 소통 센터 개선",
+  "description": "문의함 메일 UI, 대화 불러오기·답장 기능 및 Firestore 접근 규칙 개선"
 }

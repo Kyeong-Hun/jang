@@ -943,14 +943,21 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <p class="appearance-description">초기값 90일은 의학적 권고값이 아닌 탐색용 설정이에요. 연관성은 새로운 기록에서 재현되는지 따로 확인합니다.</p></article>
 <article class="settings-card card-surface" id="backupRestoreSettingsCard"><span class="section-kicker">DATA BACKUP &amp; RESTORE</span><h2>데이터 백업·복원</h2><p class="appearance-description">배변·식사·생활 기록과 변경 이력, 프로필·설정을 JSON으로 보관하거나 가져올 수 있어요. 백업 파일은 암호화되지 않습니다.</p><div class="jg-backup-actions"><button type="button" id="exportSettings" class="outline-button">↓ 전체 기록 JSON 다운로드</button><button type="button" id="openJsonImport" class="primary-button">↑ JSON 가져오기 · 전체 교체</button></div><p class="jg-import-footnote">가져오기는 현재 계정 데이터를 파일 속 데이터로 <strong>완전히 교체</strong>합니다. 백업에 없는 기존 기록도 사라져요.</p><input type="file" id="jsonImportFile" accept=".json,application/json" hidden aria-label="장일기 JSON 백업 파일 선택"></article>
 <article class="settings-card card-surface" id="accountSupportSettings"><span class="section-kicker">PRIVACY &amp; SUPPORT</span><h2>계정과 문의</h2><p class="appearance-description">이름·연령대·성별은 암호화된 내 계정 기록에 저장돼요. 개발자에게 직접 보낸 문의 내용만 운영자가 볼 수 있어요.</p><div class="settings-support-actions"><button id="settingsProfileBtn" type="button">내 프로필 수정</button><button type="button" data-view="support">개발자에게 문의</button></div></article></div><p class="appearance-footnote">선택한 테마와 배경은 로그인한 계정에 저장돼요. 연령대·이메일 변경은 오른쪽 위 프로필에서 관리할 수 있어요. 건강 참고 정보는 왼쪽 참고 메뉴에서 확인할 수 있어요.</p></section>
-<section class="view" id="supportView" aria-label="개발자에게 문의">
-<div class="jg-subpage-head"><h1>개발자에게 문의</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
-<div class="support-grid"><article class="card-surface support-card"><span class="section-kicker">LET'S TALK</span><h2>장일기 소통 센터</h2><p class="jg-comm-tagline">문제 제보에서 아이디어 제안까지, 접수 후에도 같은 문의에서 대화를 이어갈 수 있어요.</p><p class="support-muted">오류 제보, 기능 제안, 이용 문의를 보낼 수 있어요. 배변·식사·생활 기록은 자동으로 전송되지 않아요. 문의 내용에 민감한 개인정보를 넣지 않는 것이 좋아요.</p>
-<form id="supportForm"><label>문의 유형<select id="supportCategory" required><option value="bug">오류 제보</option><option value="feature">기능 제안</option><option value="account">계정·사용 문의</option><option value="other">기타</option></select></label><label>제목<input id="supportSubject" required minlength="3" maxlength="100" placeholder="문의 제목을 입력해 주세요"></label><label>내용<textarea id="supportMessage" required minlength="10" maxlength="2000" rows="5" placeholder="문의 내용을 자세히 적어 주세요"></textarea></label><button class="support-primary" id="supportSend" type="submit">개발자에게 보내기</button><p class="support-status" id="supportStatus" role="status"></p></form></article>
-<article class="card-surface support-card"><span class="section-kicker">YOUR CONVERSATIONS</span><div class="support-title-row"><h2>내 대화함</h2><button type="button" id="supportRefresh">새로고침</button></div><div id="supportMyList" class="support-list">문의 내역을 확인하려면 새로고침을 눌러 주세요.</div></article></div></section>
+<section class="view" id="supportView" aria-label="개발자와의 문의·대화">
+  <div class="jg-subpage-head"><div><span class="section-kicker">SUPPORT MAILBOX</span><h1>소통 센터</h1><p class="support-muted">보낸 문의를 메일처럼 열어 답변을 확인하고 대화를 이어갈 수 있어요.</p></div><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
+  <div class="jg-mail-actions"><button type="button" class="jg-mail-compose-button" id="supportComposeToggle" aria-expanded="false">＋ 새 문의 작성</button><span>개인 건강기록은 문의에 자동 첨부되지 않아요.</span></div>
+  <article class="card-surface support-card jg-mail-compose-card" id="supportComposeCard" hidden>
+    <div class="support-title-row"><h2>새 문의 작성</h2><button type="button" id="supportComposeClose">닫기</button></div>
+    <form id="supportForm"><label>문의 유형<select id="supportCategory" required><option value="bug">오류 제보</option><option value="feature">기능 제안</option><option value="account">계정·사용 문의</option><option value="other">기타</option></select></label><label>제목<input id="supportSubject" required minlength="3" maxlength="100" placeholder="문의 제목을 입력해 주세요"></label><label>내용<textarea id="supportMessage" required minlength="10" maxlength="2000" rows="5" placeholder="문의 내용을 자세히 적어 주세요"></textarea></label><button class="support-primary" id="supportSend" type="submit">문의 보내기</button><p class="support-status" id="supportStatus" role="status"></p></form>
+  </article>
+  <div class="jg-mail-layout">
+    <article class="card-surface support-card jg-mail-inbox"><div class="support-title-row"><h2>내 문의함</h2><button type="button" id="supportRefresh" aria-label="내 문의함 새로고침">↻ 새로고침</button></div><input type="search" id="supportTicketSearch" placeholder="문의 제목·내용 검색" aria-label="내 문의 검색"><p id="supportInboxStatus" class="support-status" role="status"></p><div id="supportMyList" class="jg-mail-list" aria-label="내 문의 목록"></div></article>
+    <article class="card-surface support-card jg-mail-detail" id="supportThreadDetail" aria-label="선택한 문의 대화"><div class="jg-mail-empty"><span class="jg-mail-empty-icon">✉</span><strong>문의함에서 대화를 선택해 주세요.</strong><p>선택한 문의의 내용과 답변이 여기에 표시돼요.</p></div></article>
+  </div>
+</section>
 <section class="view" id="adminSupportView" aria-label="관리자 운영 센터"><div class="jg-subpage-head"><h1>관리자 운영 센터</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
 <div class="jg-admin-work-tabs" role="tablist" aria-label="관리자 작업"><button type="button" class="selected" data-admin-work="inbox">✉ 문의·대화</button><button type="button" data-admin-work="help">? 도움말 편집</button><button type="button" data-admin-work="updates">📢 업데이트 내역 편집</button><button id="adminSupportLock" type="button">관리자 모드 종료</button></div>
-<article class="card-surface support-card jg-admin-section" data-admin-section="inbox"><div class="support-title-row"><div><span class="section-kicker">COMMUNICATION CENTER</span><h2>문의 대화함</h2></div><button id="adminSupportRefresh" type="button">문의 새로고침</button></div><p class="support-muted">문의별 대화 내용을 확인하고 답변을 이어가세요. 건강기록과 복호화 키는 표시되지 않습니다.</p><div class="jg-admin-filters"><input type="search" id="adminTicketSearch" placeholder="제목·내용·이메일 검색" aria-label="관리자 문의 검색"><select id="adminTicketFilter" aria-label="문의 상태"><option value="all">전체 문의</option><option value="open">미답변</option><option value="replied">답변한 문의</option></select><strong id="adminTicketCount"></strong></div><p id="adminSupportStatus" class="support-status" role="status"></p><div id="adminSupportList" class="support-list"></div></article>
+<article class="card-surface support-card jg-admin-section" data-admin-section="inbox"><div class="support-title-row"><div><span class="section-kicker">COMMUNICATION CENTER</span><h2>문의 대화함</h2></div><button id="adminSupportRefresh" type="button">문의 새로고침</button></div><p class="support-muted">문의별 대화 내용을 확인하고 답변을 이어가세요. 건강기록과 복호화 키는 표시되지 않습니다.</p><div class="jg-admin-filters"><input type="search" id="adminTicketSearch" placeholder="제목·내용·이메일 검색" aria-label="관리자 문의 검색"><select id="adminTicketFilter" aria-label="문의 상태"><option value="all">전체 문의</option><option value="open">미답변</option><option value="replied">답변한 문의</option></select><strong id="adminTicketCount"></strong></div><p id="adminSupportStatus" class="support-status" role="status"></p><div class="jg-mail-layout jg-mail-admin"><div class="jg-mail-inbox"><div id="adminSupportList" class="jg-mail-list" aria-label="전체 문의 목록"></div></div><div class="jg-mail-detail" id="adminThreadDetail" aria-label="관리자 대화 및 답변"><div class="jg-mail-empty"><span class="jg-mail-empty-icon">✉</span><strong>답변할 문의를 선택해 주세요.</strong><p>목록에서 선택하면 내용과 답장 작성창이 열립니다.</p></div></div></div></article>
 <article class="card-surface support-card jg-admin-section" data-admin-section="help" hidden><span class="section-kicker">HELP CONTENT MANAGER</span><h2>도움말 콘텐츠 편집</h2><p class="support-muted">주제별 제목과 단계별 설명을 수정하고 모든 이용자에게 게시해요. 단계는 줄바꿈으로 구분합니다. 게임식 안내 위치는 기존 화면 연결을 유지합니다.</p><div class="jg-editor-row"><label>도움말 주제<select id="adminHelpSelect"></select></label></div><div class="jg-editor-fields"><label>주제 이름<input id="adminHelpLabel" maxlength="50"></label><label>제목<input id="adminHelpTitle" maxlength="100"></label><label>단계별 설명 (한 줄당 한 단계)<textarea id="adminHelpSteps" rows="9" maxlength="9000"></textarea></label><label>참고 문구<textarea id="adminHelpNote" rows="3" maxlength="1000"></textarea></label></div><p class="support-status" id="adminHelpStatus" role="status"></p><div class="jg-editor-actions"><button type="button" id="adminHelpPreview">미리보기</button><button type="button" class="support-primary" id="adminHelpSave">도움말 전체 게시</button></div></article>
 <article class="card-surface support-card jg-admin-section" data-admin-section="updates" hidden><span class="section-kicker">RELEASE CONTENT MANAGER</span><h2>업데이트 내역 편집</h2><p class="support-muted">업데이트 제목·날짜·설명을 수정해 게시할 수 있어요. <strong>버전 번호나 실제 배포된 코드 자체는 바뀌지 않습니다.</strong></p><div class="jg-editor-row"><label>업데이트 선택<select id="adminReleaseSelect"></select></label><button type="button" id="adminReleaseAdd">+ 내역 추가</button><button type="button" id="adminReleaseRemove">선택한 내역 삭제</button></div><div class="jg-editor-fields"><label>버전<input id="adminReleaseVersion" maxlength="25" placeholder="1.6.1"></label><label>날짜<input id="adminReleaseDate" type="date"></label><label>제목<input id="adminReleaseTitle" maxlength="140"></label><label>변경 사항 (한 줄당 하나)<textarea id="adminReleaseDetails" rows="9" maxlength="9000"></textarea></label></div><p class="support-status" id="adminReleaseStatus" role="status"></p><div class="jg-editor-actions"><button type="button" id="adminReleasePreview">미리보기</button><button type="button" class="support-primary" id="adminReleaseSave">업데이트 내역 전체 게시</button></div></article></section>
 <section class="view" id="recordManagerView" aria-label="통합 기록 관리">
@@ -2231,6 +2238,54 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
     <p id="authFeedback" class="auth-feedback" role="alert"></p>
   </div>
 </div>
+<style id="jangilgi-mailbox-v162">
+/* v1.6.2 · Mail-style support center: list and detail remain in the same screen. */
+.jg-mail-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0}
+.jg-mail-actions span{font-size:12px;color:var(--muted)}
+.jg-mail-actions .jg-mail-compose-button{background:var(--green,#2e8753);color:#fff;border:0;border-radius:11px;padding:12px 17px;font:800 13px "Noto Sans KR",sans-serif;cursor:pointer}
+#supportComposeCard[hidden]{display:none!important}
+.jg-mail-compose-card{margin:10px 0 16px!important;max-height:none!important}
+.jg-mail-compose-card form{display:grid;gap:12px;max-width:700px}
+.jg-mail-compose-card label{display:grid;gap:5px;font-size:12px;font-weight:700}
+.jg-mail-layout{display:grid;grid-template-columns:minmax(250px,0.88fr) minmax(0,1.65fr);gap:15px;align-items:stretch;min-height:clamp(400px,58vh,690px)}
+.jg-mail-layout>.support-card{max-height:none;overflow:hidden}
+.jg-mail-inbox,.jg-mail-detail{min-width:0;max-height:650px;min-height:390px}
+.jg-mail-inbox{display:flex;flex-direction:column;overflow:hidden}
+.jg-mail-inbox>input{margin:10px 0 6px}
+.jg-mail-list{flex:1;overflow-y:auto;min-height:0;display:flex;flex-direction:column;gap:3px;margin:8px 0}
+.jg-mail-item{width:100%;text-align:left;background:transparent!important;border:1px solid transparent!important;border-bottom:1px solid var(--line)!important;border-radius:9px!important;display:grid;gap:6px;padding:14px 12px!important;color:var(--ink)!important;cursor:pointer;min-height:76px}
+.jg-mail-item:hover,.jg-mail-item:focus-visible{background:var(--paper)!important}
+.jg-mail-item.selected{background:#e8f4e8!important;border:1px solid #a6d8ae!important}
+.jg-mail-item-head{display:flex;justify-content:space-between;gap:7px;align-items:baseline}
+.jg-mail-item-head strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jg-mail-item small,.jg-mail-item-preview{color:var(--muted);font-size:11px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.jg-mail-item-preview{display:block;width:100%}
+.jg-mail-item .jg-conversation-badge{flex-shrink:0;font-size:10px}
+.jg-mail-detail{overflow-y:auto;padding:clamp(16px,2vw,25px)}
+.jg-mail-header{padding-bottom:15px;border-bottom:1px solid var(--line)}
+.jg-mail-header h3{font-size:21px;letter-spacing:-.045em;margin:7px 0}
+.jg-mail-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:11px}
+.jg-mail-thread{display:grid;gap:12px;padding:18px 0;min-height:90px}
+.jg-mail-msg{border:1px solid var(--line);padding:13px 16px;border-radius:14px;max-width:92%;background:var(--surface);overflow-wrap:anywhere}
+.jg-mail-msg.is-sent{background:#e6f5e9;border-color:#c0dec8;justify-self:end}
+.jg-mail-msg:not(.is-sent){justify-self:start}
+.jg-mail-msg .jg-mail-msg-meta{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px}
+.jg-mail-msg p{margin:0;font-size:13px;line-height:1.65;white-space:pre-wrap}
+.jg-mail-compose{border-top:1px solid var(--line);padding-top:13px;display:grid;gap:8px}
+.jg-mail-compose label{font-size:12px;font-weight:700}
+.jg-mail-compose textarea{width:100%;min-height:100px;resize:vertical}
+.jg-mail-compose .jg-mail-send{justify-self:end;background:var(--green,#2e8753)!important;color:white!important;padding:10px 22px;border-radius:10px}
+.jg-mail-compose .jg-mail-send:disabled{opacity:.6}
+.jg-mail-compose .support-status{min-height:18px;margin:0}
+.jg-mail-empty{display:grid;place-content:center;justify-items:center;text-align:center;min-height:330px;color:var(--muted);gap:9px}
+.jg-mail-empty-icon{font-size:35px;opacity:.7}
+.jg-mail-empty strong{color:var(--ink);font-size:15px}
+.jg-mail-empty p{font-size:12px;margin:0}
+.jg-admin-section[data-admin-section="inbox"]{overflow:visible;max-height:none}
+.jg-mail-admin{min-height:500px}
+.jg-mail-admin>.jg-mail-inbox,.jg-mail-admin>.jg-mail-detail{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+@media(max-width:900px){.jg-mail-layout{grid-template-columns:1fr;min-height:0}.jg-mail-inbox{min-height:160px;max-height:300px}.jg-mail-detail{min-height:340px;max-height:none;overflow:visible}.jg-mail-admin{min-height:0}.jg-mail-item{min-height:65px}}
+</style>
 <script id="support-profile-controller">
 (function(){'use strict';
 const $=id=>document.getElementById(id);
@@ -2238,43 +2293,121 @@ const modal=$('profileWelcome'),adminModal=$('adminPasswordModal');
 function status(id,message){$(id).textContent=message;}
 function escDate(value){try{return new Date(value).toLocaleString('ko-KR');}catch{return '';}}
 function add(tag,text,parent,className){const e=document.createElement(tag);if(text!=null)e.textContent=String(text);if(className)e.className=className;parent.appendChild(e);return e;}
-let currentAdminItems=[],activeThreads=new Set();
-function dateText(value){try{const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toLocaleString('ko-KR');}catch{return '';}}
+let currentAdminItems=[],currentOwnItems=[];
+const selected={user:'',admin:''};
+let threadSerial=0;
+function dateText(value){const d=new Date(value);return Number.isNaN(d.getTime())?'날짜 없음':d.toLocaleString('ko-KR');}
 function ticketKey(t){return (t.status||'open')==='replied'?'replied':'open';}
 function markTicket(t){return ticketKey(t)==='replied'?'답변함':'답변 대기';}
-async function showThread(card,t,isAdmin){
- const panel=card.querySelector('.jg-thread-area');if(!panel)return;
- if(!panel.hidden){panel.hidden=true;activeThreads.delete(t.id);return;}
- panel.hidden=false;activeThreads.add(t.id);panel.replaceChildren();
- const info=add('p','대화 내용을 불러오는 중…',panel,'jg-chat-hint');
- try{
-  const result=await window.__jangilgiSupportRequest('supportThreadList',{ticketId:t.id});
-  panel.replaceChildren();const thread=add('div',null,panel,'jg-conversation-thread');
-  const messages=[{senderRole:'user',text:t.message,createdAt:t.createdAt}];
-  if(t.reply && !(result.items||[]).some(x=>x.senderRole==='admin'&&x.text===t.reply))messages.push({senderRole:'admin',text:t.reply,createdAt:t.updatedAt,legacy:true});
-  for(const message of result.items||[])messages.push(message);
-  for(const m of messages){const mine=(isAdmin?m.senderRole==='admin':m.senderRole==='user');const bubble=add('div',null,thread,'jg-chat '+(mine?'mine':'theirs'));add('small',(m.senderRole==='admin'?'개발자':'이용자')+' · '+(dateText(m.createdAt)||'기록됨')+(m.legacy?' · 이전 답변':''),bubble);add('p',m.text||'',bubble);}
-  const compose=add('div',null,panel,'jg-chat-compose');const input=add('textarea',null,compose);input.placeholder=isAdmin?'친절하고 구체적인 답변을 입력하세요.':'추가 질문이나 상황을 이어서 남겨주세요.';input.maxLength=2000;input.rows=3;input.setAttribute('aria-label','문의 대화 메시지');
-  const send=add('button',isAdmin?'답변 전송':'추가 메시지 보내기',compose);send.type='button';
-  const hint=add('p','건강기록·비밀번호·복구 키를 보내지 마세요. 대화 내용만 전송됩니다.',panel,'jg-chat-hint');
-  send.onclick=async()=>{const text=input.value.trim();if(!text||text.length>2000){hint.textContent='내용을 1~2000자로 입력해 주세요.';return;}send.disabled=true;hint.textContent='메시지 전송 중…';try{await window.__jangilgiSupportRequest('supportThreadSend',{ticketId:t.id,text,session:window.__jangilgiAdminSession?.()});input.value='';hint.textContent='메시지를 보냈어요.';panel.hidden=true;await showThread(card,t,isAdmin);}catch(e){hint.textContent=e?.message||'전송에 실패했어요. Firestore 규칙을 확인해 주세요.';}finally{send.disabled=false;}};
- }catch(e){info.textContent='대화 내역을 불러오지 못했어요: '+(e.message||'권한 또는 연결 문제');}
+function messageNode(root,msg,isAdmin){
+ const mine=isAdmin?msg.senderRole==='admin':msg.senderRole==='user';
+ const bubble=add('div',null,root,'jg-mail-msg'+(mine?' is-sent':''));
+ add('div',(msg.senderRole==='admin'?'개발자':'이용자')+' · '+dateText(msg.createdAt)+(msg.legacy?' · 이전 답변':''),bubble,'jg-mail-msg-meta');
+ add('p',msg.text||'',bubble);
 }
-function renderTickets(id,items,isAdmin){const root=$(id);root.replaceChildren();if(!items.length){add('p','표시할 문의가 없습니다.',root,'support-muted');return;}
- for(const t of items){const card=add('article',null,root,'support-ticket');const heading=add('div',null,card,'jg-conversation-summary');add('strong',t.subject,heading);add('span',markTicket(t),heading,'jg-conversation-badge '+(ticketKey(t)==='open'?'unanswered':''));add('small',`${t.categoryLabel||t.category} · ${dateText(t.createdAt)}`,card);if(isAdmin)add('small',`발신: ${t.email||'이메일 없음'}`,card);add('p',t.message,card);
- if(t.reply){add('small','이전에 저장된 개발자 답변이 있습니다. 대화를 열어 확인하세요.',card);}
- const open=add('button',isAdmin?'대화 확인·답변':'대화 보기·이어쓰기',card,'jg-conversation-expand');open.type='button';const panel=add('div',null,card,'jg-thread-area');panel.hidden=true;open.onclick=async()=>{await showThread(card,t,isAdmin);open.textContent=panel.hidden?(isAdmin?'대화 확인·답변':'대화 보기·이어쓰기'):'대화 접기';};
+function emptyDetail(target,isAdmin){
+ target.replaceChildren();const empty=add('div',null,target,'jg-mail-empty');
+ add('span','✉',empty,'jg-mail-empty-icon');
+ add('strong',isAdmin?'답변할 문의를 선택해 주세요.':'문의함에서 대화를 선택해 주세요.',empty);
+ add('p','선택한 문의의 내용과 답변을 여기에서 확인할 수 있어요.',empty);
+}
+function ticketMatches(t,q){return [t.subject,t.message,t.email,t.reply].some(v=>String(v||'').toLowerCase().includes(q));}
+function filteredTickets(isAdmin){
+ const items=isAdmin?currentAdminItems:currentOwnItems;
+ const q=(isAdmin?$('adminTicketSearch'):$('supportTicketSearch')).value.trim().toLowerCase();
+ const kind=isAdmin?$('adminTicketFilter').value:'all';
+ return items.filter(t=>(kind==='all'||ticketKey(t)===kind)&&(!q||ticketMatches(t,q)));
+}
+function drawInbox(isAdmin){
+ const items=filteredTickets(isAdmin),root=$(isAdmin?'adminSupportList':'supportMyList');root.replaceChildren();
+ if(isAdmin)$('adminTicketCount').textContent=`${items.length} / ${currentAdminItems.length}건`;
+ if(!items.length){add('p','표시할 문의가 없어요.',root,'support-muted');emptyDetail($(isAdmin?'adminThreadDetail':'supportThreadDetail'),isAdmin);return;}
+ if(!items.some(t=>t.id===selected[isAdmin?'admin':'user']))selected[isAdmin?'admin':'user']=items[0].id;
+ for(const t of items){
+  const row=add('button',null,root,'jg-mail-item');row.type='button';row.dataset.ticketId=t.id;
+  row.classList.toggle('selected',selected[isAdmin?'admin':'user']===t.id);
+  row.setAttribute('aria-pressed',row.classList.contains('selected')?'true':'false');
+  const head=add('div',null,row,'jg-mail-item-head');add('strong',t.subject||'제목 없음',head);add('span',markTicket(t),head,'jg-conversation-badge '+(ticketKey(t)==='open'?'unanswered':''));
+  add('small',(isAdmin?(t.email||'이용자')+' · ':'')+dateText(t.updatedAt||t.createdAt),row);
+  add('span',t.reply?(ticketKey(t)==='replied'?'답변: '+t.reply:t.message):t.message,row,'jg-mail-item-preview');
+  row.onclick=()=>{selectTicket(t,isAdmin);if(window.matchMedia?.('(max-width:900px)').matches)$(isAdmin?'adminThreadDetail':'supportThreadDetail').scrollIntoView({behavior:'smooth',block:'start'});};
  }
 }
-async function loadOwn(){status('supportStatus','');$('supportMyList').textContent='대화함을 불러오는 중…';try{const r=await window.__jangilgiSupportRequest('supportMyMessages',{});renderTickets('supportMyList',r.items||[],false);}catch(e){$('supportMyList').textContent='대화함을 불러오지 못했어요. 로그인 또는 Firestore 설정을 확인해 주세요.';}}
-function filterAdmin(){const q=$('adminTicketSearch').value.trim().toLowerCase(),kind=$('adminTicketFilter').value;const items=currentAdminItems.filter(t=>(kind==='all'||ticketKey(t)===kind)&&(!q||[t.subject,t.message,t.email].some(v=>String(v||'').toLowerCase().includes(q))));renderTickets('adminSupportList',items,true);$('adminTicketCount').textContent=`${items.length} / ${currentAdminItems.length}건`}
-async function loadAdmin(){status('adminSupportStatus','문의 내역을 조회하는 중…');try{const r=await window.__jangilgiSupportRequest('supportAdminList',{session:window.__jangilgiAdminSession?.()});currentAdminItems=r.items||[];filterAdmin();status('adminSupportStatus',`${currentAdminItems.length}건을 확인했어요.`);}catch(e){status('adminSupportStatus',e.message||'관리자 인증 또는 Firestore 연결을 확인해 주세요.');}}
+async function selectTicket(t,isAdmin){
+ const kind=isAdmin?'admin':'user';selected[kind]=t.id;
+ const root=$(isAdmin?'adminSupportList':'supportMyList');
+ for(const r of root.querySelectorAll('.jg-mail-item')){const on=r.dataset.ticketId===t.id;r.classList.toggle('selected',on);r.setAttribute('aria-pressed',on?'true':'false');}
+ const target=$(isAdmin?'adminThreadDetail':'supportThreadDetail');const serial=++threadSerial;
+ target.replaceChildren();
+ const heading=add('div',null,target,'jg-mail-header');add('span',isAdmin?'관리자 문의 답변':'문의 상세',heading,'section-kicker');add('h3',t.subject||'제목 없음',heading);
+ const meta=add('div',null,heading,'jg-mail-meta');add('span',`${isAdmin?(t.email||'')+' · ':''}${t.categoryLabel||t.category||'문의'} · ${dateText(t.createdAt)}`,meta);
+ add('span',markTicket(t),meta,'jg-conversation-badge '+(ticketKey(t)==='open'?'unanswered':''));
+ const thread=add('div',null,target,'jg-mail-thread');
+ // Existing tickets already store their first question and legacy single reply.
+ const base=[{senderRole:'user',text:t.message,createdAt:t.createdAt}];
+ if(t.reply)base.push({senderRole:'admin',text:t.reply,createdAt:t.updatedAt,legacy:true});
+ base.forEach(m=>messageNode(thread,m,isAdmin));
+ const msgStatus=add('p','추가 대화 불러오는 중…',target,'support-status');
+ // Always show the answer editor, including when a network or Rules read fails.
+ const form=add('div',null,target,'jg-mail-compose');
+ add('label',isAdmin?'답장 작성':'추가 메시지 작성',form);
+ const input=add('textarea',null,form);input.maxLength=2000;input.rows=4;input.placeholder=isAdmin?'문의에 대한 답변을 입력하세요.':'추가 질문이나 상황을 남겨주세요.';input.setAttribute('aria-label',isAdmin?'관리자 답변 입력':'추가 문의 입력');
+ const send=add('button',isAdmin?'답장 보내기':'메시지 보내기',form,'jg-mail-send');send.type='button';
+ const sendStatus=add('p','개인 건강기록·비밀번호·복구 키는 문의에 포함하지 마세요.',form,'support-status');
+ const oldMessages=base.slice();
+ send.onclick=async()=>{
+  const text=input.value.trim();if(!text||text.length>2000){sendStatus.textContent='내용을 1~2000자로 입력해 주세요.';return;}
+  send.disabled=true;sendStatus.textContent='전송 중…';
+  try{
+   await window.__jangilgiSupportRequest('supportThreadSend',{ticketId:t.id,text,session:window.__jangilgiAdminSession?.()});
+   input.value='';sendStatus.textContent='메시지를 전송했어요.';
+   // Refresh the selected thread and inbox after a successful message write.
+   if(isAdmin)await loadAdmin();else await loadOwn();
+  }catch(e){sendStatus.textContent='전송 실패: '+(e.message||'연결 또는 권한을 확인해 주세요.');}
+  finally{send.disabled=false;}
+ };
+ try{
+  const data=await window.__jangilgiSupportRequest('supportThreadList',{ticketId:t.id});
+  if(serial!==threadSerial||selected[kind]!==t.id)return;
+  const extra=data.items||[];
+  const uniqueBase=oldMessages.filter(m=>!m.legacy||!extra.some(x=>x.senderRole==='admin'&&x.text===m.text));
+  thread.replaceChildren();[...uniqueBase,...extra].forEach(m=>messageNode(thread,m,isAdmin));
+  msgStatus.textContent=extra.length?`추가 대화 ${extra.length}건을 불러왔어요.`:'전체 대화를 표시하고 있어요.';
+ }catch(e){if(serial===threadSerial){msgStatus.textContent='이전 문의와 답변은 표시했지만, 추가 대화를 불러오지 못했어요: '+(e.message||'Firestore 권한을 확인해 주세요.');}}
+}
+function showCurrent(isAdmin){
+ const items=filteredTickets(isAdmin);
+ if(items.length){const t=items.find(x=>x.id===selected[isAdmin?'admin':'user'])||items[0];selectTicket(t,isAdmin);}
+ else emptyDetail($(isAdmin?'adminThreadDetail':'supportThreadDetail'),isAdmin);
+}
+async function loadOwn(){
+ $('supportInboxStatus').textContent='문의함 불러오는 중…';
+ try{
+  const data=await window.__jangilgiSupportRequest('supportMyMessages',{});
+  currentOwnItems=data.items||[];
+  drawInbox(false);showCurrent(false);
+  $('supportInboxStatus').textContent=`총 ${currentOwnItems.length}건의 문의`;
+ }catch(e){$('supportInboxStatus').textContent='문의함을 불러오지 못했어요: '+(e.message||'로그인 또는 서버 권한을 확인해 주세요.');}
+}
+function filterAdmin(){drawInbox(true);showCurrent(true);}
+async function loadAdmin(){
+ status('adminSupportStatus','문의 내역을 조회하는 중…');
+ try{
+  const data=await window.__jangilgiSupportRequest('supportAdminList',{session:window.__jangilgiAdminSession?.()});
+  currentAdminItems=data.items||[];drawInbox(true);showCurrent(true);
+  status('adminSupportStatus',`${currentAdminItems.length}건의 문의를 확인했어요.`);
+ }catch(e){status('adminSupportStatus','관리자 문의함 오류: '+(e.message||'권한과 네트워크를 확인해 주세요.'));}
+}
 window.__jangilgiLoadOwnSupport=loadOwn;
+window.__jangOpenSupportCompose=()=>{$('supportComposeCard').hidden=false;$('supportComposeToggle').setAttribute('aria-expanded','true');};
 window.__jangilgiAfterSession=async(data)=>{if(!data?.profile?.onboardingComplete){$('welcomeName').value=data?.profile?.displayName||'';$('welcomeAge').value=data?.profile?.ageGroup||'';$('welcomeGender').value=data?.profile?.gender||'선택 안 함';modal.hidden=false;}else if(!window.__jangilgiMaybeShowUpdate?.(data) && !data?.profile?.firstRunGuideSeen){setTimeout(()=>window.__jangilgiStartIntroGuide?.(),250);}};
 $('welcomeProfileForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('welcomeName').value.trim(),age=$('welcomeAge').value,gender=$('welcomeGender').value;if(!name||!age){status('welcomeStatus','이름과 연령대를 입력해 주세요.');return;}const data=window.__jangilgiSecurityRead?.();if(!data)return status('welcomeStatus','로그인 기록이 아직 열리지 않았어요.');data.profile={...data.profile,displayName:name,ageGroup:age,gender,onboardingComplete:true};$('welcomeSave').disabled=true;status('welcomeStatus','암호화된 프로필을 저장 중이에요…');const ok=await window.__jangilgiSecurityWrite?.(data);if(ok){modal.hidden=true;window.__jangilgiRefreshProfile?.(data);window.__jangilgiAfterOnboarding?.(data);}else status('welcomeStatus','저장에 실패했어요. 네트워크 연결을 확인해 주세요.');$('welcomeSave').disabled=false;});
 window.__jangilgiRefreshProfile=data=>{const name=String(data?.profile?.displayName||'').trim();const email=$('accountEmail').textContent||'';$('accountDisplayName').textContent=name||'내 계정';$('accountAvatarLetter').textContent=(name||email).slice(0,1).toUpperCase()||'나';$('profileAvatarLetter').textContent=(name||email).slice(0,1).toUpperCase()||'나';$('settingsDisplayName').value=name;$('settingsAge').value=data?.profile?.ageGroup||'';$('settingsGender').value=data?.profile?.gender||'선택 안 함';};
-$('supportForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('supportSend');btn.disabled=true;status('supportStatus','문의 전송 중…');try{await window.__jangilgiSupportRequest('supportSubmit',{category:$('supportCategory').value,subject:$('supportSubject').value.trim(),message:$('supportMessage').value.trim()});status('supportStatus','문의가 접수됐어요. 답변은 이 화면에서 확인할 수 있어요.');$('supportForm').reset();await loadOwn();}catch(err){status('supportStatus','전송 실패: '+(err.message||'서버 연결을 확인해 주세요.'));}finally{btn.disabled=false;}});
+$('supportForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('supportSend');btn.disabled=true;status('supportStatus','문의 전송 중…');try{await window.__jangilgiSupportRequest('supportSubmit',{category:$('supportCategory').value,subject:$('supportSubject').value.trim(),message:$('supportMessage').value.trim()});status('supportStatus','문의가 접수됐어요.');$('supportForm').reset();$('supportComposeCard').hidden=true;$('supportComposeToggle').setAttribute('aria-expanded','false');selected.user='';await loadOwn();}catch(err){status('supportStatus','전송 실패: '+(err.message||'서버 연결을 확인해 주세요.'));}finally{btn.disabled=false;}});
 $('supportRefresh').onclick=loadOwn;
+$('supportComposeToggle').onclick=()=>{const panel=$('supportComposeCard');panel.hidden=!panel.hidden;$('supportComposeToggle').setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)$('supportSubject').focus();};
+$('supportComposeClose').onclick=()=>{$('supportComposeCard').hidden=true;$('supportComposeToggle').setAttribute('aria-expanded','false');};
+$('supportTicketSearch').oninput=()=>{drawInbox(false);showCurrent(false);};
 $('adminSupportRefresh').onclick=loadAdmin;
 $('adminTicketSearch').oninput=filterAdmin;$('adminTicketFilter').onchange=filterAdmin;
 $('adminSupportLock').onclick=async()=>{await window.__jangilgiLockSupportAdmin?.();navigate('dashboard');};
@@ -2290,8 +2423,9 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.6.1';
+const JANGILGI_VERSION='1.6.2';
 const JANGILGI_RELEASE_STEPS=[
+ ['v1.6.2 · 소통 센터 개선', '메일함 방식으로 문의 목록과 대화·답장을 확인할 수 있어요. 사용자와 관리자 모두 같은 방식으로 이용해요.'],
  ["v1.6.1 · 음식 메뉴 업데이트", "리조또 표기를 바로잡고, 유부장국·우동맛장국·후리가케밥을 음식 목록에 추가했어요. 기존 리소토 기록은 그대로 유지돼요."],
  ["v1.6.0 · 소통 센터와 관리자 편집", "문의별 대화를 이어가고, 관리자는 도움말과 업데이트 내역을 편집하여 게시할 수 있어요. 서버 보안 규칙이 적용되어야 합니다."],
  ["v1.5.0 · JSON 데이터 전체 복원", "설정의 '데이터 백업·복원'에서 장일기 JSON 파일을 검사하고 가져올 수 있어요. 현재 계정 기록이 파일의 내용으로 완전히 교체되므로 먼저 백업하세요."],
@@ -2313,6 +2447,7 @@ const JANGILGI_RELEASE_STEPS=[
  ["안전하게 기록 계속하기", "원래 저장된 식사 이름과 배변 데이터, 로그인·암호화·복구 키는 유지돼요. 실제 먹은 조리법이 기본 분류와 다르면 해당 기록만 수정해 주세요."]
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.6.2',date:'2026-10-29',title:'메일함 방식 소통 센터 및 문의 답변 복구',details:['사용자·관리자 문의함을 목록과 대화 상세로 분리했습니다.','메일을 선택하면 기존 질문과 답변, 추가 메시지를 한눈에 볼 수 있습니다.','관리자 답장 버튼을 항상 표시하고 문의별 메시지 Firestore 규칙을 보완했습니다.']},
  {version:'1.6.1',date:'2026-10-28',title:'음식 메뉴명 정정 및 메뉴 추가',details:['리소토 메뉴 이름을 리조또로 정정했습니다. 기존에 저장된 리소토 기록은 변경하지 않습니다.','유부장국·우동맛장국·후리가케밥을 추가하고 음식별 기본 소화 특성을 설정했습니다.']},
  {version:'1.6.0',date:'2026-10-28',title:'소통 센터와 운영 콘텐츠 관리',details:['문의별로 사용자와 개발자가 대화를 이어갈 수 있도록 개선했습니다.','관리자 모드에서 도움말과 업데이트 내역을 편집하고 게시할 수 있습니다.','배변·식사·생활 기록과 개인 암호화 데이터는 변경하지 않습니다.']},
  {version:'1.5.0',date:'2026-10-28',title:'JSON 전체 데이터 복원 및 기록 관리 정리',details:[
@@ -2584,7 +2719,7 @@ function openMenuRequest(){
   document.getElementById('supportSubject').value='이 메뉴를 추가해주세요';
   document.getElementById('supportMessage').value='추가를 원하는 메뉴명: \n\n희망하는 음식 카테고리: \n\n메뉴의 특징·주요 재료(선택): ';
   document.getElementById('supportStatus').textContent='요청할 메뉴를 작성한 뒤 「문의 보내기」를 눌러주세요.';
-  document.getElementById('supportMessage').focus();
+  window.__jangOpenSupportCompose?.();document.getElementById('supportMessage').focus();
 }
 function initMenuRequest(){
  document.querySelectorAll('.menu-request-open').forEach(button=>button.addEventListener('click',openMenuRequest));
@@ -3071,7 +3206,7 @@ else{
     }
     throw Error('알 수 없는 문의 요청입니다.');
    }catch(e){
-    if(e?.code==='permission-denied')throw Error('관리자 비밀번호가 일치하지 않거나, 비공개 검증값·Firestore 보안 규칙이 설정되지 않았어요.');
+    if(e?.code==='permission-denied')throw Error('Firestore 접근이 거부됐어요. 문의 메시지·콘텐츠 보안 규칙과 로그인 권한을 확인해 주세요.');
     throw e;
    }
   };
