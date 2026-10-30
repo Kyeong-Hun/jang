@@ -890,6 +890,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <body>
 <div class="app-shell">
 <aside class="sidebar" aria-label="앱 빠른 메뉴">
+ <div class="jg180-side-brand" aria-label="장일기"><span class="jg180-brand-icon" aria-hidden="true">🌿</span><span class="jg180-brand-name">장일기<small>오늘도, 편안한 하루</small></span></div>
  <button type="button" class="compact-side-button compact-home" data-view="dashboard" aria-label="홈으로 이동" title="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>홈</span></button>
  <button type="button" class="compact-side-button compact-report" data-view="report" aria-label="월간 리포트 보기" title="월간 리포트"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7 16v-4M12 16V8M17 16v-6"/></svg><span>리포트</span></button>
  <button type="button" class="compact-side-button compact-analysis" data-view="analysis" aria-label="개인별 분석 보기" title="개인별 분석"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16l5-5 4 3 8-9"/><path d="M15 5h5v5"/><path d="M3 20h18"/></svg><span>분석</span></button>
@@ -2086,13 +2087,23 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  const settingsFoot=byId('settingsView').querySelector('.appearance-footnote');
  if(settingsFoot)settingsFoot.textContent='테마·배경과 분석 기간은 계정에 저장돼요. 기록은 홈에서 각 전용 화면으로 이동하고, 연령대·이메일 변경은 오른쪽 위 프로필에서 관리해요.';
  const settingsIntro=byId('settingsView').querySelector('.record-header p');if(settingsIntro)settingsIntro.textContent='화면 색상·배경과 분석 기간을 조정할 수 있어요.';
- const homeTitle=dashboard.querySelector('.page-intro h1');homeTitle.textContent='오늘의 장 컨디션은?';
+  const heroIntro=dashboard.querySelector('.page-intro');
+  heroIntro.classList.add('jg180-home-hero');
+  const heroText=heroIntro.querySelector(':scope > div');
+  if(heroText){
+    const eyebrow=heroText.querySelector('.eyebrow');
+    if(eyebrow){eyebrow.classList.add('jg180-hero-kicker');eyebrow.textContent='오늘도 편안한 하루를 기록해요 🌿';}
+    const heroNote=document.createElement('div');heroNote.className='jg180-hero-note';
+    heroNote.innerHTML='<span class="jg180-leaf" aria-hidden="true">🌱</span><span>하루의 작은 기록이 쌓여<br>내 몸의 변화를 발견할 수 있어요.</span>';
+    heroIntro.appendChild(heroNote);
+  }
+  const homeTitle=dashboard.querySelector('.page-intro h1');homeTitle.textContent='오늘의 장 컨디션은?';
  const homeIntro=dashboard.querySelector('.page-intro p');homeIntro.textContent='매일의 작은 기록으로 내 몸의 변화를 발견해 보세요.';
  const homeActions=document.createElement('div');homeActions.className='home-main-shortcuts';homeActions.setAttribute('aria-label','기록 바로가기');
  homeActions.innerHTML=`
- <button type="button" class="home-action home-action-meal" data-view="meal"><span class="home-action-icon" aria-hidden="true">🍚</span><span class="home-action-copy"><strong>오늘 먹은 음식, 내 장의 반응은 어땠을까요?</strong><small>나의 식사 습관을 기록해 보세요.</small></span><span class="home-action-cta">식사 기록하기 <span aria-hidden="true">→</span></span></button>
- <button type="button" class="home-action home-action-bowel" data-view="record"><span class="home-action-icon" aria-hidden="true">🚽</span><span class="home-action-copy"><strong>오늘 내 장이 보내는 신호, 확인해 볼까요?</strong><small>배변 상태와 작은 변화까지 기록해 보세요.</small></span><span class="home-action-cta">배변 기록하기 <span aria-hidden="true">→</span></span></button>
- <button type="button" class="home-action home-action-life" data-view="lifestyle"><span class="home-action-icon" aria-hidden="true">☀️</span><span class="home-action-copy"><strong>오늘의 생활 습관, 내 장은 만족했을까요?</strong><small>수면, 운동, 스트레스까지 돌아봐요.</small></span><span class="home-action-cta">생활 기록하기 <span aria-hidden="true">→</span></span></button>`;
+ <button type="button" class="home-action home-action-meal" data-view="meal"><span class="home-action-icon" aria-hidden="true">🍚</span><span class="home-action-copy"><strong>오늘 먹은 음식, 내 장의 반응은 어땠을까요?</strong><small>오늘 먹은 음식과 식후의 변화를 기록해 보세요.</small></span><span class="home-action-cta">식사 기록하기 <span aria-hidden="true">→</span></span></button>
+ <button type="button" class="home-action home-action-bowel" data-view="record"><span class="home-action-icon" aria-hidden="true">🚽</span><span class="home-action-copy"><strong>오늘 내 장이 보내는 신호, 확인해 볼까요?</strong><small>배변 형태와 몸의 작은 변화까지 기록해 보세요.</small></span><span class="home-action-cta">배변 기록하기 <span aria-hidden="true">→</span></span></button>
+ <button type="button" class="home-action home-action-life" data-view="lifestyle"><span class="home-action-icon" aria-hidden="true">☀️</span><span class="home-action-copy"><strong>오늘의 생활 습관, 내 장은 만족했을까요?</strong><small>수면·운동·스트레스와 하루의 습관을 돌아봐요.</small></span><span class="home-action-cta">생활 기록하기 <span aria-hidden="true">→</span></span></button>`;
  dashboard.querySelector('.page-intro').after(homeActions);
  const mealPanel=byId('timedMealPanel');
   if(mealPanel){
@@ -2489,7 +2500,11 @@ async function selectTicket(t,isAdmin){
  const renderMessages=extra=>{
   if(serial!==threadSerial||selected[kind]!==t.id)return;
   const uniqueBase=oldMessages.filter(m=>!m.legacy||!extra.some(x=>x.senderRole==='admin'&&x.text===m.text));
+  const previousBottom=thread.scrollHeight-thread.scrollTop-thread.clientHeight;
+  const shouldFollow=thread.dataset.initialized!=='yes'||previousBottom<90;
   thread.replaceChildren();[...uniqueBase,...extra].forEach(m=>messageNode(thread,m,isAdmin));
+  thread.dataset.initialized='yes';
+  if(shouldFollow)requestAnimationFrame(()=>{if(thread.isConnected)thread.scrollTop=thread.scrollHeight;});
   msgStatus.textContent=extra.length?`대화 ${extra.length}건 · 실시간 반영 중`:'대화가 실시간으로 업데이트돼요.';
  };
  const messageError=e=>{if(serial===threadSerial)msgStatus.textContent='기존 문의는 표시되지만 추가 대화 실시간 조회에 실패했어요: '+(e.message||'권한을 확인해 주세요.');};
@@ -2598,13 +2613,18 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.7.4';
+const JANGILGI_VERSION='1.8.0';
 const JANGILGI_RELEASE_STEPS=[
- ['v1.7.3 → v1.7.4 · 메뉴 5종', '순대국·두바이쫀득쿠키·만두국·간장게장·양념게장을 추가했어요.'],
- ['v1.7.3 → v1.7.4 · 실시간 문의함', '답변 대기를 맨 위에 두고, 문의 상태와 답변이 새로고침 없이 갱신돼요. 긴 답변도 끝까지 읽을 수 있어요.'],
- ['v1.7.3 → v1.7.4 · 홈 화면', '질문형 문구는 그대로 유지하면서 PC에서는 기록 카드 3개를 한 줄에 보여줘요.'],
+  ['v1.7.4 → v1.8.0 · 화면 개편', '부드러운 녹색의 카드형 레이아웃으로 화면을 정리했어요. 점수 기능은 추가하지 않았어요.'],
+  ['v1.7.4 → v1.8.0 · 음식 9종', '오므라이스·두루치기·돼지국밥·순대국밥·시래기국·해장국·뼈해장국·선지국·전골이 추가됐어요.'],
+  ['v1.7.4 → v1.8.0 · 대화창', '문의 대화가 길어져도 메일함 페이지 전체가 늘지 않고, 대화 내용만 스크롤할 수 있어요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.8.0',date:'2026-10-30',title:'장일기 UI 새단장·음식 메뉴·메일 대화창 개선',details:[
+   '점수 없이 기록 중심의 포근한 녹색 카드형 화면과 사이드바 구성',
+   '오므라이스·두루치기·돼지국밥·순대국밥·시래기국·해장국·뼈해장국·선지국·전골 추가',
+   '문의 대화가 길어도 내부 스크롤을 유지하고 입력창은 접근 가능하도록 개선'
+  ]},
  {version:'1.7.4',date:'2026-10-30',title:'음식 메뉴·실시간 문의함·홈 카드 레이아웃 개선',details:[
  '순대국·두바이쫀득쿠키·만두국·간장게장·양념게장 추가',
  '답변 대기 우선 정렬, 실시간 문의/답변 갱신과 관리자 답변창 잘림 수정',
@@ -2665,10 +2685,10 @@ const JANGILGI_CHANGELOG=[
  ]}
 ];
 const JANGILGI_FOOD_CATALOG=[
- ['밥·쌀·곡류',['흰쌀밥','잡곡밥','현미밥','흑미밥','보리밥','콩밥','귀리밥','찰밥','볶음밥','김치볶음밥','비빔밥','주먹밥','후리가케밥','김밥','초밥','유부초밥','리조또','카레','카레라이스','죽','누룽지','떡국','떡','오트밀','시리얼']],
- ['국·찌개·탕',['미역국','된장국','북엇국','콩나물국','소고기뭇국','김칫국','계란국','순두부찌개','된장찌개','김치찌개','부대찌개','청국장','감자탕','갈비탕','설렁탕','곰탕','육개장','삼계탕','해물탕','매운탕','어묵탕','유부장국','우동맛장국','순대국','만두국']],
+ ['밥·쌀·곡류',['흰쌀밥','잡곡밥','현미밥','흑미밥','보리밥','콩밥','귀리밥','찰밥','볶음밥','김치볶음밥','비빔밥','주먹밥','오므라이스','후리가케밥','김밥','초밥','유부초밥','리조또','카레','카레라이스','죽','누룽지','떡국','떡','오트밀','시리얼']],
+ ['국·찌개·탕',['미역국','된장국','북엇국','콩나물국','소고기뭇국','김칫국','계란국','순두부찌개','된장찌개','김치찌개','부대찌개','청국장','감자탕','갈비탕','설렁탕','곰탕','육개장','삼계탕','해물탕','매운탕','어묵탕','유부장국','우동맛장국','순대국','순대국밥','돼지국밥','만두국','시래기국','해장국','뼈해장국','선지국','전골']],
  ['면·밀가루·빵',['라면','컵라면','국수','잔치국수','비빔국수','냉면','밀면','칼국수','수제비','우동','소바','쌀국수','토마토 파스타','크림 파스타','오일 파스타','로제 파스타','아라비아타 파스타','페스토 파스타','알리오 올리오','까르보나라','봉골레 파스타','미트소스 파스타','해산물 파스타','짜장면','짬뽕','볶음면','빵','식빵','크루아상','베이글','도넛','피자','햄버거','샌드위치','브리또','만두']],
- ['육류·가금류',['소고기','돼지고기','닭고기','오리고기','양고기','삼겹살','목살','갈비','불고기','제육볶음','수육','보쌈','족발','치킨','닭갈비','닭볶음탕','돈가스','스테이크','햄','소시지','베이컨','내장류','육포','치즈육포']],
+ ['육류·가금류',['소고기','돼지고기','닭고기','오리고기','양고기','삼겹살','목살','갈비','불고기','제육볶음','두루치기','수육','보쌈','족발','치킨','닭갈비','닭볶음탕','돈가스','스테이크','햄','소시지','베이컨','내장류','육포','치즈육포']],
  ['생선류',['고등어','갈치','삼치','연어','참치','광어','우럭','대구','명태','조기','꽁치','멸치','장어','정어리','방어','농어','도미','어육','생선회','생선구이','훈제생선']],
  ['갑각류',['새우','게','꽃게','간장게장','양념게장','대게','킹크랩','가재','바닷가재']],
  ['조개·패류',['조개','바지락','홍합','굴','전복','가리비','소라','꼬막','키조개']],
@@ -2704,7 +2724,17 @@ Object.assign(JANG_DIGEST_DEFAULTS,{
  '만두국':['정제 전분·저섬유','밀·프럭탄 후보'],
  '두바이쫀득쿠키':['정제 전분·저섬유','밀·프럭탄 후보','지방 함량·튀김','당분 많은 간식·음료'],
  '간장게장':['발효·절임'],
- '양념게장':['매운 음식']
+  '양념게장':['매운 음식'],
+  // 1.8.0: food defaults are applied at analysis time. Mixed dishes vary by recipe.
+  '오므라이스':['정제 전분·저섬유'],
+  '두루치기':['매운 음식'],
+  '돼지국밥':[],
+  '순대국밥':['정제 전분·저섬유'],
+  '시래기국':['식물성 식이섬유'],
+  '해장국':[],
+  '뼈해장국':[],
+  '선지국':[],
+  '전골':[]
 });
 const JANG_DIGEST_SET=new Set(JANG_DIGEST_TAGS);
 function jangDefaultTags(food){return Array.isArray(JANG_DIGEST_DEFAULTS[food])?[...JANG_DIGEST_DEFAULTS[food]]:[];}
@@ -2756,11 +2786,11 @@ function jangPrepChoices(food){
   const isDessert=group==='간식·디저트';
   const isDrink=group==='음료·카페인';
   const isProcessed=group==='매운·기름진·가공식품';
-  const cookedSavory=isSoup||isNoodle||isMeat||isSide||isProcessed||/게장/.test(food)||/볶음밥|김치볶음밥|비빔밥|리조또|리소토|카레|김밥|샐러드|생선구이/.test(food);
-  const cookedWithOil=isSide||/순대국|두바이쫀득쿠키|볶|튀김|구이|돈가스|커틀릿|치킨|피자|파스타|리조또|리소토|카레|브리또|불고기|삼겹살|스테이크|햄버거|샌드위치/.test(food)||isDessert||tags.includes('지방 함량·튀김');
+  const cookedSavory=isSoup||isNoodle||isMeat||isSide||isProcessed||/게장/.test(food)||/볶음밥|김치볶음밥|비빔밥|오므라이스|두루치기|리조또|리소토|카레|김밥|샐러드|생선구이/.test(food);
+  const cookedWithOil=isSide||/순대국|돼지국밥|순대국밥|뼈해장국|해장국|전골|두루치기|오므라이스|두바이쫀득쿠키|볶|튀김|구이|돈가스|커틀릿|치킨|피자|파스타|리조또|리소토|카레|브리또|불고기|삼겹살|스테이크|햄버거|샌드위치/.test(food)||isDessert||tags.includes('지방 함량·튀김');
   add('fatty',cookedWithOil);
-  add('spicy',(cookedSavory&&/김치|매운|매콤|고추|카레|찌개|양념|떡볶이|마라|닭갈비|비빔|라면|볶|짬뽕|육개장|해물탕|부대/.test(food))||tags.includes('매운 음식'));
-  add('whole',isNoodle||isSide||(isRice&&/볶음밥|비빔밥|주먹밥|김밥|후리가케밥|리조또|리소토|카레라이스/.test(food)));
+  add('spicy',(cookedSavory&&/김치|매운|매콤|고추|카레|찌개|두루치기|돼지국밥|순대국밥|해장국|선지국|전골|양념|떡볶이|마라|닭갈비|비빔|라면|볶|짬뽕|육개장|해물탕|부대/.test(food))||tags.includes('매운 음식'));
+  add('whole',isNoodle||isSide||(isRice&&/볶음밥|비빔밥|주먹밥|김밥|오므라이스|후리가케밥|리조또|리소토|카레라이스/.test(food)));
   add('dairy',/크림|로제|까르보나라|리조또|리소토|치즈|피자|브리또|버터|푸딩|케이크|아이스크림|라떼|코코아|스무디|카레|요구르트|요거트/.test(food)||(isDessert&&/와플|팬케이크|마카롱|호떡/.test(food))||tags.includes('유당'));
   // Onion/garlic is a possible ADDITION to select mixed recipes, never every soup or noodle by default.
   add('onion',/볶음밥|김치볶음밥|비빔밥|리조또|리소토|카레|브리또|파스타|알리오|봉골레|미트소스|짜장|짬뽕|불고기|제육볶음|닭갈비|닭볶음탕|마라탕|마라샹궈|스테이크|햄버거|피자|샌드위치|샐러드|김치찌개|된장찌개|순두부찌개|부대찌개|육개장/.test(food));
@@ -4109,6 +4139,121 @@ let tries=0;const job=setInterval(()=>{if(window.__jangilgiSupportRequest){clear
 @media(max-width:900px){
  #adminSupportView .jg-mail-layout,#supportView .jg-mail-layout{grid-template-columns:minmax(0,1fr)!important}
  #adminSupportView .jg-mail-layout>.jg-mail-detail,#supportView .jg-mail-layout>.jg-mail-detail{padding:14px!important}
+}
+</style>
+<style id="jangilgi-v180-styles">
+/* v1.8.0: visual language inspired by the approved soft botanical dashboard, no scores. */
+:root{--paper:#f7faf5;--surface:#fff;--line:#e6ece6;--shadow:0 11px 30px rgba(36,70,47,.055);--ink:#1e3128;--deep:#193d30;--green:#357e51;--muted:#718077}
+body{background:var(--paper);color:var(--ink)}
+.card-surface,.support-card,.foodlife-panel,.calendar-card,.report-section{box-shadow:var(--shadow)!important;border-color:var(--line)!important;border-radius:18px!important}
+input,select,textarea{border-radius:11px}
+.primary-button,.support-primary,.jg-mail-send{border-radius:12px!important}
+@media(min-width:1051px){
+ .sidebar{width:204px!important;min-width:204px!important;flex-basis:204px!important;align-items:stretch!important;padding:24px 14px!important;gap:6px!important;background:#f7faf5!important;border-right:1px solid #e8eee7!important}
+ .main-content{width:calc(100% - 204px)!important}
+ .sidebar .compact-side-button{width:100%!important;min-height:45px!important;height:45px!important;flex-direction:row!important;justify-content:flex-start!important;gap:12px!important;padding:8px 14px!important;border:0!important;border-radius:12px!important;background:transparent!important;box-shadow:none!important}
+ .sidebar .compact-side-button.active{background:#e1f0e1!important;color:#20643e!important}
+ .sidebar .compact-side-button span{font-size:13px!important;font-weight:750!important}
+ .sidebar .compact-side-button svg{width:20px;height:20px}
+ .sidebar .compact-side-fill{min-height:20px}
+}
+.jg180-side-brand{display:none;align-items:center;gap:9px;color:#164f31;padding:12px 8px 25px;white-space:nowrap}
+.jg180-brand-icon{font-size:27px;flex:none}
+.jg180-brand-name{font-size:20px;font-weight:850;line-height:1.15;letter-spacing:-.07em;display:grid;gap:4px}
+.jg180-brand-name small{font-size:10px;color:#8b9a90;font-weight:600;letter-spacing:0}
+@media(min-width:1051px){.jg180-side-brand{display:flex}}
+.topbar{background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid #e9eee8}
+#dashboardView.active-view{background:var(--paper);gap:15px!important;padding-bottom:38px!important}
+#dashboardView .jg180-home-hero{position:relative;isolation:isolate;overflow:hidden;min-height:145px;margin:0!important;padding:23px 25px!important;border-radius:19px;background:linear-gradient(115deg,#fdfefc 0%,#f6fbf3 60%,#e8f2e6 100%);box-shadow:0 8px 25px #345a3520;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#dashboardView .jg180-home-hero::before,#dashboardView .jg180-home-hero::after{content:'';position:absolute;z-index:-1;border-radius:65% 35% 60% 40%;background:linear-gradient(130deg,#b8d6b3,#e1eddf);opacity:.55;transform:rotate(-22deg)}
+#dashboardView .jg180-home-hero::before{width:200px;height:115px;right:-35px;top:-24px}
+#dashboardView .jg180-home-hero::after{width:110px;height:65px;right:90px;bottom:-35px}
+#dashboardView .jg180-home-hero h1{font-size:clamp(27px,3.3vw,42px)!important;color:#163c2a!important;letter-spacing:-.065em}
+#dashboardView .jg180-home-hero .intro-copy{display:block!important;color:#728276!important;line-height:1.65!important;font-size:clamp(12px,1.1vw,15px)!important}
+#dashboardView .jg180-hero-kicker{color:#39815a;font-size:11px!important;font-weight:850!important;letter-spacing:0}
+.jg180-hero-note{flex:0 1 245px;display:flex;align-items:center;justify-content:center;gap:9px;background:rgba(255,255,255,.78);border:1px solid #e0ecdf;border-radius:16px;padding:14px 15px;color:#477353;font-size:11px;font-weight:750;line-height:1.65;box-shadow:0 10px 24px #4d70530d}
+.jg180-leaf{font-size:26px}
+#dashboardView .home-main-shortcuts{gap:13px!important}
+#dashboardView .home-main-shortcuts .home-action{min-height:208px!important;border-radius:19px!important;border:1px solid #e8eee7!important;box-shadow:0 8px 23px #2949320c!important;background:#fff!important;transition:transform .15s,box-shadow .15s!important}
+#dashboardView .home-main-shortcuts .home-action:hover{transform:translateY(-3px);box-shadow:0 16px 30px #29493215!important}
+#dashboardView .home-main-shortcuts .home-action-icon{width:48px!important;height:48px!important;flex-basis:48px!important;background:#e7f4e8!important}
+#dashboardView .home-main-shortcuts .home-action-bowel .home-action-icon{background:#fff3e4!important}
+#dashboardView .home-main-shortcuts .home-action-life .home-action-icon{background:#e8f4ef!important}
+#dashboardView .home-main-shortcuts .home-action-copy strong{font-size:clamp(13px,1.11vw,17px)!important;line-height:1.5!important;color:#20372d!important}
+#dashboardView .home-main-shortcuts .home-action-copy small{display:block!important;font-size:11px!important;color:#728176!important;line-height:1.6!important}
+#dashboardView .home-main-shortcuts .home-action-cta{width:100%;display:flex!important;justify-content:center!important;align-items:center!important;text-align:center!important;padding:11px 8px!important;border-radius:13px!important;background:#e6f2e3!important;color:#2a6340!important;font-size:12px!important;font-weight:850!important}
+#dashboardView .home-main-shortcuts .home-action-bowel .home-action-cta{background:#fff3e4!important;color:#85603c!important}
+#dashboardView .home-main-shortcuts .home-action-life .home-action-cta{background:#e7f3ef!important;color:#33705e!important}
+#dashboardView .home-summary-title{margin:9px 0 0!important;font-size:18px!important;letter-spacing:-.045em}
+#dashboardView .home-summary-grid{gap:13px!important}
+#dashboardView .home-detail-card{min-height:137px;box-shadow:0 8px 24px rgba(34,69,45,.06)!important;border-radius:18px!important;background:#fff!important;border:1px solid #e9eee9!important}
+#dashboardView .home-detail-card .home-detail-head{font-size:13px!important;color:#3e7854!important}
+#dashboardView .home-detail-card .home-detail-value{font-size:clamp(19px,1.9vw,27px)!important;color:#193e2d!important}
+#dashboardView .home-detail-card .home-detail-note{font-size:11px!important;line-height:1.6!important}
+/* No new health scores: the existing six cards continue to show logged counts and record statuses. */
+@media(min-width:701px) and (max-width:1050px){
+ #dashboardView .jg180-home-hero{padding:20px!important;min-height:135px}
+ .jg180-hero-note{flex-basis:170px;font-size:10px;padding:10px}
+ #dashboardView .home-main-shortcuts .home-action{min-height:195px!important}
+}
+@media(max-width:700px){
+ #dashboardView .jg180-home-hero{min-height:132px;padding:16px!important;border-radius:15px}
+ #dashboardView .jg180-home-hero h1{font-size:clamp(22px,6vw,30px)!important}
+ .jg180-hero-note{display:none}
+ #dashboardView .home-main-shortcuts{grid-template-columns:1fr!important;gap:9px!important}
+ #dashboardView .home-main-shortcuts .home-action{min-height:115px!important;padding:13px!important;gap:10px!important;display:grid!important;grid-template-columns:38px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-items:start!important}
+ #dashboardView .home-main-shortcuts .home-action .home-action-icon{width:36px!important;height:36px!important;flex-basis:36px!important;grid-row:1/span 2;grid-column:1;font-size:19px!important}
+ #dashboardView .home-main-shortcuts .home-action .home-action-copy{grid-column:2;grid-row:1}
+ #dashboardView .home-main-shortcuts .home-action .home-action-copy strong{font-size:12px!important}
+ #dashboardView .home-main-shortcuts .home-action .home-action-copy small{font-size:10px!important}
+ #dashboardView .home-main-shortcuts .home-action .home-action-cta{grid-column:2;grid-row:2;width:auto!important;justify-self:stretch;padding:7px 8px!important;font-size:10px!important}
+ #dashboardView .home-summary-title{font-size:15px!important}
+ #dashboardView .home-detail-card{min-height:117px!important}
+}
+
+/* v1.8.0: compact mailbox with an independently scrollable message pane. */
+#adminSupportView.active-view,#supportView.active-view{overflow-y:auto!important;overflow-x:hidden!important}
+#adminSupportView .jg-admin-section[data-admin-section="inbox"],#supportView .support-card{min-width:0}
+#adminSupportView .jg-mail-layout,#supportView .jg-mail-layout{
+  display:grid!important;grid-template-columns:minmax(220px,.84fr) minmax(0,1.65fr)!important;
+  align-items:stretch!important;gap:15px!important;height:min(72dvh,690px)!important;
+  min-height:430px!important;max-height:690px!important;
+}
+#adminSupportView .jg-mail-layout>.jg-mail-inbox,#supportView .jg-mail-layout>.jg-mail-inbox{
+  height:100%!important;min-height:0!important;max-height:none!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;
+}
+#adminSupportView .jg-mail-layout>.jg-mail-detail,#supportView .jg-mail-layout>.jg-mail-detail{
+  display:flex!important;flex-direction:column!important;align-self:stretch!important;
+  height:100%!important;min-height:0!important;max-height:none!important;
+  overflow:hidden!important;box-sizing:border-box!important;
+}
+#adminSupportView .jg-mail-header,#supportView .jg-mail-header{flex:0 0 auto;min-width:0}
+#adminSupportView .jg-mail-thread,#supportView .jg-mail-thread{
+  display:grid;align-content:start;gap:12px;
+  flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+  overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;
+  scrollbar-width:thin;padding:12px 8px 16px 0;scroll-behavior:smooth;
+}
+#adminSupportView .jg-mail-compose,#supportView .jg-mail-compose{
+  flex:0 0 auto!important;padding:12px 0 0!important;margin-top:0!important;
+  background:var(--surface,#fff);border-top:1px solid var(--line,#e0e9e1);
+  display:grid!important;gap:6px!important;
+}
+#adminSupportView .jg-mail-compose textarea,#supportView .jg-mail-compose textarea{
+  min-height:62px!important;max-height:116px!important;resize:vertical!important;
+}
+#adminSupportView .jg-mail-detail>.support-status,#supportView .jg-mail-detail>.support-status{
+ flex:0 0 auto!important;font-size:10px!important;line-height:1.4!important;margin:3px 0!important;min-height:0!important;
+}
+#adminSupportView .jg-mail-msg,#supportView .jg-mail-msg{min-width:0;max-width:95%;word-break:break-word;overflow-wrap:anywhere}
+@media(max-width:900px){
+ #adminSupportView .jg-mail-layout,#supportView .jg-mail-layout{
+  grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(90px,140px) minmax(0,1fr)!important;
+  height:min(82dvh,740px)!important;min-height:450px!important;max-height:none!important;gap:10px!important;
+ }
+ #adminSupportView .jg-mail-layout>.jg-mail-inbox,#supportView .jg-mail-layout>.jg-mail-inbox{min-height:0!important;max-height:none!important}
+ #adminSupportView .jg-mail-layout>.jg-mail-detail,#supportView .jg-mail-layout>.jg-mail-detail{min-height:0!important;padding:12px!important}
+ #adminSupportView .jg-mail-header h3,#supportView .jg-mail-header h3{font-size:17px!important}
 }
 </style>
 </body>
