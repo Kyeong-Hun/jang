@@ -497,6 +497,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
   max-width: 100%;
   text-align: center;
 }
+.quick-shape .jg-shape-cause{display:block;margin-top:5px;font-size:9px;line-height:1.45;color:#658071;font-weight:500}
 .quick-shape small {
   white-space: normal;
   overflow-wrap: anywhere;
@@ -915,7 +916,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.7.1</strong><p id="releaseText">v1.7.0 → v1.7.1에서 바뀐 기능만 단계별로 살펴볼 수 있어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.7.3</strong><p id="releaseText">v1.7.2 → v1.7.3에서 바뀐 기능만 단계별로 살펴볼 수 있어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1134,8 +1135,13 @@ const ageGuides = {
   '50대 이상': {title:'대장암 국가검진과 배변 변화',body:'국내 국가암검진은 50세 이상을 대상으로 매년 분변잠혈검사를 안내합니다(개인별 검진 대상 확인 필요). 검진과 별개로 혈변이나 지속되는 변화는 진료를 통해 확인하세요.'}
 };
 const bristolInfo = [
-  ['1형','작고 딱딱한 알갱이'],['2형','울퉁불퉁한 덩어리'],['3형','표면에 금이 간 형태'],
-  ['4형','매끄럽고 부드러운 형태'],['5형','부드럽고 뚜렷한 덩어리'],['6형','흐물흐물한 조각'],['7형','물처럼 묽은 형태']
+  ['1형','작고 딱딱한 알갱이','수분 섭취가 적거나 장 통과가 느린 상태와 관련이 있어요.'],
+  ['2형','울퉁불퉁한 덩어리','수분·식이섬유 섭취가 적은 경우와 관련이 있어요.'],
+  ['3형','표면에 금이 간 형태','대체로 정상적인 배변 형태에 해당해요.'],
+  ['4형','매끄럽고 부드러운 형태','일반적으로 정상 범위의 배변 형태에 해당해요.'],
+  ['5형','부드럽고 뚜렷한 덩어리','식이섬유 섭취가 적거나 장 통과가 빨라진 상태와 관련이 있어요.'],
+  ['6형','흐물흐물한 조각','장 통과가 빨라진 상태나 섭취한 음식과 관련이 있어요.'],
+  ['7형','물처럼 묽은 형태','설사 형태로, 감염이나 음식 등 여러 요인과 관련이 있어요.']
 ];
 const flagValues = ['혈변','검은색 변','이유 없는 체중 감소','밤에 깨는 복통'];
 const dateKey = value => { const d=new Date(value); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
@@ -1556,13 +1562,13 @@ let editingEventId=null,quickState={bristol:null,pain:null,strain:null},allowRed
 const localDateTime = date=>{const d=new Date(date);return `${dateKey(d)}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
 function showQuickState(){
  document.querySelectorAll('#quickShapes [data-shape]').forEach(b=>{const p=Number(b.dataset.shape)===quickState.bristol;b.classList.toggle('selected',p);b.setAttribute('aria-pressed',String(p));});
- document.querySelector('#quickShapeText').textContent=quickState.bristol?bristolInfo[quickState.bristol-1][1]:'형태를 선택해 주세요.';
+ document.querySelector('#quickShapeText').textContent=quickState.bristol?`${bristolInfo[quickState.bristol-1][1]} · ${bristolInfo[quickState.bristol-1][2]} (형태만으로 원인을 확정할 수 없어요.)`:'형태를 선택해 주세요.';
  document.querySelectorAll('[data-quick-field] button').forEach(b=>{const p=Number(b.dataset.value)===quickState[b.parentElement.dataset.quickField];b.classList.toggle('selected',p);b.setAttribute('aria-pressed',String(p));});
  const d=new Date(document.querySelector('#eventAt').value);document.querySelector('#quickTimeLabel').textContent=Number.isNaN(d.getTime())?'시간을 선택해 주세요.':new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',hour:'numeric',minute:'2-digit'}).format(d);
 }
 function resetQuickForm(){editingEventId=null;quickState={bristol:null,pain:null,strain:null};document.querySelector('#eventAt').value=localDateTime(new Date());document.querySelectorAll('#quickFlagsBlock input').forEach(x=>x.checked=false);document.querySelector('#quickFlagsBlock').open=false;document.querySelector('#saveQuickBtn').textContent='기록 저장하기 →';document.querySelector('#cancelQuickEdit').hidden=true;showQuickState();}
 function initQuickForm(){
- document.querySelector('#quickShapes').innerHTML=bristolInfo.map(([n,desc],i)=>`<button type="button" class="quick-shape" data-shape="${i+1}" aria-pressed="false"><span class="bristol-shape" aria-hidden="true"><i class="shape s${i+1}"></i></span><b>${n}</b><small>${desc}</small></button>`).join('');
+ document.querySelector('#quickShapes').innerHTML=bristolInfo.map(([n,desc,cause],i)=>`<button type="button" class="quick-shape" data-shape="${i+1}" aria-pressed="false"><span class="bristol-shape" aria-hidden="true"><i class="shape s${i+1}"></i></span><b>${n}</b><small>${desc}<span class="jg-shape-cause">${cause}</span></small></button>`).join('');
  document.querySelector('#quickShapes').onclick=e=>{const b=e.target.closest('[data-shape]');if(b){quickState.bristol=Number(b.dataset.shape);showQuickState();}};
  document.querySelectorAll('[data-quick-field]').forEach(group=>{group.innerHTML=['없음','약간','보통','심함'].map((t,i)=>`<button type="button" data-value="${i}" aria-pressed="false">${t}</button>`).join('');group.onclick=e=>{const b=e.target.closest('[data-value]');if(b){quickState[group.dataset.quickField]=Number(b.dataset.value);showQuickState();}};});
  document.querySelector('#eventAt').addEventListener('change',showQuickState);document.querySelector('#cancelQuickEdit').onclick=resetQuickForm;
@@ -2080,13 +2086,13 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  const settingsFoot=byId('settingsView').querySelector('.appearance-footnote');
  if(settingsFoot)settingsFoot.textContent='테마·배경과 분석 기간은 계정에 저장돼요. 기록은 홈에서 각 전용 화면으로 이동하고, 연령대·이메일 변경은 오른쪽 위 프로필에서 관리해요.';
  const settingsIntro=byId('settingsView').querySelector('.record-header p');if(settingsIntro)settingsIntro.textContent='화면 색상·배경과 분석 기간을 조정할 수 있어요.';
- const homeTitle=dashboard.querySelector('.page-intro h1');homeTitle.textContent='나의 장일기';
- const homeIntro=dashboard.querySelector('.page-intro p');homeIntro.textContent='오늘 기록부터 누적 분석까지, 한곳에서 살펴보세요.';
+ const homeTitle=dashboard.querySelector('.page-intro h1');homeTitle.textContent='오늘의 장 컨디션은?';
+ const homeIntro=dashboard.querySelector('.page-intro p');homeIntro.textContent='매일의 작은 기록으로 내 몸의 변화를 발견해 보세요.';
  const homeActions=document.createElement('div');homeActions.className='home-main-shortcuts';homeActions.setAttribute('aria-label','기록 바로가기');
  homeActions.innerHTML=`
- <button type="button" class="home-action" data-view="record"><span class="home-action-icon">✎</span><span class="home-action-copy"><strong>배변 기록 작성</strong><small>배변 시각 · 형태 · 증상</small></span></button>
- <button type="button" class="home-action" data-view="meal"><span class="home-action-icon">🍽</span><span class="home-action-copy"><strong>식사 기록 작성</strong><small>음식 · 식사 시각</small></span></button>
- <button type="button" class="home-action" data-view="lifestyle"><span class="home-action-icon">☀</span><span class="home-action-copy"><strong>생활 기록 작성</strong><small>수분 · 수면 · 스트레스</small></span></button>`;
+ <button type="button" class="home-action home-action-meal" data-view="meal"><span class="home-action-icon" aria-hidden="true">🍚</span><span class="home-action-copy"><strong>오늘 먹은 음식, 내 장의 반응은 어땠을까요?</strong><small>나의 식사 습관을 기록해 보세요.</small></span><span class="home-action-cta">식사 기록하기 <span aria-hidden="true">→</span></span></button>
+ <button type="button" class="home-action home-action-bowel" data-view="record"><span class="home-action-icon" aria-hidden="true">🚽</span><span class="home-action-copy"><strong>오늘 내 장이 보내는 신호, 확인해 볼까요?</strong><small>배변 상태와 작은 변화까지 기록해 보세요.</small></span><span class="home-action-cta">배변 기록하기 <span aria-hidden="true">→</span></span></button>
+ <button type="button" class="home-action home-action-life" data-view="lifestyle"><span class="home-action-icon" aria-hidden="true">☀️</span><span class="home-action-copy"><strong>오늘의 생활 습관, 내 장은 만족했을까요?</strong><small>수면, 운동, 스트레스까지 돌아봐요.</small></span><span class="home-action-cta">생활 기록하기 <span aria-hidden="true">→</span></span></button>`;
  dashboard.querySelector('.page-intro').after(homeActions);
  const mealPanel=byId('timedMealPanel');
   if(mealPanel){
@@ -2376,6 +2382,23 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
 .jg-mail-admin{min-height:500px}
 .jg-mail-admin>.jg-mail-inbox,.jg-mail-admin>.jg-mail-detail{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
 @media(max-width:900px){.jg-mail-layout{grid-template-columns:1fr;min-height:0}.jg-mail-inbox{min-height:160px;max-height:300px}.jg-mail-detail{min-height:340px;max-height:none;overflow:visible}.jg-mail-admin{min-height:0}.jg-mail-item{min-height:65px}}
+/* v1.7.2: Never clip long email threads. The inbox list scrolls independently;
+   the conversation grows naturally, allowing full-page scrolling on every device. */
+.jg-mail-layout{align-items:start;min-height:0;grid-template-columns:minmax(220px,.88fr) minmax(0,1.65fr)}
+.jg-mail-layout>.jg-mail-inbox{max-height:min(75vh,720px);min-height:300px;overflow:hidden}
+.jg-mail-layout>.jg-mail-detail,
+.jg-mail-admin>.jg-mail-detail{height:auto;min-height:300px;max-height:none!important;overflow:visible!important;align-self:start;box-sizing:border-box}
+.jg-mail-thread{min-width:0;overflow:visible}
+.jg-mail-msg{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.jg-mail-msg p{overflow-wrap:anywhere;white-space:pre-wrap;word-break:break-word}
+.jg-mail-header h3,.jg-mail-meta,.jg-mail-compose{overflow-wrap:anywhere;min-width:0}
+.jg-mail-compose textarea{box-sizing:border-box;max-width:100%;min-width:0}
+.jg-admin-section[data-admin-section="inbox"]{overflow:visible;max-height:none}
+@media(max-width:900px){
+ .jg-mail-layout{grid-template-columns:minmax(0,1fr);gap:12px}
+ .jg-mail-layout>.jg-mail-inbox{min-height:160px;max-height:260px}
+ .jg-mail-layout>.jg-mail-detail{min-height:280px;max-height:none!important}
+}
 </style>
 <script id="support-profile-controller">
 (function(){'use strict';
@@ -2529,7 +2552,7 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.7.1';
+const JANGILGI_VERSION='1.7.3';
 const JANGILGI_RELEASE_STEPS=[
  ['v1.6.2 · 소통 센터 개선', '메일함 방식으로 문의 목록과 대화·답장을 확인할 수 있어요. 사용자와 관리자 모두 같은 방식으로 이용해요.'],
  ["v1.6.1 · 음식 메뉴 업데이트", "리조또 표기를 바로잡고, 유부장국·우동맛장국·후리가케밥을 음식 목록에 추가했어요. 기존 리소토 기록은 그대로 유지돼요."],
@@ -2553,6 +2576,16 @@ const JANGILGI_RELEASE_STEPS=[
  ["안전하게 기록 계속하기", "원래 저장된 식사 이름과 배변 데이터, 로그인·암호화·복구 키는 유지돼요. 실제 먹은 조리법이 기본 분류와 다르면 해당 기록만 수정해 주세요."]
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.7.3',date:'2026-10-30',title:'홈 질문형 카드·배변 설명 개선',details:[
+   '홈의 제목을 「오늘의 장 컨디션은?」으로 바꾸고 기록의 의미가 드러나는 질문형 문구를 사용합니다.',
+   '중복된 초록색 오늘 배변 패널을 화면에서 없애고 식사·배변·생활 기록 바로가기 카드를 보기 쉽게 정리했습니다.',
+   '배변 1~7형의 특징과 관련 요인을 자연스러운 문장으로 설명합니다. 형태만으로 원인을 확정하지는 않습니다.'
+  ]},
+  {version:'1.7.2',date:'2026-10-30',title:'문의 대화 표시·배변 특징·음식별 조리 특성 개선',details:[
+  '긴 문의와 답변도 끝까지 확인할 수 있도록 메일함 레이아웃과 모바일 스크롤을 개선했습니다.',
+  '브리스톨 1~7형에 특징과 가능한 관련 요인을 한 줄씩 덧붙였습니다. 원인은 형태만으로 확정할 수 없습니다.',
+  '단일 식재료에는 불필요한 조리 질문을 숨기고, 복합 음식별로 관련 있는 조리 특성만 보여줍니다.'
+ ]},
  {version:'1.7.1',date:'2026-10-30',title:'문의 작성 UI·생활 기록 버튼·개인정보 안내 개선',details:['새 문의를 메일 작성 패널에서 제목·내용을 입력하고 전송할 수 있도록 화면을 개선했습니다.','오늘의 생활 기록 저장 버튼을 화면 너비에 맞게 정리하고 저장 동작을 명확하게 표시했습니다.','회원가입·첫 프로필 입력·프로필 수정에 개인정보 수집·이용 안내를 추가했습니다.']},
  {version:'1.7.0',date:'2026-10-30',title:'검색 중심 식사 기록과 전류 메뉴 추가',details:['식사 기록에서 전체 메뉴를 펼치지 않고 검색어와 최근 선택 음식만 표시합니다.','선택한 음식별 조리 특성은 수정 버튼을 누를 때만 펼칩니다.','김치전·감자전·해물파전 등 전류를 추가하고 현재 시간 입력 버튼을 제공합니다.','모바일 식사 기록 화면의 정렬과 버튼 크기를 개선했습니다.']},
  {version:'1.6.2',date:'2026-10-29',title:'메일함 방식 소통 센터 및 문의 답변 복구',details:['사용자·관리자 문의함을 목록과 대화 상세로 분리했습니다.','메일을 선택하면 기존 질문과 답변, 추가 메시지를 한눈에 볼 수 있습니다.','관리자 답장 버튼을 항상 표시하고 문의별 메시지 Firestore 규칙을 보완했습니다.']},
@@ -2665,27 +2698,41 @@ const JANG_PREP_FACTS={
  fermented:{label:'발효·절임 음식이에요',tag:'발효·절임',hint:'실제 발효·절임 상태일 때 선택하세요.'}
 };
 function jangPrepChoices(food){
- const group=JANGILGI_FOOD_CATALOG.find(([,names])=>names.includes(food))?.[0]||'';
- const tags=jangDefaultTags(food), inGroup=(name)=>group.includes(name);
- const main=inGroup('밥')||inGroup('국')||inGroup('면')||inGroup('육류')||inGroup('매운');
- const drink=inGroup('음료')||inGroup('우유');
- const dessert=inGroup('간식');
- const starchy=inGroup('밥')||inGroup('면')||inGroup('전')||/브리또|떡|빵|파스타|피자|만두/.test(food);
- const prepared=inGroup('전')||(main&&(!inGroup('밥')||/볶|비빔|김밥|리조또|리소토|카레|주먹/.test(food)))||dessert||/볶|튀김|구이|돈가스|카레|파스타|브리또|전$|전류/.test(food);
- const keys=[];
- if(prepared||tags.includes('지방 함량·튀김'))keys.push('fatty');
- if((main&&(!inGroup('밥')||/볶|비빔|카레|김치|김밥/.test(food)))||/매운|떡볶이|고추|김치|라면/.test(food)||tags.includes('매운 음식'))keys.push('spicy');
- if(starchy)keys.push('whole');
- if(inGroup('우유')||(drink&&/커피|라떼|코코아|스무디|차|요구르트/.test(food))||dessert||/파스타|카레|브리또|리조또|리소토|푸딩|치즈육포/.test(food)||tags.includes('유당'))keys.push('dairy');
- if(main||/파스타|브리또/.test(food)||tags.includes('양파·마늘 프럭탄'))keys.push('onion');
- if(/브리또|카레|샐러드|찌개|볶음밥|비빔밥|콩|두부|견과/.test(food)||tags.includes('콩·발효성 올리고당'))keys.push('beans');
- if((drink&&/커피|라떼|홍차|녹차|에너지|콜라|코코아/.test(food))||tags.includes('카페인'))keys.push('caffeine');
- if((inGroup('음료')&&/탄산|콜라|사이다|주스|스무디|음료/.test(food))||tags.includes('탄산'))keys.push('carbonated');
- if((drink&&!/^(물|탄산수|보리차|허브차|카페인 없는 커피|아메리카노)$/.test(food))||dessert||/소스|빙수|육포/.test(food)||tags.includes('당분 많은 간식·음료'))keys.push('sweet');
- if(inGroup('김치')||tags.includes('발효·절임'))keys.push('fermented');
- // Historical food entries outside the catalog can still be adjusted instead of becoming read-only.
- if(!keys.length&&!group)keys.push('fatty','spicy','dairy');
- return [...new Set(keys)];
+  const group=JANGILGI_FOOD_CATALOG.find(([,names])=>names.includes(food))?.[0]||'';
+  const tags=jangDefaultTags(food);
+  const keys=[];
+  const add=(name,when)=>{if(when)keys.push(name);};
+  // Raw, single ingredients should not ask about nonexistent recipe additions.
+  // Their inherent analysis tags (including those of onions or garlic) remain unchanged.
+  const plainIngredientGroup=/^(채소·버섯·해조류|과일·베리류|생선류|갑각류|조개·패류|연체·기타 해산물)$/.test(group);
+  const preparedException=/^(샐러드|생선구이|훈제생선)$/.test(food);
+  if(plainIngredientGroup&&!preparedException)return [];
+  const simpleIngredients=new Set(['소고기','돼지고기','닭고기','오리고기','양고기','달걀','두부','순두부','콩','검은콩','콩나물','병아리콩','렌틸콩','아몬드','호두','땅콩','캐슈넛','피스타치오','참깨','우유','저지방 우유','무유당 우유','치즈','모차렐라','크림치즈','버터','생크림','물','탄산수','바나나']);
+  if(simpleIngredients.has(food))return [];
+  const isRice=group==='밥·쌀·곡류';
+  const isSoup=group==='국·찌개·탕';
+  const isNoodle=group==='면·밀가루·빵';
+  const isMeat=group==='육류·가금류';
+  const isSide=group==='전·부침';
+  const isDessert=group==='간식·디저트';
+  const isDrink=group==='음료·카페인';
+  const isProcessed=group==='매운·기름진·가공식품';
+  const cookedSavory=isSoup||isNoodle||isMeat||isSide||isProcessed||/볶음밥|김치볶음밥|비빔밥|리조또|리소토|카레|김밥|샐러드|생선구이/.test(food);
+  const cookedWithOil=isSide||/볶|튀김|구이|돈가스|커틀릿|치킨|피자|파스타|리조또|리소토|카레|브리또|불고기|삼겹살|스테이크|햄버거|샌드위치/.test(food)||isDessert||tags.includes('지방 함량·튀김');
+  add('fatty',cookedWithOil);
+  add('spicy',(cookedSavory&&/김치|매운|매콤|고추|카레|찌개|양념|떡볶이|마라|닭갈비|비빔|라면|볶|짬뽕|육개장|해물탕|부대/.test(food))||tags.includes('매운 음식'));
+  add('whole',isNoodle||isSide||(isRice&&/볶음밥|비빔밥|주먹밥|김밥|후리가케밥|리조또|리소토|카레라이스/.test(food)));
+  add('dairy',/크림|로제|까르보나라|리조또|리소토|치즈|피자|브리또|버터|푸딩|케이크|아이스크림|라떼|코코아|스무디|카레|요구르트|요거트/.test(food)||(isDessert&&/와플|팬케이크|마카롱|호떡/.test(food))||tags.includes('유당'));
+  // Onion/garlic is a possible ADDITION to select mixed recipes, never every soup or noodle by default.
+  add('onion',/볶음밥|김치볶음밥|비빔밥|리조또|리소토|카레|브리또|파스타|알리오|봉골레|미트소스|짜장|짬뽕|불고기|제육볶음|닭갈비|닭볶음탕|마라탕|마라샹궈|스테이크|햄버거|피자|샌드위치|샐러드|김치찌개|된장찌개|순두부찌개|부대찌개|육개장/.test(food));
+  add('beans',/브리또|카레|샐러드|비빔밥|콩밥|청국장|된장찌개|두부전|녹두전/.test(food));
+  add('caffeine',(isDrink&&/커피|라떼|홍차|녹차|에너지|콜라|코코아/.test(food))||tags.includes('카페인'));
+  add('carbonated',(isDrink&&/탄산|콜라|사이다|음료/.test(food))||tags.includes('탄산'));
+  add('sweet',(isDrink&&/주스|스무디|음료|라떼|코코아|식혜|콜라|사이다/.test(food))||isDessert||/육포|달콤|시럽/.test(food)||tags.includes('당분 많은 간식·음료'));
+  add('fermented',group==='김치·절임·발효 음식'||tags.includes('발효·절임'));
+  // Historical foods outside the catalog remain editable via a small generic set.
+  if(!keys.length&&!group)keys.push('fatty','spicy','dairy');
+  return [...new Set(keys)];
 }
 function jangChangePrep(override,food,kind,checked){
  const rule=JANG_PREP_FACTS[kind];if(!rule)return;
@@ -2943,11 +2990,11 @@ function initDetailedHelp(){
 }
 // 업데이트 안내는 항상 바로 전 릴리스와 현재 릴리스의 차이만 설명합니다.
 // 과거 버전 내역은 관리자가 편집할 수 있지만, 안내에 자동으로 누적하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.7.0';
+const JANGILGI_PREVIOUS_RELEASE='1.7.2';
 const JANG_CURRENT_UPDATE_TARGETS=[
- ['support','#supportComposeToggle','메일처럼 새 문의 작성'],
- ['life','#foodlifeSaveLife','생활 기록 저장 버튼'],
- ['settings','#settingsProfileBtn','개인정보 수집·이용 안내']
+ ['dashboard','.page-intro','오늘의 장 컨디션'],
+ ['dashboard','.home-main-shortcuts','질문형 기록 카드'],
+ ['record','#quickShapes','배변 형태별 자연스러운 설명']
 ];
 function showUpdateNotes(){
  const data=window.__jangilgiSecurityRead?.();
@@ -3917,6 +3964,51 @@ let tries=0;const job=setInterval(()=>{if(window.__jangilgiSupportRequest){clear
  .jg-life-save-actions .jg-life-save-button{min-height:55px;padding:12px 14px}
  .jg-privacy-notice{padding:11px 12px}
 }
+</style>
+
+<style id="jangilgi-v173-home-style">
+/* v1.7.3: home copy/visuals only. Keep hidden clock & event count nodes for existing JS. */
+#dashboardView #homeQuickAction{display:none!important}
+#dashboardView.active-view{overflow-y:auto!important;overscroll-behavior:contain}
+#dashboardView .page-intro{padding:10px 3px 7px}
+#dashboardView .page-intro h1{color:var(--deep,#173b35);font-size:clamp(27px,3.4vw,41px)!important;line-height:1.18!important;letter-spacing:-.055em;margin:6px 0 7px!important}
+#dashboardView .page-intro .intro-copy{font-size:clamp(12px,1.25vw,15px)!important;line-height:1.5!important;color:var(--muted,#75817d)}
+#dashboardView .home-main-shortcuts{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important;flex:none!important;min-height:0}
+#dashboardView .home-action{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:clamp(12px,1.7vw,22px)!important;min-width:0;min-height:92px;padding:clamp(14px,1.6vw,22px)!important;text-align:left!important;border:1px solid transparent;border-radius:17px;box-shadow:none;cursor:pointer}
+#dashboardView .home-action-meal{background:linear-gradient(110deg,#f1f9f0,#e8f5e7);border-color:#e0ecdf}
+#dashboardView .home-action-bowel{background:linear-gradient(110deg,#fff5f2,#f9eeef);border-color:#f4e2e1}
+#dashboardView .home-action-life{background:linear-gradient(110deg,#f1f8fe,#e7f1fb);border-color:#e1eaf4}
+#dashboardView .home-action .home-action-icon{display:grid!important;place-items:center!important;flex:0 0 52px!important;width:52px!important;height:52px!important;padding:0!important;border-radius:50%!important;background:#fff7f5!important;font-size:26px!important}
+#dashboardView .home-action-bowel .home-action-icon{background:#f0e8ff!important}
+#dashboardView .home-action-life .home-action-icon{background:#fff3dc!important}
+#dashboardView .home-action .home-action-copy{display:grid!important;flex:1 1 auto;min-width:0;gap:5px!important;justify-items:start!important;text-align:left!important}
+#dashboardView .home-action .home-action-copy strong{font-size:clamp(13px,1.42vw,18px)!important;line-height:1.45!important;color:#24322d;word-break:keep-all;overflow-wrap:anywhere}
+#dashboardView .home-action .home-action-copy small{font-size:clamp(11px,1.0vw,13px)!important;line-height:1.45!important;color:#6b7c76}
+#dashboardView .home-action .home-action-cta{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto;font-size:clamp(11px,1.12vw,14px);font-weight:800;white-space:nowrap;color:#286945}
+#dashboardView .home-action-bowel .home-action-cta{color:#995547}
+#dashboardView .home-action-life .home-action-cta{color:#38628d}
+#dashboardView .home-action:hover{border-color:#8bb59a;transform:translateY(-1px)}
+#dashboardView .home-action:focus-visible{outline:3px solid var(--green,#2e8753);outline-offset:3px}
+#dashboardView .home-summary-title{margin-top:8px!important}
+#dashboardView .home-summary-grid{flex:none!important;grid-auto-rows:minmax(116px,auto)}
+@media(max-width:700px){
+ #dashboardView .page-intro{padding:3px 0 6px!important}
+ #dashboardView .page-intro h1{font-size:clamp(24px,6vw,31px)!important}
+ #dashboardView .page-intro .intro-copy{display:block!important;font-size:12px!important}
+ #dashboardView .home-main-shortcuts{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+ #dashboardView .home-action{display:flex!important;flex-direction:row!important;align-items:center!important;min-height:89px!important;padding:12px!important;gap:10px!important}
+ #dashboardView .home-action .home-action-icon{flex-basis:38px!important;width:38px!important;height:38px!important;font-size:20px!important}
+ #dashboardView .home-action .home-action-copy{justify-items:start!important;text-align:left!important}
+ #dashboardView .home-action .home-action-copy strong{font-size:12px!important}
+ #dashboardView .home-action .home-action-copy small{font-size:10px!important}
+ #dashboardView .home-action .home-action-cta{font-size:10px!important;white-space:normal;max-width:76px;justify-content:flex-end;text-align:right;line-height:1.35;gap:3px}
+ #dashboardView .home-summary-title{align-items:flex-start;flex-direction:column;gap:3px}
+}
+@media(max-width:380px){
+ #dashboardView .home-action .home-action-cta{max-width:52px;overflow-wrap:anywhere}
+ #dashboardView .home-action{gap:7px!important}
+}
+@media(max-height:680px){#dashboardView .page-intro .intro-copy{display:block!important}}
 </style>
 </body>
 </html>
