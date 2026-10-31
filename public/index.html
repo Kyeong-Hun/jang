@@ -1049,10 +1049,20 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
   </div>
 </section>
 <section class="view" id="adminSupportView" aria-label="관리자 운영 센터"><div class="jg-subpage-head"><h1>관리자 운영 센터</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
-<div class="jg-admin-work-tabs" role="tablist" aria-label="관리자 작업"><button type="button" class="selected" data-admin-work="inbox">✉ 문의·대화</button><button type="button" data-admin-work="help">? 도움말 편집</button><button type="button" data-admin-work="updates">📢 업데이트 내역 편집</button><button id="adminSupportLock" type="button">관리자 모드 종료</button></div>
+<div class="jg-admin-work-tabs" role="tablist" aria-label="관리자 작업"><button type="button" class="selected" data-admin-work="inbox">✉ 문의·대화</button><button type="button" data-admin-work="help">? 도움말 편집</button><button type="button" data-admin-work="updates">📢 업데이트 내역 편집</button><button type="button" data-admin-work="announcements">📣 전체 공지</button><button id="adminSupportLock" type="button">관리자 모드 종료</button></div>
 <article class="card-surface support-card jg-admin-section" data-admin-section="inbox"><div class="support-title-row"><div><span class="section-kicker">COMMUNICATION CENTER</span><h2>문의 대화함</h2></div><button id="adminSupportRefresh" type="button">문의 새로고침</button></div><p class="support-muted">문의별 대화 내용을 확인하고 답변을 이어가세요. 건강기록과 복호화 키는 표시되지 않습니다.</p><div class="jg-admin-filters"><input type="search" id="adminTicketSearch" placeholder="제목·내용·이메일 검색" aria-label="관리자 문의 검색"><select id="adminTicketFilter" aria-label="문의 상태"><option value="all">전체 문의</option><option value="open">미답변</option><option value="replied">답변한 문의</option></select><strong id="adminTicketCount"></strong></div><p id="adminSupportStatus" class="support-status" role="status"></p><div class="jg-mail-layout jg-mail-admin"><div class="jg-mail-inbox"><div id="adminSupportList" class="jg-mail-list" aria-label="전체 문의 목록"></div></div><div class="jg-mail-detail" id="adminThreadDetail" aria-label="관리자 대화 및 답변"><div class="jg-mail-empty"><span class="jg-mail-empty-icon">✉</span><strong>답변할 문의를 선택해 주세요.</strong><p>목록에서 선택하면 내용과 답장 작성창이 열립니다.</p></div></div></div></article>
 <article class="card-surface support-card jg-admin-section" data-admin-section="help" hidden><span class="section-kicker">HELP CONTENT MANAGER</span><h2>도움말 콘텐츠 편집</h2><p class="support-muted">주제별 제목과 단계별 설명을 수정하고 모든 이용자에게 게시해요. 단계는 줄바꿈으로 구분합니다. 게임식 안내 위치는 기존 화면 연결을 유지합니다.</p><div class="jg-editor-row"><label>도움말 주제<select id="adminHelpSelect"></select></label></div><div class="jg-editor-fields"><label>주제 이름<input id="adminHelpLabel" maxlength="50"></label><label>제목<input id="adminHelpTitle" maxlength="100"></label><label>단계별 설명 (한 줄당 한 단계)<textarea id="adminHelpSteps" rows="9" maxlength="9000"></textarea></label><label>참고 문구<textarea id="adminHelpNote" rows="3" maxlength="1000"></textarea></label></div><p class="support-status" id="adminHelpStatus" role="status"></p><div class="jg-editor-actions"><button type="button" id="adminHelpPreview">미리보기</button><button type="button" class="support-primary" id="adminHelpSave">도움말 전체 게시</button></div></article>
-<article class="card-surface support-card jg-admin-section" data-admin-section="updates" hidden><span class="section-kicker">RELEASE CONTENT MANAGER</span><h2>업데이트 내역 편집</h2><p class="support-muted">업데이트 제목·날짜·설명을 수정해 게시할 수 있어요. <strong>버전 번호나 실제 배포된 코드 자체는 바뀌지 않습니다.</strong></p><div class="jg-editor-row"><label>업데이트 선택<select id="adminReleaseSelect"></select></label><button type="button" id="adminReleaseAdd">+ 내역 추가</button><button type="button" id="adminReleaseRemove">선택한 내역 삭제</button></div><div class="jg-editor-fields"><label>버전<input id="adminReleaseVersion" maxlength="25" placeholder="1.6.1"></label><label>날짜<input id="adminReleaseDate" type="date"></label><label>제목<input id="adminReleaseTitle" maxlength="140"></label><label>변경 사항 (한 줄당 하나)<textarea id="adminReleaseDetails" rows="9" maxlength="9000"></textarea></label></div><p class="support-status" id="adminReleaseStatus" role="status"></p><div class="jg-editor-actions"><button type="button" id="adminReleasePreview">미리보기</button><button type="button" class="support-primary" id="adminReleaseSave">업데이트 내역 전체 게시</button></div></article></section>
+<article class="card-surface support-card jg-admin-section" data-admin-section="updates" hidden><span class="section-kicker">RELEASE CONTENT MANAGER</span><h2>업데이트 내역 편집</h2><p class="support-muted">업데이트 제목·날짜·설명을 수정해 게시할 수 있어요. <strong>버전 번호나 실제 배포된 코드 자체는 바뀌지 않습니다.</strong></p><div class="jg-editor-row"><label>업데이트 선택<select id="adminReleaseSelect"></select></label><button type="button" id="adminReleaseAdd">+ 내역 추가</button><button type="button" id="adminReleaseRemove">선택한 내역 삭제</button></div><div class="jg-editor-fields"><label>버전<input id="adminReleaseVersion" maxlength="25" placeholder="1.6.1"></label><label>날짜<input id="adminReleaseDate" type="date"></label><label>제목<input id="adminReleaseTitle" maxlength="140"></label><label>변경 사항 (한 줄당 하나)<textarea id="adminReleaseDetails" rows="9" maxlength="9000"></textarea></label></div><p class="support-status" id="adminReleaseStatus" role="status"></p><div class="jg-editor-actions"><button type="button" id="adminReleasePreview">미리보기</button><button type="button" class="support-primary" id="adminReleaseSave">업데이트 내역 전체 게시</button></div></article><article class="card-surface support-card jg-admin-section" data-admin-section="announcements" hidden>
+ <span class="section-kicker">BROADCAST ANNOUNCEMENTS</span><h2>전체 사용자 공지</h2>
+ <p class="support-muted">이 공지는 모든 이메일 인증 사용자에게 표시됩니다. 공지 내용에는 개인 건강정보나 비밀번호를 적지 마세요.</p>
+ <form id="jg185-admin-notice-form" class="jg185-admin-notice-form">
+ <label>공지 제목<input id="jg185-admin-notice-title" minlength="3" maxlength="100" required placeholder="공지 제목"></label>
+ <label>공지 내용<textarea id="jg185-admin-notice-body" minlength="5" maxlength="1500" required rows="5" placeholder="모든 사용자에게 전달할 내용을 입력하세요."></textarea></label>
+ <button class="primary-button" type="submit">모든 사용자에게 공지 게시</button>
+ </form><p id="jg185-admin-notice-status" role="status" class="support-status"></p>
+ <h3>게시한 공지 관리</h3><div id="jg185-admin-notice-history" class="jg185-admin-notice-history"></div>
+</article>
+</section>
 <section class="view" id="recordManagerView" aria-label="통합 기록 관리">
  <div class="jg-subpage-head"><h1>모든 기록 수정</h1><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
  <p class="foodlife-help">배변 · 식사 · 생활 · 이전 버전 기록을 한곳에서 찾아 수정하거나 삭제할 수 있어요. 저장할 때 기존 암호화 기록을 보존해요.</p>
@@ -2726,11 +2736,12 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.8.4';
+const JANGILGI_VERSION='1.8.5';
 const JANGILGI_RELEASE_STEPS=[
- ['v1.8.3 → v1.8.4 · 간결한 화면','선택한 메뉴만 강조하고 캘린더에 형태·증상 리포트를 모았어요.'],
- ['v1.8.3 → v1.8.4 · 기록 관리','식사·배변·생활 기록은 그대로 두고 중복 백업·통계 선택 UI를 정리했어요.'],
- ['v1.8.3 → v1.8.4 · 프로필·테마','내 정보 전용 화면과 모든 주요 컴포넌트의 테마 포인트 색상을 통일했어요.']
+ ['공지와 업데이트 알림함','종 아이콘 위 숫자로 아직 확인하지 않은 알림 수를 표시해요. 공지별로 내용을 열어 확인할 수 있어요.'],
+ ['도움말 위치 개선','상단 물음표 버튼 또는 왼쪽 도움말 메뉴에서 안내를 열어 보세요.'],
+ ['전체 공지 관리','관리자는 운영 센터에서 모든 이용자에게 공지를 게시하거나 삭제할 수 있어요.'],
+ ['화면과 스크롤 정리','큰 화면의 홈을 더 간결하게 배치하고 프로필 입력과 저장 버튼의 배치를 정리했어요.']
 ];
 /* old release steps (preserved in changelog below) */
 const JG184_OLDER_RELEASE_STEPS=[
@@ -2739,6 +2750,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.8.5',date:'2026-10-31',title:'사용자 공지·알림함 및 도움말·화면 개선',details:['관리자 전체 공지 게시·삭제 기능','공지 및 업데이트 미확인 알림 수 표시','도움말 상단 및 사이드바 진입 복구','혼란을 주는 가짜 검색 아이콘 제거','홈과 프로필 화면의 불필요한 세로 길이 축소']},
  {version:'1.8.4',date:'2026-10-31',title:'캘린더·리포트 통합 및 화면 사용성 정리',details:['현재 화면에 해당하는 메뉴만 강조하고 사이드바 중복 강조 제거','캘린더에 30일 배변 형태·증상 통계를 통합하고 중복 빈도/리포트 메뉴 축소','달력·상단 경로·프로필 화면·테마 색상·홈 주간 기록 의미·중복 백업 버튼을 개선']},
   {version:'1.8.3',date:'2026-10-31',title:'120일 이상 JSON 기록의 분할 암호화 저장·복원 검증',details:['기존 전체 백업 JSON 형식과 교체 확인 절차 유지','암호화 데이터 조각을 먼저 저장하고 읽기·SHA-256 검증을 마친 후 활성 기록을 전환','중복 기록 ID 및 생활습관 값 검사 보강, 기존 Firebase 암호화 키·프로필 유지']},
   {version:'1.8.2',date:'2026-10-31',title:'생활 기록 3항목 정리 및 배변 연관성 분석 추가',details:['채소·과일 입력과 분석을 제외하고 과거 데이터는 삭제하지 않음','수분·수면·스트레스와 같은 날짜의 배변 형태·복부 불편 기록을 비교','음식 특성 분석 시 수분·수면·스트레스의 집단 차이를 함께 확인하며 인과관계는 판단하지 않음']},
@@ -3182,7 +3194,7 @@ function initDetailedHelp(){
 }
 // 업데이트 안내는 항상 바로 전 릴리스와 현재 릴리스의 차이만 설명합니다.
 // 과거 버전 내역은 관리자가 편집할 수 있지만, 안내에 자동으로 누적하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.8.0';
+const JANGILGI_PREVIOUS_RELEASE='1.8.4';
 const JANG_CURRENT_UPDATE_TARGETS=[
  ['dashboard','.page-intro','오늘의 장 컨디션'],
  ['dashboard','.home-main-shortcuts','질문형 기록 카드'],
@@ -3531,6 +3543,27 @@ else{
     onItems(list.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt))));
    },onError);
   };
+  // v1.8.5: per-account, cross-device notice receipts. Independent of encrypted health records.
+  window.__jangilgiNoticeSubscribe=(onData,onError)=>{
+   const user=userForSupport();const receipts=doc(db,'users',user.uid,'noticeSettings','seen');
+   const state={announcements:[],releases:[],seenIds:[]};
+   const emit=()=>{if(auth.currentUser?.uid===user.uid)onData({...state});};
+   const cancels=[
+    onSnapshot(doc(db,'publicContent','announcements'),snap=>{state.announcements=snap.exists()&&Array.isArray(snap.data().items)?snap.data().items:[];emit();},onError),
+    onSnapshot(doc(db,'publicContent','releases'),snap=>{state.releases=snap.exists()&&Array.isArray(snap.data().items)?snap.data().items:[];emit();},onError),
+    onSnapshot(receipts,snap=>{state.seenIds=snap.exists()&&Array.isArray(snap.data().seenIds)?snap.data().seenIds:[];emit();},onError)
+   ];
+   return ()=>cancels.forEach(fn=>fn());
+  };
+  window.__jangilgiNoticeMarkSeen=async ids=>{
+   const user=userForSupport();if(!Array.isArray(ids)||!ids.every(x=>typeof x==='string'&&/^(notice:[a-f0-9]{32}|release:\d+\.\d+\.\d+)$/.test(x)))throw Error('확인할 알림 식별자를 검사해 주세요.');
+   const ref=doc(db,'users',user.uid,'noticeSettings','seen');
+   await runTransaction(db,async tx=>{
+    const snap=await tx.get(ref),old=snap.exists()&&Array.isArray(snap.data().seenIds)?snap.data().seenIds:[];
+    const merged=[...new Set([...old,...ids])].slice(-90);
+    tx.set(ref,{seenIds:merged,updatedAt:serverTimestamp()});
+   });
+  };
   window.__jangilgiSupportRequest=async(name,payload={})=>{
    const user=userForSupport();
    try{
@@ -3603,6 +3636,34 @@ else{
     if(name==='editorialRead'){
      const type=String(payload.type||'');if(!['help','releases'].includes(type))throw Error('자료 유형이 올바르지 않아요.');
      const snap=await getDoc(doc(db,'publicContent',type));return {items:snap.exists()&&Array.isArray(snap.data().items)?snap.data().items:null};
+    }
+    if(name==='noticeGet'){
+     const snap=await getDoc(doc(db,'publicContent','announcements'));
+     return {items:snap.exists()&&Array.isArray(snap.data().items)?snap.data().items:[]};
+    }
+    if(name==='noticePublish'){
+     ensureSupportAdmin();
+     const title=String(payload.title||'').trim(),body=String(payload.body||'').trim();
+     if(title.length<3||title.length>100||body.length<5||body.length>1500)throw Error('제목은 3~100자, 본문은 5~1500자여야 해요.');
+     const id=crypto.randomUUID().replace(/-/g,'');const ref=doc(db,'publicContent','announcements');
+     await runTransaction(db,async tx=>{
+      const snap=await tx.get(ref);
+      const old=snap.exists()&&Array.isArray(snap.data().items)?snap.data().items:[];
+      const items=[{id,title,body,publishedAt:new Date().toISOString()},...old].slice(0,30);
+      tx.set(ref,{items,updatedBy:user.uid,updatedAt:serverTimestamp()});
+     });
+     return {ok:true,id};
+    }
+    if(name==='noticeRemove'){
+     ensureSupportAdmin();const id=String(payload.id||'');
+     if(!/^[a-f0-9]{32}$/.test(id))throw Error('공지 식별자가 올바르지 않아요.');
+     const ref=doc(db,'publicContent','announcements');
+     await runTransaction(db,async tx=>{
+      const snap=await tx.get(ref);if(!snap.exists())return;
+      const items=(Array.isArray(snap.data().items)?snap.data().items:[]).filter(x=>x.id!==id);
+      tx.set(ref,{items,updatedBy:user.uid,updatedAt:serverTimestamp()});
+     });
+     return {ok:true};
     }
     if(name==='editorialWrite'){
      ensureSupportAdmin();const type=String(payload.type||''),items=payload.items;
@@ -3737,6 +3798,7 @@ else{
    await keyStore(user.uid,key);
    securityStatus('AES-256-GCM · 기기에서 암호화 중');
    gate.hidden=true;pendingPassword='';recoveryPassword='';pendingSetup=null;
+   window.__jg185StartNotifications?.();
    // First-run tour now follows the mandatory profile onboarding dialogue.
   }
   async function launchSetup(user,password,legacy){
@@ -3797,6 +3859,7 @@ else{
   async function checkVerified(user){if(!user)return showLogin();await reload(user);await getIdToken(user,true);if(!user.emailVerified){showPanel('authVerify');el('authVerifyEmail').textContent=`${user.email} 주소를 확인해 주세요.`;return;}await unlock(user,pendingPassword);}
   onAuthStateChanged(auth,async user=>{
      window.__jangAuthPhotoURL=user?.photoURL||'';window.__jangRefreshAvatar?.();
+    window.__jg185StopNotifications?.();
     inSession=false;currentId=null;currentKey=null;currentVault=null;window.__jangilgiLockSupportAdmin?.();window.__jangilgiClear();
     if(!user){pendingPassword='';showLogin();return;}
     try{await checkVerified(user);}catch(e){showPanel('authLoading');tell(friendly(e));}
@@ -4629,15 +4692,15 @@ side.innerHTML=`<div class="jg181-brand"><div class="jg181-brand-logo" aria-hidd
 <button type="button" class="jg181-navitem" data-image-route="analysis">${icon('insight')}건강 인사이트</button>
 <button type="button" class="jg181-navitem" data-image-account="true">${icon('user')}내 정보</button>
 <button type="button" class="jg181-navitem" data-image-route="settings">${icon('settings')}설정</button>
-<div class="jg181-nav-separator"></div><button type="button" class="jg181-navitem" data-image-route="reference">${icon('book')}참고 자료</button>
+<div class="jg181-nav-separator"></div><button type="button" class="jg181-navitem" data-image-help="true"><span class="jg185-side-help-icon" aria-hidden="true">?</span>도움말</button><button type="button" class="jg181-navitem" data-image-route="reference">${icon('book')}참고 자료</button>
 </nav><div class="jg181-sidebar-bottom"><button type="button" class="jg181-support-tip" data-image-route="support">${icon('mail')}<span><strong>궁금한 점이 있으신가요?</strong><small>장일기에게 물어보세요 ›</small></span></button></div>`;
 sidebar.appendChild(side);
 const bar=document.querySelector('.topbar'),actions=bar?.querySelector('.top-actions');
 if(actions){
- const search=document.createElement('button'); search.className='jg181-top-search';search.type='button';search.setAttribute('aria-label','음식 검색 열기');search.title='음식 검색';search.innerHTML=icon('search');actions.prepend(search);
- search.addEventListener('click',()=>{navigate('meal');const q=$('mealFoodSearch')||$('mealFoodQuery')||document.querySelector('#mealView input[type="search"],#mealView .food-catalog-bar input');q?.focus();});
- const wr=document.createElement('div');wr.className='jg181-top-notice-wrap';wr.innerHTML=`<button type="button" class="jg181-top-notify" aria-expanded="false" aria-label="운영 공지 보기">${icon('bell')}</button><div class="jg181-notice-popup" hidden></div>`;
- search.after(wr);
+ const helpTop=document.createElement('button');helpTop.className='jg185-top-help';helpTop.type='button';helpTop.setAttribute('aria-label','도움말 열기');helpTop.title='도움말 · 이용 안내';helpTop.innerHTML='<span aria-hidden="true">?</span>';actions.prepend(helpTop);
+ helpTop.addEventListener('click',()=>document.getElementById('openHelp')?.click());
+ const wr=document.createElement('div');wr.className='jg181-top-notice-wrap';wr.innerHTML=`<button type="button" class="jg181-top-notify" aria-expanded="false" aria-label="공지 및 업데이트 보기">${icon('bell')}<span id="jg185-notice-badge" class="jg185-notice-badge" hidden>0</span></button><div class="jg181-notice-popup" hidden><div class="jg185-notice-title"><strong>공지 · 업데이트</strong><button type="button" id="jg185-read-all" hidden>모두 확인</button></div><div id="jg185-notice-items" class="jg185-notice-items" role="list" aria-label="새 공지와 업데이트"></div><p class="jg185-notice-status" id="jg185-notice-status" role="status"></p></div>`;
+ helpTop.after(wr);
  const notice=$('releaseNotice');if(notice)wr.querySelector('.jg181-notice-popup').appendChild(notice);
  wr.querySelector('.jg181-top-notify').addEventListener('click',()=>{const p=wr.querySelector('.jg181-notice-popup');p.hidden=!p.hidden;wr.querySelector('button').setAttribute('aria-expanded',String(!p.hidden));});
  document.addEventListener('click',e=>{if(wr.contains(e.target))return;const p=wr.querySelector('.jg181-notice-popup');p.hidden=true;wr.querySelector('button').setAttribute('aria-expanded','false');});
@@ -4672,7 +4735,8 @@ function route(view,key){
 }
 document.addEventListener('click',e=>{
  const exp=e.target.closest('[data-image-expand]');if(exp){const panel=side.querySelector(`[data-image-panel="${exp.dataset.imageExpand}"]`);const open=exp.getAttribute('aria-expanded')==='true';exp.setAttribute('aria-expanded',String(!open));panel.hidden=open;return;}
- const account=e.target.closest('[data-image-account]');if(account){$('accountMenuButton')?.click();return;}
+ const help=e.target.closest('[data-image-help]');if(help&&side.contains(help)){$('openHelp')?.click();return;}
+ const account=e.target.closest('[data-image-account]');if(account){navigate('profile');return;}
  const b=e.target.closest('[data-image-route]');if(!b)return;
  if(!b.closest('.jg181-sidebar,.jg181-home'))return;
  route(b.dataset.imageRoute,b.dataset.imageDay||null);
@@ -4911,6 +4975,118 @@ body[data-bg="dots"] .view.active-view,body[data-bg="dots"] .main-content{backgr
  $('homeMealTrendSettingsCard')?.remove();
  // Make calendar route visually compact without hiding requested content.
  syncActive('dashboard');
+})();
+</script>
+<style id="jangilgi-v185-layout-and-alerts">
+/* v1.8.5: accessible help and unread notification indicators */
+.jg185-top-help{width:37px;height:37px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--deep);font-weight:850;font-size:21px;cursor:pointer}
+.jg185-top-help:hover{background:var(--jg184-tint)}
+.jg185-side-help-icon{display:grid;place-items:center;flex:0 0 20px;width:20px;height:20px;border:1.8px solid currentColor;border-radius:50%;font-size:12px;font-weight:900}
+.jg181-top-notify{position:relative}
+.jg185-notice-badge:not([hidden]){position:absolute;right:-3px;top:-5px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#d64e4b;color:white;font-size:10px;font-weight:850;line-height:1;border:2px solid var(--surface);font-variant-numeric:tabular-nums}
+.jg181-notice-popup{max-height:min(75dvh,690px);overflow-y:auto;overscroll-behavior:contain;width:min(390px,calc(100vw - 26px))}
+.jg185-notice-title{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 7px 10px;border-bottom:1px solid var(--line)}
+.jg185-notice-title strong{font-size:14px}.jg185-notice-title button{font-size:11px;color:var(--jg184-accent);font-weight:750}
+.jg185-notice-items{display:grid;gap:5px;margin:8px 0}
+.jg185-notice-entry{display:grid;gap:4px;width:100%;text-align:left;border:1px solid var(--line);border-radius:11px;padding:11px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.jg185-notice-entry.unread{background:var(--jg184-tint);border-color:var(--jg184-accent)}
+.jg185-notice-entry b{font-size:12px}.jg185-notice-entry span{font-size:11px;color:var(--muted);white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+.jg185-notice-entry small{font-size:10px;color:var(--jg184-accent)}
+.jg185-notice-status{font-size:11px;color:var(--muted);padding:0 8px;line-height:1.5;min-height:12px}
+.jg185-admin-notice-form{display:grid;gap:12px;max-width:750px}.jg185-admin-notice-form label{display:grid;gap:5px;font-size:12px;font-weight:700;color:var(--ink)}
+.jg185-admin-notice-form :is(input,textarea){background:var(--surface);border:1px solid var(--line);color:var(--ink);padding:11px;border-radius:9px;width:100%;font:inherit;resize:vertical}
+.jg185-admin-notice-form .primary-button{justify-self:start;max-width:300px}
+.jg185-admin-notice-history{display:grid;gap:10px;margin:15px 0}
+.jg185-admin-entry{display:flex;justify-content:space-between;align-items:start;gap:9px;padding:11px;border:1px solid var(--line);border-radius:10px}
+.jg185-admin-entry>div{min-width:0}.jg185-admin-entry strong{font-size:12px}.jg185-admin-entry p{font-size:11px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0}.jg185-admin-entry button{flex:none;color:#ae524a;font-weight:750;font-size:11px}
+/* Compact dashboard on desktops, without concealing records or primary actions. */
+@media(min-width:1100px) and (min-height:740px){
+ #dashboardView.active-view{overflow-y:auto!important}
+ #dashboardView>.jg181-home{max-width:1550px;padding:11px 20px!important;gap:8px!important}
+ .jg181-hero{min-height:98px;padding:10px 20px}
+ .jg181-hero h1{font-size:27px;margin:0 0 3px}.jg181-kicker{margin-bottom:4px}
+ .jg181-hero-quote{top:10px;right:18px;padding:8px 10px}.jg181-hero-art{height:110px;bottom:-30px}
+ .jg181-action-row,.jg181-recent-row{gap:9px}
+ .jg181-action-card{min-height:132px;padding:11px 14px;gap:4px;border-radius:12px}
+ .jg181-action-icon{width:30px;height:30px;font-size:17px}.jg181-action-chevron{top:12px;right:12px;width:20px;height:20px;font-size:15px}
+ .jg181-action-card strong{font-size:14px}.jg181-action-description{font-size:11px;min-height:0;line-height:1.3}
+ .jg181-action-cta{padding:6px;min-height:26px;border-radius:8px}
+ .jg181-panel{padding:10px 13px;border-radius:12px}.jg181-panel-head{margin-bottom:4px}
+ .jg181-item{padding:4px 0;gap:7px}.jg181-record-icon{flex-basis:29px;width:29px;height:29px;font-size:15px;border-radius:9px}
+ .jg181-item-date{font-size:10px}.jg181-item-description{font-size:11px}.jg181-empty{padding:13px 4px;min-height:55px}
+ .jg181-week-chart{height:55px}.jg181-bar-holder{height:39px}.jg181-week-panel{grid-template-columns:1fr 150px}.jg181-week-tip{padding:8px;gap:3px}
+ .jg181-week-tip span{font-size:18px}.jg181-week-sub{margin-bottom:6px}
+ .jg181-contact,.jg181-disclaimer{display:none!important} /* support remains in sidebar */
+}
+/* Profile is a workspace, not a tall modal menu; protect the save button on short displays. */
+@media(min-width:1000px){
+ #profileView.active-view{padding:12px 18px!important;overflow-y:auto!important}
+ #profileView .jg-subpage-head{margin-bottom:5px;padding:0 8px}
+ #profileView .jg-subpage-head h1{font-size:26px;margin:2px 0}
+ #profileView .jg-subpage-head p{margin:2px 0;font-size:12px}
+ #profileView .jg184-profile-grid{margin:7px auto;max-width:1200px;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:12px}
+ #profileView .jg184-profile-card{padding:12px 17px}
+ #profileView .jg184-profile-card h2{margin:0 0 7px;font-size:16px}
+ #profileView .account-menu-section{gap:7px!important}
+ #profileView .profile-menu-field{margin-top:3px;gap:3px}
+ #profileView .profile-menu-field :is(input,select){min-height:35px;padding:5px 9px}
+ #profileView .jg-photo-controls{padding:8px 10px!important}
+ #profileView .jg-photo-controls small{font-size:10px;line-height:1.3}
+ #profileView .jg-privacy-mini{margin:3px 0!important;padding:7px 10px!important}
+ #profileView .jg-privacy-mini p{margin:2px 0!important;line-height:1.3!important}
+ #profileView .account-primary{min-height:36px!important;margin-top:4px!important;padding:7px!important}
+ #profileView .jg184-profile-info{padding:9px;margin:7px 0}
+ #profileView .jg184-profile-security{gap:6px;margin-top:8px}
+ #profileView .jg184-profile-security button{padding:8px}
+}
+@media(max-width:700px){.jg185-top-help{width:31px;height:31px;font-size:18px}.jg185-notice-entry{padding:9px}.jg181-notice-popup{right:-32px}}
+</style>
+<script id="jangilgi-v185-notifications">
+(function(){'use strict';
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let stop=null,current={announcements:[],releases:[],seenIds:[]};let notices=[];
+const badge=$('jg185-notice-badge'),list=$('jg185-notice-items'),status=$('jg185-notice-status'),all=$('jg185-read-all');
+function versionCompare(a,b){let x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let i=0;i<3;i++){if((x[i]||0)!==(y[i]||0))return (x[i]||0)-(y[i]||0);}return 0;}
+function latestRelease(){
+ const valid=current.releases.filter(x=>x&&/^\d+\.\d+\.\d+$/.test(x.version));
+ valid.sort((a,b)=>versionCompare(b.version,a.version));
+ const best=valid[0];
+ if(best&&!(typeof JANGILGI_VERSION==='string'&&versionCompare(best.version,JANGILGI_VERSION)<0))return{id:'release:'+best.version,type:'업데이트',title:'v'+best.version+' · '+String(best.title||'변경 사항'),body:(best.details||[]).join(' · ')};
+ // Use manifest version when remote editorial data isn't published yet.
+ const version=(typeof JANGILGI_VERSION==='string'?JANGILGI_VERSION:'1.8.5');
+ return {id:'release:'+version,type:'업데이트',title:'장일기 v'+version+' 업데이트',body:'새롭게 바뀐 기능을 확인할 수 있어요.'};
+}
+function repaint(){
+ notices=current.announcements.filter(x=>x&&/^[a-f0-9]{32}$/.test(x.id)).map(x=>({id:'notice:'+x.id,type:'전체 공지',title:x.title,body:x.body,date:x.publishedAt}));
+ const latest=latestRelease();if(latest)notices.push(latest);
+ notices=notices.slice(0,31);
+ const seen=new Set(current.seenIds||[]),unread=notices.filter(n=>!seen.has(n.id));
+ badge.hidden=unread.length===0;badge.textContent=unread.length>99?'99+':String(unread.length);
+ all.hidden=unread.length===0;
+ list.innerHTML=notices.length?notices.map(n=>`<button type="button" role="listitem" class="jg185-notice-entry ${seen.has(n.id)?'':'unread'}" data-jg185-notice="${esc(n.id)}"><small>${esc(n.type)} ${seen.has(n.id)?'· 확인함':'· 새 알림'}</small><b>${esc(n.title)}</b><span>${esc(n.body)}</span></button>`).join(''):'<p class="jg185-notice-status">공지와 업데이트가 없어요.</p>';
+}
+window.__jg185StopNotifications=()=>{stop?.();stop=null;current={announcements:[],releases:[],seenIds:[]};notices=[];repaint();};
+window.__jg185StartNotifications=()=>{
+ window.__jg185StopNotifications();
+ if(typeof window.__jangilgiNoticeSubscribe!=='function')return;
+ try{stop=window.__jangilgiNoticeSubscribe(data=>{current=data;repaint();},e=>{status.textContent='알림을 불러오지 못했어요: '+(e?.message||'권한을 확인해 주세요.');});}
+ catch(e){status.textContent='알림 초기화 실패: '+(e?.message||e);}
+};
+async function mark(ids){if(!ids.length)return;status.textContent='확인 상태 저장 중…';try{await window.__jangilgiNoticeMarkSeen(ids);status.textContent='확인한 알림을 계정에 저장했어요.';}catch(e){status.textContent='확인 상태 저장 실패: '+(e?.message||'다시 시도해 주세요.');}}
+list.addEventListener('click',e=>{const b=e.target.closest('[data-jg185-notice]');if(!b)return;const id=b.dataset.jg185Notice;mark([id]);if(id.startsWith('release:'))$('releaseOpenGuide')?.click();});
+all.addEventListener('click',()=>mark(notices.filter(n=>!(current.seenIds||[]).includes(n.id)).map(n=>n.id)));
+// Admin editor. Only previously authenticated admin sessions are authorized by Firestore Rules.
+const form=$('jg185-admin-notice-form'),history=$('jg185-admin-notice-history'),msg=$('jg185-admin-notice-status');
+async function renderAdmin(){if(!window.__jangilgiAdminSession?.())return;try{
+ const data=await window.__jangilgiSupportRequest('noticeGet');const items=Array.isArray(data.items)?data.items:[];
+ history.innerHTML=items.length?items.map(x=>`<div class="jg185-admin-entry"><div><strong>${esc(x.title)}</strong><p>${esc(x.body)}</p><small>${esc(x.publishedAt||'')}</small></div><button type="button" data-jg185-remove="${esc(x.id)}">삭제</button></div>`).join(''):'<p class="support-muted">아직 게시한 전체 공지가 없어요.</p>';
+ }catch(e){msg.textContent='공지 조회 실패: '+(e?.message||e);}}
+window.__jg185AdminRefresh=renderAdmin;
+form.addEventListener('submit',async e=>{e.preventDefault();if(!window.__jangilgiAdminSession?.()){msg.textContent='관리자 모드에서만 공지를 게시할 수 있어요.';return;}const btn=form.querySelector('button[type=submit]');btn.disabled=true;msg.textContent='전체 공지 게시 중…';try{
+ await window.__jangilgiSupportRequest('noticePublish',{title:$('jg185-admin-notice-title').value,body:$('jg185-admin-notice-body').value});form.reset();msg.textContent='전체 공지를 게시했어요. 새 알림 수가 실시간으로 갱신됩니다.';await renderAdmin();
+ }catch(e){msg.textContent='게시 실패: '+(e?.message||e);}finally{btn.disabled=false;}});
+ history.addEventListener('click',async e=>{const b=e.target.closest('[data-jg185-remove]');if(!b||!window.__jangilgiAdminSession?.())return;if(!confirm('선택한 전체 공지를 모두에게서 삭제할까요?'))return;b.disabled=true;try{await window.__jangilgiSupportRequest('noticeRemove',{id:b.dataset.jg185Remove});msg.textContent='공지를 삭제했어요.';await renderAdmin();}catch(e){msg.textContent='삭제 실패: '+(e?.message||e);b.disabled=false;}});
+ document.querySelectorAll('[data-admin-work="announcements"]').forEach(b=>b.addEventListener('click',renderAdmin));
 })();
 </script>
 </body>

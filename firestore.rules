@@ -182,6 +182,32 @@ service cloud.firestore {
       }
     }
 
+    // Account-specific notification receipts, never readable by others.
+    match /users/{uid}/noticeSettings/{settingId} {
+      allow get: if settingId == 'seen' && isOwner(uid);
+      allow list, delete: if false;
+      allow create, update: if settingId == 'seen' && isOwner(uid)
+        && request.resource.data.keys().hasAll(['seenIds', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['seenIds', 'updatedAt'])
+        && request.resource.data.seenIds is list
+        && request.resource.data.seenIds.size() <= 90
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    // Public announcements: readable by any verified user and writable only
+    // after the existing second-step administrator unlock.
+    match /publicContent/announcements {
+      allow get: if supportUser();
+      allow list, delete: if false;
+      allow create, update: if supportAdmin()
+        && request.resource.data.keys().hasAll(['items', 'updatedBy', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['items', 'updatedBy', 'updatedAt'])
+        && request.resource.data.items is list
+        && request.resource.data.items.size() <= 30
+        && request.resource.data.updatedBy == request.auth.uid
+        && request.resource.data.updatedAt == request.time;
+    }
+
     match /publicContent/{contentType} {
       allow get: if contentType in ['help','releases'] && supportUser();
       allow list: if false;
