@@ -2726,13 +2726,20 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.8.3';
+const JANGILGI_VERSION='1.8.4';
 const JANGILGI_RELEASE_STEPS=[
+ ['v1.8.3 → v1.8.4 · 간결한 화면','선택한 메뉴만 강조하고 캘린더에 형태·증상 리포트를 모았어요.'],
+ ['v1.8.3 → v1.8.4 · 기록 관리','식사·배변·생활 기록은 그대로 두고 중복 백업·통계 선택 UI를 정리했어요.'],
+ ['v1.8.3 → v1.8.4 · 프로필·테마','내 정보 전용 화면과 모든 주요 컴포넌트의 테마 포인트 색상을 통일했어요.']
+];
+/* old release steps (preserved in changelog below) */
+const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · 120일 이상 기록 복원','JSON 전체 기록을 가져올 때 암호화된 데이터를 여러 문서로 안전하게 분리해 저장해요. 기존 백업 형식은 유지해요.'],
   ['v1.8.2 → v1.8.3 · 저장·복원 검증','조각마다 AES-GCM 인증을 적용하고 전체 SHA-256 검증을 통과한 뒤 기록을 교체해요. 저장 실패 시 이전 기록을 가리키는 정보를 유지해요.'],
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.8.4',date:'2026-10-31',title:'캘린더·리포트 통합 및 화면 사용성 정리',details:['현재 화면에 해당하는 메뉴만 강조하고 사이드바 중복 강조 제거','캘린더에 30일 배변 형태·증상 통계를 통합하고 중복 빈도/리포트 메뉴 축소','달력·상단 경로·프로필 화면·테마 색상·홈 주간 기록 의미·중복 백업 버튼을 개선']},
   {version:'1.8.3',date:'2026-10-31',title:'120일 이상 JSON 기록의 분할 암호화 저장·복원 검증',details:['기존 전체 백업 JSON 형식과 교체 확인 절차 유지','암호화 데이터 조각을 먼저 저장하고 읽기·SHA-256 검증을 마친 후 활성 기록을 전환','중복 기록 ID 및 생활습관 값 검사 보강, 기존 Firebase 암호화 키·프로필 유지']},
   {version:'1.8.2',date:'2026-10-31',title:'생활 기록 3항목 정리 및 배변 연관성 분석 추가',details:['채소·과일 입력과 분석을 제외하고 과거 데이터는 삭제하지 않음','수분·수면·스트레스와 같은 날짜의 배변 형태·복부 불편 기록을 비교','음식 특성 분석 시 수분·수면·스트레스의 집단 차이를 함께 확인하며 인과관계는 판단하지 않음']},
   {version:'1.8.1',date:'2026-10-31',title:'승인한 시안과 동일한 홈·사이드바 화면 구성',details:['홈 상단과 작성 카드 3개를 시안에 맞춰 재구성','사이드바에 기록 작성·조회·리포트·캘린더·인사이트·설정·문의 경로 추가','최근 3종 기록과 주간 막대그래프를 실제 데이터와 연결하고 점수는 사용하지 않음']},
@@ -4650,7 +4657,7 @@ const home=document.createElement('div');home.className='jg181-home';home.innerH
 <article class="jg181-panel"><div class="jg181-panel-head"><strong><i aria-hidden="true">♧</i> 최근 생활 기록</strong><button class="jg181-more" data-image-route="lifestyle">더보기 ›</button></div><div class="jg181-items" id="jg181-life-list"></div></article>
 </div>
 <div class="jg181-bottom-row">
-<article class="jg181-panel jg181-week-panel"><div class="jg181-week-main"><div class="jg181-panel-head"><strong><i aria-hidden="true">▥</i> 이번 주 기록 요약</strong><button class="jg181-more" data-image-route="week">자세히 ›</button></div><p class="jg181-week-sub">이번 주의 기록을 한눈에 확인해 보세요.</p><div class="jg181-week-chart" id="jg181-week-chart"></div></div><div class="jg181-week-tip"><span aria-hidden="true">🌱</span><strong>꾸준한 기록이<br>더 편안한 내일을 만들어요.</strong><small>작은 습관이 모여<br>몸의 변화를 알아가는 데 도움이 돼요.</small></div></article>
+<article class="jg181-panel jg181-week-panel"><div class="jg181-week-main"><div class="jg181-panel-head"><strong><i aria-hidden="true">▥</i> 이번 주 기록 횟수</strong><button class="jg181-more" data-image-route="week">자세히 ›</button></div><p class="jg181-week-sub">월~일 식사·배변·생활 기록 건수 합계예요. 건강 점수가 아니에요.</p><div class="jg181-week-chart" id="jg181-week-chart"></div></div><div class="jg181-week-tip"><span aria-hidden="true">🌱</span><strong>꾸준한 기록이<br>더 편안한 내일을 만들어요.</strong><small>작은 습관이 모여<br>몸의 변화를 알아가는 데 도움이 돼요.</small></div></article>
 <article class="jg181-panel jg181-contact"><div class="jg181-contact-icon" aria-hidden="true">✉</div><h2>장일기가 함께해요</h2><p>사용 중 궁금한 점이나 의견이 있으신가요?<br>언제든 편하게 문의해 주세요.</p><button type="button" data-image-route="support">문의하기　›</button></article>
 </div><p class="jg181-disclaimer">장일기는 건강 기록을 돕는 도구이며, 기록만으로 질병이나 원인을 진단하지 않습니다.</p>`;
 dash.prepend(home);
@@ -4673,7 +4680,7 @@ document.addEventListener('click',e=>{
 });
 function dateText(v){let d=new Date(v);if(!Number.isFinite(d.getTime()))return String(v||'');return new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'short'}).format(d);}
 function content(items,kind){if(!items.length)return '<p class="jg181-empty">아직 저장된 기록이 없어요.<br>오늘의 작은 기록부터 시작해 보세요.</p>';
- return items.slice(0,3).map(v=>`<button type="button" class="jg181-item" data-image-route="${kind==='meal'?'mealDay':kind==='bowel'?'bowelHistory':'lifestyle'}" data-image-day="${S(v.date)}"><span class="jg181-record-icon ${kind==='meal'?'':kind}">${kind==='meal'?'🍚':kind==='bowel'?'🌿':'☀️'}</span><span class="jg181-item-text"><span class="jg181-item-date">${S(dateText(v.date))}</span><span class="jg181-item-description">${S(v.label)}</span></span><span class="jg181-record-chevron" aria-hidden="true">›</span></button>`).join('');}
+ return items.slice(0,3).map(v=>`<button type="button" class="jg181-item" data-image-route="${kind==='meal'?'mealDay':kind==='bowel'?'bowelHistory':'lifestyle'}" data-image-day="${S(v.date)}"><span class="jg181-record-icon ${kind==='meal'?'':kind}">${kind==='meal'?'🍽️':kind==='bowel'?'🌿':'☀️'}</span><span class="jg181-item-text"><span class="jg181-item-date">${S(dateText(v.date))}</span><span class="jg181-item-description">${S(v.label)}</span></span><span class="jg181-record-chevron" aria-hidden="true">›</span></button>`).join('');}
 function render(data){if(!data||!data.records||!data.events)return;
  const meals=timedMeals(data).slice().sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).map(m=>({date:dateKey(m.at),label:(m.foods||[]).join(', ')||'음식 기록'}));
  const bowel=eventObservations(data).real.slice().sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).map(e=>({date:e.date,label:`브리스톨 ${e.bristol}형 · 배변 기록` }));
@@ -4682,7 +4689,7 @@ function render(data){if(!data||!data.records||!data.events)return;
  const events=eventObservations(data).real;let counts=[];let days=[];
  const now=new Date();const day=now.getDay();const mondayOffset=(day+6)%7;
  for(let i=0;i<7;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-mondayOffset+i);const key=dateKey(d);const n=events.filter(e=>e.date===key).length+meals.filter(m=>m.date===key).length+life.filter(l=>l.date===key).length;counts.push(n);days.push('월화수목금토일'[i]);}
- const max=Math.max(1,...counts);$('jg181-week-chart').innerHTML=counts.map((n,i)=>`<div class="jg181-week-day" title="${days[i]}요일 기록 ${n}건"><div class="jg181-bar-holder"><div class="jg181-bar" style="height:${n?Math.max(12,Math.round(100*n/max)):0}%"></div></div><span>${days[i]}</span></div>`).join('');
+ const max=Math.max(1,...counts);$('jg181-week-chart').innerHTML=counts.map((n,i)=>`<div class="jg181-week-day" title="${days[i]}요일 기록 ${n}건"><div class="jg181-bar-holder"><div class="jg181-bar" style="height:${n?Math.max(12,Math.round(100*n/max)):0}%"></div></div><span>${days[i]}</span><span class="jg184-count">${n}건</span></div>`).join('');
  let profileName=String(data.profile?.displayName||'').trim();const name=$('jg181-greeting-name');if(name)name.textContent=profileName?profileName+'님!':'장일기님!';
 }
 // Keep the original data-update pipeline; the new visual layer is a read-only projection.
@@ -4694,5 +4701,217 @@ window.__jg181Render=render;
 })();
 </script>
 
+<style id="jg184-integrated-interface">
+/* v1.8.4: visual structure only. Storage, encryption, record schema and analytics untouched. */
+:root{--jg184-radius:16px}
+body[data-theme="leaf"]{--jg184-accent:#327e51;--jg184-tint:#e8f3e7;--jg184-hover:#f0f8f0}
+body[data-theme="cream"]{--jg184-accent:#9b7249;--jg184-tint:#f5e7cd;--jg184-hover:#fbf4e9}
+body[data-theme="ocean"]{--jg184-accent:#3679a4;--jg184-tint:#e0eff7;--jg184-hover:#f0f7fb}
+body[data-theme="lavender"]{--jg184-accent:#8059ac;--jg184-tint:#eee4f6;--jg184-hover:#f7f1fb}
+body[data-theme="rose"]{--jg184-accent:#ad5876;--jg184-tint:#f9e4ed;--jg184-hover:#fef3f7}
+body[data-theme="graphite"]{--jg184-accent:#44667f;--jg184-tint:#e2edf3;--jg184-hover:#f2f6f8}
+body{--jg184-accent:var(--green);--jg184-tint:var(--mint);--jg184-hover:var(--paper)}
+/* Desktop top bar: stable left breadcrumb and right actions, regardless of sidebar state. */
+.topbar{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;min-width:0!important;background:var(--surface)!important;border-color:var(--line)!important}
+.topbar .breadcrumb{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-width:0!important;flex:1!important;margin:0!important;gap:12px!important;font-size:12px!important;overflow:hidden!important;white-space:nowrap!important}
+.topbar .breadcrumb #breadcrumbHome{font-size:12px!important;font-weight:750!important;color:var(--jg184-accent)!important;white-space:nowrap!important}
+.topbar .breadcrumb #pageTitle{font-size:12px!important;color:var(--ink)!important;overflow:hidden;text-overflow:ellipsis}
+.topbar .top-actions{display:flex!important;align-items:center!important;flex:0 0 auto!important;gap:8px!important}
+@media(min-width:1051px){.topbar .mobile-menu{display:none!important}}
+@media(max-width:1050px){.topbar .mobile-menu{display:block!important;flex:none!important}.topbar .breadcrumb{display:flex!important;margin-left:3px!important}}
+@media(max-width:520px){.topbar{gap:5px!important;padding:0 11px!important}.topbar .breadcrumb{gap:5px!important;font-size:10px!important}.topbar .breadcrumb #pageTitle{font-size:10px!important}.jg181-top-search,.jg181-top-notify{width:31px!important;height:31px!important}.topbar .top-actions{gap:2px!important}.topbar #accountMenuButton{width:32px!important;height:32px!important}}
+/* Sidebar: expanded is a disclosure, NOT a selected page. */
+.sidebar{background:var(--surface)!important;border-color:var(--line)!important}
+.sidebar>.jg181-sidebar{gap:9px!important}
+.jg181-brand{padding:7px 9px 11px!important;color:var(--deep)!important}
+.jg181-brand-logo,.jg181-panel-head strong i,.jg181-contact-icon{color:var(--jg184-accent)!important}
+.jg181-nav{gap:2px!important}
+.jg181-navitem{min-height:39px!important;border-radius:11px!important;color:var(--ink)!important;padding:7px 11px!important}
+.jg181-navitem[aria-expanded="true"]:not(.active){background:transparent!important;color:var(--ink)!important}
+.jg181-navitem[aria-expanded="true"]:not(.active):hover,.jg181-navitem:hover{background:var(--jg184-hover)!important;color:var(--jg184-accent)!important}
+.jg181-navitem.active,.jg181-subnav button.active{background:var(--jg184-tint)!important;color:var(--jg184-accent)!important;font-weight:850!important}
+.jg181-subnav{padding:0 3px 4px 35px!important;gap:1px!important}
+.jg181-subnav button{font-size:11px!important;padding:6px 9px!important;border-radius:9px!important}
+.jg181-subnav button:not(.active):hover{background:var(--jg184-hover)!important;color:var(--jg184-accent)!important}
+.jg181-sidebar-bottom{margin-top:12px!important}
+.jg181-support-tip{padding:10px!important;background:var(--jg184-tint)!important;border-color:var(--line)!important;color:var(--jg184-accent)!important}
+.jg181-support-tip small{color:var(--muted)!important}
+.jg181-nav-separator{margin:3px 8px!important;border-color:var(--line)!important}
+.sidebar{scrollbar-width:thin}
+/* Theme synchronization for visual dashboard & all main interactive surfaces. */
+#dashboardView{background:var(--paper)!important}
+#dashboardView>.jg181-home{color:var(--ink)!important}
+.jg181-hero{background:linear-gradient(105deg,var(--surface),var(--jg184-tint))!important}
+.jg181-hero h1{color:var(--deep)!important}.jg181-kicker{color:var(--jg184-accent)!important}
+.jg181-panel,.jg181-action-card{background:var(--surface)!important;border-color:var(--line)!important;color:var(--ink)!important;box-shadow:var(--shadow)!important}
+.jg181-action-card:hover{border-color:var(--jg184-accent)!important}
+.jg181-action-card .jg181-action-icon,.jg181-action-card[data-kind] .jg181-action-icon,.jg181-action-chevron{background:var(--jg184-tint)!important;color:var(--jg184-accent)!important}
+.jg181-action-card[data-kind] .jg181-action-cta,.jg181-contact button{background:var(--jg184-tint)!important;color:var(--jg184-accent)!important}
+.jg181-week-tip{background:var(--jg184-tint)!important;color:var(--muted)!important}.jg181-week-tip strong{color:var(--jg184-accent)!important}
+.jg181-bar{background:linear-gradient(to top,var(--jg184-accent),var(--mint))!important}
+.jg181-contact-icon,.jg181-more:hover{color:var(--jg184-accent)!important}
+.jg181-record-icon{background:var(--jg184-tint)!important}
+.jg181-top-search,.jg181-top-notify{color:var(--deep)!important}
+.topbar .account-avatar,.topbar .avatar-small{background:var(--jg184-tint)!important;color:var(--jg184-accent)!important}.jg181-top-hello strong{color:var(--deep)!important}
+.jg181-top-search:hover,.jg181-top-notify:hover{background:var(--jg184-tint)!important}
+.jg181-notice-popup{border-color:var(--line)!important;background:var(--surface)!important}
+.jg181-notice-popup .release-notice{background:var(--jg184-tint)!important}
+/* Styling secondary screens using theme tokens, rather than hardcoded green overrides. */
+.main-content{background:var(--paper)!important;min-width:0!important}
+.view{min-width:0!important;max-width:100%!important;scrollbar-width:thin}
+.view.active-view:not(#dashboardView){background:var(--paper)!important}
+.view .card-surface,.view .settings-card,.view .analysis-card,.view .jg-day-meals-toolbar,.view .jg-subpage-head{border-color:var(--line)!important}
+.view :is(.primary-button,.account-primary,.record-step-next,.event-edit,.jg-mail-compose-button,.jg-compose-send,.jg-contact-submit){background:var(--jg184-accent)!important;border-color:var(--jg184-accent)!important;color:#fff!important}
+.view :is(.outline-button,.jg-back,.jg-period-tabs button,.event-delete,.settings-support-actions button){border-color:var(--line)!important;color:var(--deep)!important}
+.view :is(.jg-period-tabs button[aria-pressed="true"],.appearance-choices button[aria-pressed="true"],.screen-switcher button[aria-selected="true"],.quick-options button.selected,.quick-shape.selected){background:var(--jg184-tint)!important;border-color:var(--jg184-accent)!important;color:var(--deep)!important}
+.view :is(.week-bar .bar-wrap i,.month-col i){background:var(--jg184-accent)!important}
+.view :is(input,textarea,select):focus-visible,.jg181-nav :focus-visible{outline:2px solid var(--jg184-accent)!important;outline-offset:2px}
+body[data-bg="dots"] .main-content{background-image:radial-gradient(color-mix(in srgb,var(--jg184-accent) 19%,transparent) 1px,transparent 1px)!important;background-size:30px 30px!important}
+body[data-bg="plain"] .main-content{background-image:none!important}
+/* Calendar is now the main record overview and includes only BRISTOL and symptom report cards. */
+#weekView.active-view{gap:12px!important;padding:clamp(14px,2vw,27px)!important;overflow-y:auto!important}
+#weekView .jg-subpage-head{margin:0!important;padding:0!important;align-items:center!important}
+#weekView .jg-subpage-head h1{font-size:clamp(22px,2.4vw,29px)!important;margin:0!important}
+#weekView>.foodlife-help{margin:0 0 2px!important;line-height:1.6!important}
+#weekView>.jg184-calendar-layout{width:100%;max-width:1230px;margin:0 auto;display:grid;grid-template-columns:minmax(300px,1.15fr) minmax(270px,.85fr);gap:13px;align-items:start;min-width:0}
+#weekView .calendar-card{max-height:none!important;overflow:visible!important;min-width:0!important;width:100%!important;padding:clamp(14px,2vw,22px)!important;background:var(--surface)!important;border:1px solid var(--line)!important;border-radius:var(--jg184-radius)!important}
+#weekView .calendar-head,#weekView .calendar-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:5px!important;width:100%!important}
+#weekView .calendar-head{padding:0 1px;margin:9px 0 5px!important}
+#weekView .calendar-head span{text-align:center!important;font-size:11px!important}
+#weekView .calendar-grid>*{min-width:0!important;min-height:38px!important}
+#weekView .calendar-grid .cal-day{width:100%!important;height:clamp(39px,4.2vw,55px)!important;min-width:0!important;font-size:13px!important;border-radius:11px!important;background:var(--surface)!important;color:var(--muted)!important;border:1px solid var(--line)!important;opacity:1!important}
+#weekView .calendar-grid .cal-day.recorded{background:var(--jg184-tint)!important;border-color:var(--jg184-accent)!important;color:var(--deep)!important;font-weight:800!important}
+#weekView .calendar-grid .cal-day.today{outline:2px solid var(--jg184-accent)!important;outline-offset:-2px!important}
+#weekView .calendar-grid .cal-day.selected{background:var(--jg184-accent)!important;color:#fff!important}
+#weekView .month-calendar-detail{margin-top:12px!important;min-height:48px;line-height:1.55;color:var(--deep)!important}
+#weekView .jg184-report-column{display:grid;gap:12px;min-width:0}
+#weekView .jg184-report-column .card-surface{min-width:0!important;padding:clamp(16px,2vw,22px)!important;max-width:none!important;width:100%!important}
+#weekView .distribution-card,#weekView .symptom-report{grid-column:auto!important;min-height:0!important}
+#weekView .report-type-metrics{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
+#weekView .report-type-metrics>div{min-width:0;padding:8px 4px!important}
+#weekView .report-type-metrics b{color:var(--jg184-accent)!important;font-size:17px!important}
+#weekView .report-type-metrics span{font-size:10px!important}
+#weekView .distribution-bar{overflow:hidden;border-radius:9px;background:var(--jg184-tint)!important}
+#weekView .distribution-bar>span{min-width:0}
+#weekView .card-heading{margin-bottom:10px!important}
+#weekView .calendar-legend{flex-wrap:wrap!important}
+/* The old report frequency and home 7/30 defaults are legacy data, not current controls. */
+#weekView>#weekOverview,#weekView>#bowelPeriodTabs,#weekView>.jg-period-tabs,#reportView{display:none!important}
+#settingsView :is(#homeTrendSettingsCard,#homeMealTrendSettingsCard){display:none!important}
+#bowelHistoryView .home-backup-action{display:none!important}
+/* 'my information' is an actual page; move the existing form to preserve attached saving handlers. */
+#profileView.active-view{padding:clamp(14px,2.5vw,28px)!important}
+#profileView .jg184-profile-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.8fr);gap:14px;align-items:start;max-width:1050px;margin:15px auto}
+#profileView .jg184-profile-card{border:1px solid var(--line);border-radius:17px;background:var(--surface);padding:clamp(17px,2.5vw,25px);min-width:0}
+#profileView .jg184-profile-card h2{margin:0 0 16px;font-size:18px}
+#profileView .account-menu-section{display:grid!important;gap:12px;background:transparent!important;box-shadow:none!important;border:0!important;margin:0!important;padding:0!important;max-height:none!important}
+#profileView .profile-menu-field{display:grid;gap:8px;max-width:none!important;width:100%}
+#profileView .profile-menu-field :is(input,select){width:100%;min-height:42px;border:1px solid var(--line);border-radius:9px;padding:8px 11px;color:var(--ink);background:var(--surface)}
+#profileView .jg-photo-controls{padding:14px!important;background:var(--jg184-hover)!important;border-color:var(--line)!important}
+#profileView .account-primary{min-height:44px!important;border-radius:10px!important}
+#profileView .jg184-profile-email{overflow-wrap:anywhere;color:var(--muted);font-size:13px;margin:8px 0}
+#profileView .jg184-profile-info{background:var(--jg184-hover);padding:13px;border-radius:12px;margin:10px 0}
+#profileView .jg184-profile-info strong,#profileView .jg184-profile-info span{display:block}
+#profileView .jg184-profile-info strong{font-size:12px;color:var(--deep)}
+#profileView .jg184-profile-info span{font-size:12px;color:var(--muted);margin-top:3px}
+#profileView .jg184-profile-info button{margin-top:7px;color:var(--jg184-accent);font-weight:800;text-align:left}
+#profileView .jg184-profile-security{display:grid;gap:9px;margin-top:15px}
+#profileView .jg184-profile-security button{background:var(--jg184-tint);color:var(--jg184-accent);padding:11px;border-radius:9px;text-align:left;font-weight:750}
+/* Meaningful weekly chart: show count labels, rather than relying on mouse hover. */
+.jg181-week-day .jg184-count{font-size:10px;font-weight:750;color:var(--jg184-accent)}
+.jg181-week-chart{height:111px!important}
+body[data-bg="soft"] .view.active-view,body[data-bg="soft"] .main-content{background-color:var(--paper)!important;background-image:radial-gradient(ellipse at 85% 5%,color-mix(in srgb,var(--jg184-accent) 10%,transparent),transparent 56%)!important}
+body[data-bg="dots"] .view.active-view,body[data-bg="dots"] .main-content{background-color:var(--paper)!important;background-image:radial-gradient(color-mix(in srgb,var(--jg184-accent) 19%,transparent) 1px,transparent 1px)!important;background-size:30px 30px!important}
+@media(max-width:1050px){.sidebar.open{left:0!important;transform:translateX(0)!important;visibility:visible!important;pointer-events:auto!important;z-index:1100!important}}
+@media(max-width:850px){#weekView>.jg184-calendar-layout,#profileView .jg184-profile-grid{grid-template-columns:1fr}}
+@media(max-width:600px){#weekView .calendar-grid .cal-day{font-size:12px!important;min-height:38px!important;height:41px!important}#weekView .calendar-head,#weekView .calendar-grid{gap:3px!important}.jg181-week-chart{height:100px!important}}
+</style>
+<script id="jg184-screen-coordinator">
+(function(){'use strict';
+ const $=id=>document.getElementById(id);
+ const side=document.querySelector('.jg181-sidebar');
+ const week=$('weekView');const report=$('reportView');const main=document.querySelector('.main-content');
+ if(!side||!week||!report||!main)return;
+ // Keep original report input elements and calculations, but put their result cards in calendar.
+ const calendar=week.querySelector('.calendar-card');
+ const dist=report.querySelector('.distribution-card');
+ const symptoms=report.querySelector('.symptom-report');
+ const layout=document.createElement('section');layout.className='jg184-calendar-layout';
+ const column=document.createElement('div');column.className='jg184-report-column';
+ if(calendar)layout.appendChild(calendar);
+ if(dist)column.appendChild(dist);
+ if(symptoms)column.appendChild(symptoms);
+ layout.appendChild(column);week.appendChild(layout);
+ const heading=week.querySelector('.jg-subpage-head h1');if(heading)heading.textContent='캘린더 · 배변 형태와 증상';
+ const description=week.querySelector(':scope > .foodlife-help');if(description)description.textContent='달력에서 배변 기록 날짜를 확인하고, 오른쪽에서 최근 30일의 배변 형태와 함께 기록한 증상을 비교해요.';
+ // One clear calendar route. Other old screens are retained for safe parsing by legacy renderers.
+ side.querySelector('[data-image-route="report"]')?.remove();
+ side.querySelector('.jg181-navitem[data-image-route="week"]')?.setAttribute('data-image-route','calendar');
+ side.querySelector('[data-image-route="calendar"]')?.setAttribute('title','날짜별 배변 기록과 형태·증상 통계');
+ side.querySelectorAll('.jg181-subnav button').forEach(b=>{if(b.dataset.imageRoute==='week')b.remove();});
+ // Reuse original profile edit fields and save handlers, do not clone them.
+ const profile=document.createElement('section');profile.id='profileView';profile.className='view';profile.setAttribute('aria-label','내 정보 및 프로필');
+ profile.innerHTML=`<div class="jg-subpage-head"><div><span class="section-kicker">MY PROFILE</span><h1>내 정보</h1><p>내 계정 정보와 프로필을 확인하고 수정해요. 건강 기록은 여기서 공개되지 않아요.</p></div><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div><div class="jg184-profile-grid"><article class="jg184-profile-card"><h2>프로필 설정</h2><div id="jg184-profile-fields"></div></article><article class="jg184-profile-card"><h2>계정과 보안</h2><p class="jg184-profile-email" id="jg184-profile-email"></p><div class="jg184-profile-info"><strong>개인 기록 저장</strong><span>내 기록은 기기에서 암호화한 후 Firebase 계정에 저장돼요.</span></div><div class="jg184-profile-info"><strong>개인정보 변경</strong><span>이름·연령대·성별·프로필 사진은 왼쪽에서 수정할 수 있어요.</span></div><div class="jg184-profile-security"><button type="button" id="jg184-email-change">이메일 변경</button><button type="button" id="jg184-pass-change">로그인 비밀번호 변경</button><button type="button" id="jg184-security-info">암호화·복구 키 안내</button></div></article></div>`;
+ main.appendChild(profile);
+ const account=$('accountMenu');
+ const editor=account?.querySelector('.account-menu-section:not(.account-menu-actions)');
+ if(editor)$('jg184-profile-fields').appendChild(editor);
+ $('jg184-email-change')?.addEventListener('click',()=>$('changeEmailBtn')?.click());
+ $('jg184-pass-change')?.addEventListener('click',()=>$('changePasswordBtn')?.click());
+ $('jg184-security-info')?.addEventListener('click',()=>$('showSecurityInfoBtn')?.click());
+ // Sidebar '내 정보' uses this actual page instead of opening a dropdown.
+ let lastSideChoice=null;
+ document.addEventListener('click',e=>{
+  const accountButton=e.target.closest('[data-image-account]');
+  if(accountButton?.closest('.jg181-sidebar')){e.preventDefault();e.stopImmediatePropagation();navigate('profile');return;}
+  const routeButton=e.target.closest('[data-image-route]');
+  if(routeButton?.closest('.jg181-sidebar'))lastSideChoice=routeButton;
+ },true);
+ const oldNavigate=navigate;
+ function syncActive(view){
+  side.querySelectorAll('.jg181-navitem,.jg181-subnav button').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});
+  let key=(view==='week'||view==='report'||view==='calendar')?'calendar':view;
+  let choices=[...side.querySelectorAll('[data-image-route]')].filter(el=>el.dataset.imageRoute===key);
+  let chosen=choices.includes(lastSideChoice)?lastSideChoice:choices[0];
+  if(key==='profile')chosen=side.querySelector('[data-image-account]');
+  if(chosen){chosen.classList.add('active');chosen.setAttribute('aria-current','page');const panel=chosen.closest('[data-image-panel]');if(panel){panel.hidden=false;const group=side.querySelector(`[data-image-expand="${panel.dataset.imagePanel}"]`);group?.setAttribute('aria-expanded','true');}}
+  // Expanded disclosure groups must never light up merely because they are open.
+ }
+ navigate=function(view){
+  const actual=(view==='report'||view==='calendar')?'week':view;
+  oldNavigate(actual);
+  const newlyOpened=$(actual+'View');if(newlyOpened)newlyOpened.scrollTop=0;main.scrollTop=0;
+  if(view==='report'||view==='calendar'||view==='week')$('pageTitle').textContent='캘린더 · 형태·증상';
+  else if(view==='profile')$('pageTitle').textContent='내 정보';
+  if(actual==='profile'){
+   const d=typeof readData==='function'?readData():null;
+   $('jg184-profile-email').textContent='계정 이메일: '+(typeof cloudUserEmail!=='undefined'&&cloudUserEmail?cloudUserEmail:'로그인 후 확인할 수 있어요');
+   const n=$('settingsDisplayName');if(n&&d?.profile)n.value=d.profile.displayName||'';
+   const age=$('settingsAge');if(age&&d?.profile)age.value=d.profile.ageGroup||'';
+   const gen=$('settingsGender');if(gen&&d?.profile)gen.value=d.profile.gender||'선택 안 함';
+  }
+  syncActive(view);
+ };
+ window.__jg184SyncNavigation=syncActive;
+ // Existing inline onclick on setting opens old popup; intercept and navigate to the profile page.
+ $('settingsProfileBtn')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();navigate('profile');},true);
+ // Top profile icon still opens quick account actions; existing profile edit fields live on profile page.
+ const accBtn=$('accountMenuButton');
+ if(accBtn){accBtn.setAttribute('aria-label','계정 메뉴 열기');}
+ // Existing visible UI should not show redundant JSON backup inside today's bowel history.
+ const backup=week?.querySelector('.home-backup-action')||$('bowelHistoryView')?.querySelector('.home-backup-action');
+ if(backup)backup.hidden=true;
+ // New home summary labels make total record counts interpretable.
+ const weekTitle=document.querySelector('.jg181-week-panel .jg181-panel-head strong');
+ if(weekTitle)weekTitle.textContent='▥ 이번 주 기록 횟수';
+ const weekHelp=document.querySelector('.jg181-week-sub');
+ if(weekHelp)weekHelp.textContent='월~일 · 식사·배변·생활 기록 건수 합계. 건강 점수가 아니에요.';
+ // Keep the legacy category choice stored for backward compatibility, but remove obsolete UI.
+ $('homeTrendSettingsCard')?.remove();
+ $('homeMealTrendSettingsCard')?.remove();
+ // Make calendar route visually compact without hiding requested content.
+ syncActive('dashboard');
+})();
+</script>
 </body>
 </html>
