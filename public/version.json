@@ -1,8 +1,8 @@
 {
-  "version": "1.8.0",
-  "date": "2026-10-30",
+  "version": "1.8.3",
+  "date": "2026-10-31",
   "notice": "",
-  "releasedAt": "2026-10-30",
-  "headline": "장일기 v1.8.0 UI 새단장",
-  "description": "카드형 홈·전체 UI 개선, 새 음식 9종, 문의 대화 영역 내부 스크롤"
+  "releasedAt": "2026-10-31",
+  "headline": "장일기 v1.8.3 JSON 대용량 복원 개선",
+  "description": "120일 이상의 배변·식사·생활 JSON 기록을 암호화 분할 저장, 원자적 활성 전환 및 SHA-256 복원 무결성 검사"
 }

@@ -38,7 +38,7 @@ service cloud.firestore {
       let v = d.vault;
       return d.keys().hasAll(['schemaVersion', 'vault', 'updatedAt'])
         && d.keys().hasOnly(['schemaVersion', 'vault', 'updatedAt'])
-        && d.schemaVersion == 2
+        && d.schemaVersion in [2, 3]
         && d.updatedAt is timestamp
         && v is map
         && v.keys().hasAll(['version', 'kdf', 'passwordWrap', 'recoverySalt', 'recoveryWrap', 'data'])
@@ -58,9 +58,33 @@ service cloud.firestore {
       // These encrypted health record rules are unchanged from the repository.
       allow create: if documentId == 'state' && isOwner(uid) && validEncryptedState();
       allow update: if documentId == 'state' && isOwner(uid)
-        && resource.data.schemaVersion in [1, 2]
+        && resource.data.schemaVersion in [1, 2, 3]
+        && request.resource.data.schemaVersion >= resource.data.schemaVersion
         && validEncryptedState();
       allow delete: if documentId == 'state' && isOwner(uid);
+    }
+
+
+    // Independently encrypted, immutable chunks for larger health diaries.
+    // Only the verified account owner can access them; no list permission.
+    // Parent /private/state is the atomic pointer to the active generation.
+    match /users/{uid}/private/state/payloadChunks/{chunkId} {
+      allow get: if isOwner(uid);
+      allow list: if false;
+      allow create: if isOwner(uid)
+        && chunkId.matches('^[0-9a-f]{32}_[0-9]{4}$')
+        && request.resource.data.keys().hasAll(['generation', 'index', 'box', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['generation', 'index', 'box', 'createdAt'])
+        && request.resource.data.generation is string
+        && request.resource.data.generation.matches('^[0-9a-f]{32}$')
+        && request.resource.data.index is int
+        && request.resource.data.index >= 0
+        && request.resource.data.index < 96
+        && request.resource.data.createdAt == request.time
+        && validBox(request.resource.data.box)
+        && request.resource.data.box.ciphertext.size() < 370000;
+      allow update: if false;
+      allow delete: if isOwner(uid);
     }
 
     function supportUser() {

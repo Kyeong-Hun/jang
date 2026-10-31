@@ -886,6 +886,17 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 }
 </style>
 
+<style id="jg182-lifestyle-analysis-css">
+#analysisView #jgLifestyleAnalysis .jg-life-findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+#analysisView #jgLifestyleAnalysis .jg-life-finding{min-width:0;border:1px solid rgba(59,126,88,.18);background:rgba(244,250,245,.7);border-radius:16px;padding:14px}
+#analysisView #jgLifestyleAnalysis .jg-life-finding h3{margin:0 0 7px;font-size:16px;color:#2f6042}
+#analysisView #jgLifestyleAnalysis .jg-life-groups{font-weight:600;font-size:13px;margin:0 0 10px;overflow-wrap:anywhere}
+#analysisView #jgLifestyleAnalysis .jg-life-outcomes{display:grid;gap:8px}
+#analysisView #jgLifestyleAnalysis .jg-life-outcome{display:grid;gap:3px;padding:8px 0;border-bottom:1px solid rgba(59,126,88,.12);font-size:12px}
+#analysisView #jgLifestyleAnalysis .jg-life-outcome>span:first-child{font-weight:650}
+#analysisView #jgLifestyleAnalysis .jg-life-columns{font-size:11px;color:#68786e;margin:10px 0 0}
+@media(max-width:1120px){#analysisView #jgLifestyleAnalysis .jg-life-findings{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -985,7 +996,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <div class="record-header foodlife-intro"><div><div class="eyebrow">FOOD &amp; LIFESTYLE JOURNAL</div><h1>음식·생활 기록</h1><p>식사 시각을 기록하고 생활습관과 배변의 시간차를 확인해요.</p></div></div>
 <div class="foodlife-date card-surface" id="foodlifeDateBlock"><label for="foodlifeDate"><span class="section-kicker">기록 날짜</span><input type="date" id="foodlifeDate" required></label><span id="foodlifeDateStatus" aria-live="polite">날짜를 선택해 주세요.</span></div>
 <article class="foodlife-panel card-surface" id="foodlifeFoodPanel"><div class="card-heading"><div><span class="section-kicker">FOOD NOTES</span><h2>먹은 음식</h2></div></div><p class="foodlife-help">이전 날짜별 기록은 그대로 유지됩니다. 저장된 과거 음식명도 선택할 수 있어요. 선택하지 않은 채 저장하면 '선택한 음식 없음'으로 기록돼요.</p><div class="food-catalog-bar"><label>음식 찾기 <input type="search" id="legacyFoodSearch" placeholder="기존 기록에서 음식 찾기"></label><button type="button" class="outline-button menu-request-open">＋ 메뉴 추가 요청</button></div><div id="foodlifeFoodChoices" class="foodlife-chip-grid food-catalog" role="group" aria-label="음식 종류"></div><section class="digestive-editor"><h3>선택한 음식의 소화 특성 <small>기본값 자동 적용 · 실제 조리 상태만 체크</small></h3><div id="dailyDigestEditor"></div></section><div class="foodlife-actions"><button type="button" class="primary-button" id="foodlifeSaveFood">음식 기록 저장</button></div></article>
-<article class="foodlife-panel card-surface" id="foodlifeLifePanel"><div class="card-heading"><div><span class="section-kicker">DAILY HABITS</span><h2>오늘의 생활 습관</h2></div></div><p class="foodlife-help">하루를 돌아보고 기억나는 항목만 선택해 주세요. 미선택은 미기록으로 남겨요.</p><div id="foodlifeLifestyleChoices" class="foodlife-habit-grid"></div><div class="foodlife-actions jg-life-save-actions"><button type="button" class="primary-button jg-life-save-button" id="foodlifeSaveLife"><span class="jg-life-save-icon" aria-hidden="true">✓</span><span>오늘의 생활 기록 저장</span><span class="jg-life-save-arrow" aria-hidden="true">›</span></button><p class="jg-life-save-hint">선택한 날짜의 생활 기록만 저장하며 식사·배변 기록은 유지됩니다.</p></div></article>
+<article class="foodlife-panel card-surface" id="foodlifeLifePanel"><div class="card-heading"><div><span class="section-kicker">DAILY HABITS</span><h2>오늘의 생활 습관</h2></div></div><p class="foodlife-help">수분·수면·스트레스만 기록해 주세요. 미선택은 미기록으로 남기며, 예전 채소·과일 기록은 유지하되 분석하지 않아요.</p><div id="foodlifeLifestyleChoices" class="foodlife-habit-grid"></div><div class="foodlife-actions jg-life-save-actions"><button type="button" class="primary-button jg-life-save-button" id="foodlifeSaveLife"><span class="jg-life-save-icon" aria-hidden="true">✓</span><span>오늘의 생활 기록 저장</span><span class="jg-life-save-arrow" aria-hidden="true">›</span></button><p class="jg-life-save-hint">선택한 날짜의 생활 기록만 저장하며 식사·배변 기록은 유지됩니다.</p></div></article>
 <article class="foodlife-panel card-surface" id="timedMealPanel">
  <div class="card-heading"><div><span class="section-kicker">TIME-STAMPED MEALS</span><h2>식사 기록</h2></div></div>
  <p class="foodlife-help">먹은 음식을 검색해 추가해 주세요. 전체 음식 목록은 펼쳐지지 않으며, 조리 특성은 선택한 음식의 「조리 특성 수정」 버튼을 눌렀을 때만 표시돼요. 과거 기록은 그대로 보존됩니다.</p>
@@ -1012,7 +1023,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <div class="appearance-choices analysis-window-choices" role="group" aria-label="분석에 사용할 최근 기록 기간">
 <button type="button" data-analysis-days="30">30일</button><button type="button" data-analysis-days="60">60일</button><button type="button" data-analysis-days="90">90일</button><button type="button" data-analysis-days="180">180일</button></div>
 <p class="appearance-description">초기값 90일은 의학적 권고값이 아닌 탐색용 설정이에요. 연관성은 새로운 기록에서 재현되는지 따로 확인합니다.</p></article>
-<article class="settings-card card-surface" id="backupRestoreSettingsCard"><span class="section-kicker">DATA BACKUP &amp; RESTORE</span><h2>데이터 백업·복원</h2><p class="appearance-description">배변·식사·생활 기록과 변경 이력, 프로필·설정을 JSON으로 보관하거나 가져올 수 있어요. 백업 파일은 암호화되지 않습니다.</p><div class="jg-backup-actions"><button type="button" id="exportSettings" class="outline-button">↓ 전체 기록 JSON 다운로드</button><button type="button" id="openJsonImport" class="primary-button">↑ JSON 가져오기 · 전체 교체</button></div><p class="jg-import-footnote">가져오기는 현재 계정 데이터를 파일 속 데이터로 <strong>완전히 교체</strong>합니다. 백업에 없는 기존 기록도 사라져요.</p><input type="file" id="jsonImportFile" accept=".json,application/json" hidden aria-label="장일기 JSON 백업 파일 선택"></article>
+<article class="settings-card card-surface" id="backupRestoreSettingsCard"><span class="section-kicker">DATA BACKUP &amp; RESTORE</span><h2>데이터 백업·복원</h2><p class="appearance-description">최근 120일을 포함한 전체 배변·식사·생활 기록과 변경 이력, 프로필·설정을 JSON으로 보관하거나 가져올 수 있어요. 백업 파일은 암호화되지 않습니다.</p><div class="jg-backup-actions"><button type="button" id="exportSettings" class="outline-button">↓ 전체 기록 JSON 다운로드</button><button type="button" id="openJsonImport" class="primary-button">↑ JSON 가져오기 · 전체 교체</button></div><p class="jg-import-footnote">가져오기는 현재 계정 데이터를 파일 속 데이터로 <strong>완전히 교체</strong>합니다. 백업에 없는 기존 기록도 사라져요.</p><input type="file" id="jsonImportFile" accept=".json,application/json" hidden aria-label="장일기 JSON 백업 파일 선택"></article>
 <article class="settings-card card-surface" id="accountSupportSettings"><span class="section-kicker">PRIVACY &amp; SUPPORT</span><h2>계정과 문의</h2><p class="appearance-description">이름·연령대·성별은 암호화된 내 계정 기록에 저장돼요. 개발자에게 직접 보낸 문의 내용만 운영자가 볼 수 있어요.</p><div class="settings-support-actions"><button id="settingsProfileBtn" type="button">내 프로필 수정</button><button type="button" data-view="support">개발자에게 문의</button></div></article></div><p class="appearance-footnote">선택한 테마와 배경은 로그인한 계정에 저장돼요. 연령대·이메일 변경은 오른쪽 위 프로필에서 관리할 수 있어요. 건강 참고 정보는 왼쪽 참고 메뉴에서 확인할 수 있어요.</p></section>
 <section class="view" id="supportView" aria-label="개발자와의 문의·대화">
   <div class="jg-subpage-head"><div><span class="section-kicker">SUPPORT MAILBOX</span><h1>소통 센터</h1><p class="support-muted">보낸 문의를 메일처럼 열어 답변을 확인하고 대화를 이어갈 수 있어요.</p></div><button class="jg-back" type="button" data-view="dashboard">← 홈으로</button></div>
@@ -1176,7 +1187,7 @@ async function writeData(data){
   cloudData=next;
   setSyncStatus('클라우드 저장 완료');
   return true;
- }catch(e){console.error('Firestore save failed',e);setSyncStatus('저장 실패 · 네트워크 또는 권한을 확인하세요.');showToast('서버에 기록을 저장하지 못했어요. 다시 시도해 주세요.');return false;}
+ }catch(e){console.error('Firestore save failed',e);setSyncStatus('저장 실패 · 네트워크 또는 권한을 확인하세요.');showToast(e?.jgCommitUncertain?'저장 상태를 확인하지 못했어요. 새로 로그인해 기록을 확인하세요.':'서버에 기록을 저장하지 못했어요. 다시 시도해 주세요.');return false;}
 }
 function setSyncStatus(message){const el=document.querySelector('#syncStatus');if(el)el.textContent=message;}
 let toastTimer=0;
@@ -1184,7 +1195,7 @@ function showToast(message){const el=document.querySelector('#toast');if(!el)ret
 function downloadData(){if(!confirm('내보낼 JSON 파일에는 복호화된 개인 건강 기록이 포함돼요. 이 파일 자체는 암호화되지 않습니다. 안전한 곳에 저장하시겠어요?'))return;const blob=new Blob([JSON.stringify(readData(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jangilgi-records-UNENCRYPTED.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);showToast('암호화되지 않은 JSON 백업을 내려받았어요. 공유하지 마세요.');}
 /* v1.5.0: validated, explicitly confirmed full JSON replacement; no changes to Firebase vault keys. */
 let pendingJsonRestore=null;
-const JG_JSON_IMPORT_MAX_BYTES=12*1024*1024;
+const JG_JSON_IMPORT_MAX_BYTES=24*1024*1024;
 function isJsonObject(value){return value!==null&&typeof value==='object'&&!Array.isArray(value);}
 function validateJangJsonBackup(payload){
  if(!isJsonObject(payload))throw Error('JSON 최상위 값은 장일기 백업 데이터 객체여야 해요.');
@@ -1193,7 +1204,7 @@ function validateJangJsonBackup(payload){
  }
  if(!isJsonObject(payload.profile)||!isJsonObject(payload.eventBaselines)||!Array.isArray(payload.records)||!Array.isArray(payload.events)||!Array.isArray(payload.history)||typeof payload.demo!=='boolean')throw Error('장일기 백업의 기록·프로필 형식이 올바르지 않아요.');
  const isValidDate=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&(()=>{const [y,m,d]=s.split('-').map(Number);const day=new Date(Date.UTC(y,m-1,d));return day.getUTCFullYear()===y&&day.getUTCMonth()===m-1&&day.getUTCDate()===d;})();
- const isValidInstant=s=>typeof s==='string'&&s.trim().length>0&&Number.isFinite(Date.parse(s));
+ const isValidInstant=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})$/.test(s)&&isValidDate(s.slice(0,10))&&Number.isFinite(Date.parse(s));
  for(const [i,r] of payload.records.entries()){
   if(!isJsonObject(r))throw Error(`식사·생활·이전 기록 ${i+1}번째 항목이 올바르지 않아요.`);
   if(r.date!=null&&!isValidDate(r.date))throw Error(`기록 ${i+1}번째 날짜 형식이 올바르지 않아요.`);
@@ -1203,6 +1214,29 @@ function validateJangJsonBackup(payload){
  }
  for(const [i,e] of payload.events.entries()){
   if(!isJsonObject(e)||!isValidInstant(e.at)||!Number.isFinite(Number(e.bristol))||Number(e.bristol)<1||Number(e.bristol)>7)throw Error(`배변 기록 ${i+1}번째의 시각 또는 브리스톨 유형이 올바르지 않아요.`);
+ }
+ // Check semantics as well as syntax; never invent missing times or record identifiers.
+ const seenEvents=new Set(),seenMeals=new Set(),seenDailyDates=new Set();
+ for(const [i,e] of payload.events.entries()){
+  if(e.id==null)throw Error(`배변 ${i+1}번째의 기록 ID가 없어요.`);if(e.id!=null){if(typeof e.id!=='string'||!e.id.trim()||e.id.length>120)throw Error(`배변 ${i+1}번째의 기록 ID가 올바르지 않아요.`);if(seenEvents.has(e.id))throw Error(`배변 기록 ID가 중복돼요 (${i+1}번째).`);seenEvents.add(e.id);}
+  if(e.pain!=null&&(!Number.isInteger(Number(e.pain))||Number(e.pain)<0||Number(e.pain)>3))throw Error(`배변 ${i+1}번째의 복부 불편 값이 올바르지 않아요.`);
+  if(e.strain!=null&&(!Number.isInteger(Number(e.strain))||Number(e.strain)<0||Number(e.strain)>3))throw Error(`배변 ${i+1}번째의 잔변감 값이 올바르지 않아요.`);
+  if(e.redFlags!=null&&(!Array.isArray(e.redFlags)||e.redFlags.some(x=>typeof x!=='string')))throw Error(`배변 ${i+1}번째의 주의 증상 목록이 올바르지 않아요.`);
+  if(e.reviewedFromAt!=null&&!isValidInstant(e.reviewedFromAt))throw Error(`배변 ${i+1}번째의 식사 확인 시작 시각이 올바르지 않아요.`);
+  if(e.mealReview!=null&&!['complete','none','uncertain'].includes(e.mealReview))throw Error(`배변 ${i+1}번째의 식사 확인 상태가 올바르지 않아요.`);
+ }
+ for(const [i,r] of payload.records.entries()){
+  if(r.kind==='meal'){
+   if(r.id==null)throw Error(`식사 ${i+1}번째의 기록 ID가 없어요.`);if(r.id!=null){if(typeof r.id!=='string'||!r.id.trim()||r.id.length>120)throw Error(`식사 ${i+1}번째의 기록 ID가 올바르지 않아요.`);if(seenMeals.has(r.id))throw Error(`식사 기록 ID가 중복돼요 (${i+1}번째).`);seenMeals.add(r.id);}
+   if(r.foods.length>40||r.foods.some(f=>f.length>100))throw Error(`식사 ${i+1}번째의 음식 목록이 너무 길어요.`);
+   if(r.digestiveOverrides!=null&&!isJsonObject(r.digestiveOverrides))throw Error(`식사 ${i+1}번째의 조리 특성 형식이 올바르지 않아요.`);
+  }
+  if(r.kind==='daily-context'){if(seenDailyDates.has(r.date))throw Error(`생활 기록 날짜가 중복돼요 (${r.date}).`);seenDailyDates.add(r.date);}
+  if(r.lifestyle!=null){
+   if(!isJsonObject(r.lifestyle))throw Error(`생활 기록 ${i+1}번째의 형식이 올바르지 않아요.`);
+   for(const k of ['water','sleep','stress'])if(r.lifestyle[k]!=null&&(!Number.isInteger(Number(r.lifestyle[k]))||Number(r.lifestyle[k])<0||Number(r.lifestyle[k])>2))throw Error(`생활 기록 ${i+1}번째의 ${k} 값이 올바르지 않아요.`);
+   // Older veg/fruit values are retained verbatim but never analyzed.
+  }
  }
  if(payload.history.some(x=>!isJsonObject(x)))throw Error('변경 이력 항목의 형식이 올바르지 않아요.');
  if(Object.values(payload.eventBaselines).some(x=>x!=null&&!isJsonObject(x)))throw Error('과거 기록 비교 기준의 형식이 올바르지 않아요.');
@@ -1232,7 +1266,7 @@ function initJsonImport(){
  input.addEventListener('change',async()=>{
   const file=input.files?.[0];input.value='';if(!file)return;
   if(!accountReady){showToast('먼저 로그인해 주세요.');return;}
-  if(file.size>JG_JSON_IMPORT_MAX_BYTES){showToast('백업 파일은 12MB 이하만 선택할 수 있어요.');return;}
+  if(file.size>JG_JSON_IMPORT_MAX_BYTES){showToast('백업 파일은 24MB 이하만 선택할 수 있어요.');return;}
   if(file.size===0){showToast('비어 있는 JSON 파일은 가져올 수 없어요.');return;}
   try{
    const parsed=JSON.parse(await file.text());
@@ -1260,7 +1294,7 @@ function initJsonImport(){
   let ok=false;
   try{ok=await writeData(pending.data);}catch(e){console.error('JSON restore failed',e);}
   modal.dataset.busy='false';cancelBtn.disabled=false;phrase.disabled=false;
-  if(!ok){document.getElementById('jsonImportStatus').textContent='저장에 실패했습니다. 기존 데이터는 변경되지 않았어요. 네트워크 또는 권한을 확인해 주세요.';confirmBtn.disabled=phrase.value.trim()!=='교체';return;}
+  if(!ok){document.getElementById('jsonImportStatus').textContent='복원 완료를 확인하지 못했어요. 네트워크와 로그인 상태를 확인한 뒤 기록을 다시 확인해 주세요. 재업로드 전 현재 기록을 백업하는 것이 안전해요.';confirmBtn.disabled=phrase.value.trim()!=='교체';return;}
   closeJsonImportModal();
   try{
    if(typeof foodLifeState!=='undefined')foodLifeState={foods:[],lifestyle:{},digestiveOverrides:{}};
@@ -1386,19 +1420,42 @@ async function changeAppearance(button){
 }
 function closeAccountMenu(){const menu=document.querySelector('#accountMenu'),button=document.querySelector('#accountMenuButton');if(menu)menu.hidden=true;if(button)button.setAttribute('aria-expanded','false');}
 const FOOD_LABELS=['우유·유제품','밀가루·면','매운 음식','기름진 음식','카페인','탄산','콩류','생채소','인스턴트','과일','고기'];
+// Only these three lifestyle inputs participate in the app's analyses.
+// Legacy veg / fruit values remain in old records for backward-compatible backups,
+// but are deliberately excluded from input screens, summaries, and analytics.
 const HABIT_LABELS=[
  {key:'water',label:'수분 섭취',choices:['적음','보통','많음']},
- {key:'veg',label:'채소 섭취',choices:['적음','보통','많음']},
- {key:'fruit',label:'과일 섭취',choices:['적음','보통','많음']},
  {key:'sleep',label:'수면',choices:['부족','보통','충분']},
  {key:'stress',label:'스트레스',choices:['낮음','보통','높음']}
 ];
+const JG_ACTIVE_HABIT_KEYS=new Set(HABIT_LABELS.map(h=>h.key));
+function jgActiveLifestyle(lifestyle){
+ const out={};
+ for(const key of JG_ACTIVE_HABIT_KEYS){
+  const value=lifestyle?.[key];
+  if(value===null||value===undefined||value==='')continue;
+  const numeric=Number(value);
+  if(Number.isInteger(numeric)&&numeric>=0&&numeric<=2)out[key]=numeric;
+ }
+ return out;
+}
+function jgLifestyleByDay(data){
+ const map=new Map();
+ // Existing daily-context records take precedence over historic merged notes.
+ for(const rec of data?.records||[]){
+  if(rec?.date&&rec.lifestyle&&typeof rec.lifestyle==='object'&&!map.has(rec.date))map.set(rec.date,jgActiveLifestyle(rec.lifestyle));
+ }
+ for(const rec of data?.records||[]){
+  if(rec?.date&&rec.kind==='daily-context'&&rec.lifestyle&&typeof rec.lifestyle==='object')map.set(rec.date,jgActiveLifestyle(rec.lifestyle));
+ }
+ return map;
+}
 let foodLifeState={foods:[],lifestyle:{},digestiveOverrides:{}};
 function foodLifeRecord(data,key){return data.records.find(r=>r?.date===key&&!r.aggregateOfEvents&&(r.kind==='daily-context'||Number(r.bristol)>=1&&Number(r.bristol)<=7));}
 function renderFoodLife(data){
  const field=document.getElementById('foodlifeDate');if(!field)return;
  const selected=field.value||today();const record=foodLifeRecord(data,selected);
- foodLifeState={foods:Array.isArray(record?.foods)?[...record.foods]:[],lifestyle:{...(record?.lifestyle||{})},digestiveOverrides:jangValidOverrides(record?.digestiveOverrides,record?.foods)};
+ foodLifeState={foods:Array.isArray(record?.foods)?[...record.foods]:[],lifestyle:jgActiveLifestyle(record?.lifestyle),digestiveOverrides:jangValidOverrides(record?.digestiveOverrides,record?.foods)};
  refreshFoodCatalogChoices(data);
  jangDigestPanel('dailyDigestEditor',foodLifeState.foods,foodLifeState.digestiveOverrides,'daily');
  const chosen=new Set(foodLifeState.foods);
@@ -1427,7 +1484,7 @@ function initFoodLife(){
   let record=foodLifeRecord(data,key);
   if(!record){record={date:key,kind:'daily-context',foods:[],lifestyle:{}};data.records.push(record);}
   if(part==='food'){record.foods=[...foodLifeState.foods];record.foodLogged=true;record.digestiveOverrides=jangValidOverrides(foodLifeState.digestiveOverrides,record.foods);}
-  if(part==='life'){record.lifestyle={...foodLifeState.lifestyle};const v=document.getElementById('lifeAt')?.value;const d=v?new Date(v):null;if(d&&Number.isFinite(d.getTime())&&d.getTime()<=Date.now()+60000)record.lifestyleAt=d.toISOString();}
+  if(part==='life'){record.lifestyle={...(record.lifestyle||{}),...jgActiveLifestyle(foodLifeState.lifestyle)};for(const key of JG_ACTIVE_HABIT_KEYS){if(!Object.hasOwn(foodLifeState.lifestyle,key))delete record.lifestyle[key];}const v=document.getElementById('lifeAt')?.value;const d=v?new Date(v):null;if(d&&Number.isFinite(d.getTime())&&d.getTime()<=Date.now()+60000)record.lifestyleAt=d.toISOString();}
   if(await writeData(data)){refreshAllViews();showToast(part==='food'?'음식 기록을 저장했어요.':'생활 기록을 저장했어요.');}
  }
  document.getElementById('foodlifeSaveFood').addEventListener('click',()=>savePart('food'));
@@ -1961,17 +2018,72 @@ function companionWarning(rows,food){
  return '';
 }
 function lifestyleWarning(data,rows,food){
- const getHabit=day=>{
-  const note=(data.records||[]).find(r=>r.date===day&&r.kind==='daily-context'&&r.lifestyle);
-  return note?.lifestyle|| (data.records||[]).find(r=>r.date===day&&r.lifestyle)?.lifestyle||null;
- };
- const withFood=rows.filter(r=>r.foods.includes(food)),without=rows.filter(r=>!r.foods.includes(food));
- if(withFood.length<8||without.length<8)return '';
- for(const key of ['stress','sleep']){
-  const known=list=>list.map(r=>getHabit(r.day)?.[key]).filter(x=>x!=null).map(Number);
-  const a=known(withFood),b=known(without);if(a.length>=5&&b.length>=5&&Math.abs(avg(a)-avg(b))>=.75)return `${key==='stress'?'스트레스':'수면'} 기록도 섭취 여부에 따라 달라 영향을 분리하기 어려워요.`;
+ const daily=jgLifestyleByDay(data);
+ const exposed=rows.filter(r=>r.foods.includes(food));
+ const other=rows.filter(r=>!r.foods.includes(food));
+ // Count unique DAYS, not repeat bowel events as independent lifestyle samples.
+ function levels(items,key){
+  const seen=new Set(),result=[];
+  for(const row of items){
+   if(seen.has(row.day))continue;
+   seen.add(row.day);
+   const v=daily.get(row.day)?.[key];
+   if(v!==undefined)result.push(v);
+  }
+  return result;
  }
- return '';
+ const warnings=[];
+ for(const habit of HABIT_LABELS){
+  const a=levels(exposed,habit.key),b=levels(other,habit.key);
+  if(a.length>=5&&b.length>=5&&Math.abs(avg(a)-avg(b))>=.75)warnings.push(habit.label);
+ }
+ return warnings.length?`${warnings.join('·')} 기록에도 집단 간 차이가 있어 음식만의 연관성을 구분하기 어려워요.`:'';
+}
+// Compare observed bowel outcomes by lifestyle within the SAME calendar date.
+// Because habits are daily self-reports, no temporal order or causality is inferred.
+// Each date contributes at most one outcome observation, even if multiple bowel events occurred.
+function analyzeLifestylePatterns(data,days,now=Date.now()){
+ const cutoff=now-days*24*ANALYSIS_HOUR;
+ const dayEvents=new Map(),daily=jgLifestyleByDay(data);
+ for(const event of data?.events||[]){
+  const at=Date.parse(event?.at),type=Number(event?.bristol);
+  if(!Number.isFinite(at)||at<cutoff||at>now||type<1||type>7)continue;
+  const day=dateKey(event.at);
+  if(!dayEvents.has(day))dayEvents.set(day,[]);
+  dayEvents.get(day).push(event);
+ }
+ const tests=[
+  {label:'단단한 변(1~2형)',check:ev=>Number(ev.bristol)<=2},
+  {label:'묽은 변(6~7형)',check:ev=>Number(ev.bristol)>=6},
+  {label:'복통·불편 보통 이상',check:ev=>Number(ev.pain)>=2}
+ ];
+ const specs=[
+  {key:'water',label:'수분 섭취',exposedLabel:'적음',otherLabel:'보통·많음',exposedLevel:0},
+  {key:'sleep',label:'수면',exposedLabel:'부족',otherLabel:'보통·충분',exposedLevel:0},
+  {key:'stress',label:'스트레스',exposedLabel:'높음',otherLabel:'낮음·보통',exposedLevel:2}
+ ];
+ return specs.map(spec=>{
+  const matched=[];
+  for(const [day,events] of dayEvents){
+   const level=daily.get(day)?.[spec.key];
+   if(level!==undefined)matched.push({day,level,events});
+  }
+  const exposed=matched.filter(row=>row.level===spec.exposedLevel);
+  const other=matched.filter(row=>row.level!==spec.exposedLevel);
+  const enough=exposed.length>=5&&other.length>=5;
+  return {...spec,exposedCount:exposed.length,otherCount:other.length,enough,
+   outcomes:enough?tests.map(test=>({label:test.label,
+    exposedCases:exposed.filter(row=>row.events.some(test.check)).length,
+    otherCases:other.filter(row=>row.events.some(test.check)).length
+   })):[]};
+ });
+}
+function renderLifestylePatterns(data,days,pane){
+ let card=pane.querySelector('#jgLifestyleAnalysis');
+ if(!card){card=document.createElement('article');card.id='jgLifestyleAnalysis';card.className='analysis-card jg-lifestyle-analysis';
+  const change=pane.querySelector('#personalChangeAnalysis');if(change)change.after(card);else pane.prepend(card);}
+ const findings=analyzeLifestylePatterns(data,days);
+ card.innerHTML=`<h2>수분·수면·스트레스와 배변 기록</h2><p class="analysis-subtle">최근 ${days}일 · 각 생활습관을 기록한 날 중 실제 배변 기록도 있는 날짜만 비교합니다. 하루에 여러 번 배변했더라도 날짜별로 한 번만 계산해요. 같은 날짜의 관찰 결과로, 식사와 같은 시간차 분석이나 원인 판정이 아닙니다.</p><div class="jg-life-findings">${findings.map(h=>`<section class="jg-life-finding"><h3>${escapeHTML(h.label)}</h3><p class="jg-life-groups">${escapeHTML(h.exposedLabel)} ${h.exposedCount}일 / ${escapeHTML(h.otherLabel)} ${h.otherCount}일</p>${h.enough?`<div class="jg-life-outcomes">${h.outcomes.map(o=>`<div class="jg-life-outcome"><span>${escapeHTML(o.label)}</span><span>${escapeHTML(h.exposedLabel)}: ${o.exposedCases}/${h.exposedCount}일 (${analysisFraction(o.exposedCases,h.exposedCount)})</span><span>${escapeHTML(h.otherLabel)}: ${o.otherCases}/${h.otherCount}일 (${analysisFraction(o.otherCases,h.otherCount)})</span></div>`).join('')}</div>`:'<p class="analysis-subtle">두 집단에서 각각 5일 이상 기록되어야 비율을 비교해요. 아직 판단을 보류합니다.</p>'}</section>`).join('')}</div><p class="analysis-subtle">표시된 비율은 해당 조건의 날짜 중 그 형태나 불편이 한 번 이상 기록된 날짜의 비율입니다. 기록을 하지 않은 날은 정상적인 날로 간주하지 않아요. 채소·과일의 과거 기록은 계산에 사용하지 않습니다.</p>`;
 }
 function analyzeFoodPatterns(data,days,now=Date.now()){
  const prepared=prepareAnalysisRows(data,days,now),results=[];
@@ -2000,6 +2112,7 @@ function renderPersonalAnalysis(data){
  const ch=recentChange(data),a=ch.recent,b=ch.before;
  change.innerHTML=`<h2>내 기록의 최근 변화</h2><p class="analysis-subtle">최근 30일과 그 이전 60일의 배변 기록 통계를 비교합니다. 기록하지 않은 날은 배변하지 않은 날로 간주하지 않습니다.</p><div class="analysis-comparison"><div>최근 30일<b>${a.count}회</b>1~2형 ${a.hard} · 3~4형 ${a.formed} · 6~7형 ${a.loose}</div><div>이전 60일<b>${b.count}회</b>1~2형 ${b.hard} · 3~4형 ${b.formed} · 6~7형 ${b.loose}</div></div>${a.count>=8&&b.count>=12?`<p>6~7형 비율: 최근 ${analysisFraction(a.loose,a.count)}, 이전 ${analysisFraction(b.loose,b.count)}. 이는 관찰된 분포 차이이며 의학적 판정은 아닙니다.</p>`:'<p class="analysis-subtle">시기별 형태 분포를 비교하기에 기록 수가 충분하지 않아요. 분석용 내부 조건은 최근 8건·이전 12건입니다.</p>'}`;
  const days=selectedAnalysisDays(data),{prepared,results,qualified}=analyzeFoodPatterns(data,days);
+ renderLifestylePatterns(data,days,pane);
  const home=pane.querySelector('.food-card'),panel=pane.querySelector('#foodPatternBody');if(!home||!panel)return;
  home.querySelector('h2').textContent='소화 특성·배변 연관성 탐색';
  home.querySelector('.food-desc').textContent='소화 특성·식사 시각·동시 섭취·배변 형태를 함께 확인';
@@ -2064,7 +2177,7 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  const week=createView('week','배변 통계','7일과 최근 30일 기록을 비교할 수 있어요. 기록이 없는 날을 배변하지 않은 날로 간주하지 않습니다.');
  const periodTabs=document.createElement('div');periodTabs.className='jg-period-tabs';periodTabs.id='bowelPeriodTabs';periodTabs.innerHTML='<button type="button" data-bowel-period="7" aria-pressed="true">최근 7일</button><button type="button" data-bowel-period="30" aria-pressed="false">최근 30일</button>';week.appendChild(periodTabs);
  periodTabs.onclick=e=>{const b=e.target.closest('[data-bowel-period]');if(!b)return;window.__jangBowelPeriod=Number(b.dataset.bowelPeriod);renderWeek(readData());};
- const life=createView('lifestyle','생활습관 기록','생활습관은 날짜별로 기록하고 기존 배변 기록과 함께 보관해요.');
+ const life=createView('lifestyle','생활습관 기록','수분·수면·스트레스를 날짜별로 기록하고 배변 기록과 비교해요.');
  const analysis=createView('analysis','개인별 분석','식사 시간차와 배변 형태의 관계를 탐색하며, 기록이 충분하지 않으면 결론을 보류해요.');
  const homePane=dashboard.querySelector('.screen-pane:has(#homeQuickAction)');
  if(homePane){
@@ -2103,7 +2216,7 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  homeActions.innerHTML=`
  <button type="button" class="home-action home-action-meal" data-view="meal"><span class="home-action-icon" aria-hidden="true">🍚</span><span class="home-action-copy"><strong>오늘 먹은 음식, 내 장의 반응은 어땠을까요?</strong><small>오늘 먹은 음식과 식후의 변화를 기록해 보세요.</small></span><span class="home-action-cta">식사 기록하기 <span aria-hidden="true">→</span></span></button>
  <button type="button" class="home-action home-action-bowel" data-view="record"><span class="home-action-icon" aria-hidden="true">🚽</span><span class="home-action-copy"><strong>오늘 내 장이 보내는 신호, 확인해 볼까요?</strong><small>배변 형태와 몸의 작은 변화까지 기록해 보세요.</small></span><span class="home-action-cta">배변 기록하기 <span aria-hidden="true">→</span></span></button>
- <button type="button" class="home-action home-action-life" data-view="lifestyle"><span class="home-action-icon" aria-hidden="true">☀️</span><span class="home-action-copy"><strong>오늘의 생활 습관, 내 장은 만족했을까요?</strong><small>수면·운동·스트레스와 하루의 습관을 돌아봐요.</small></span><span class="home-action-cta">생활 기록하기 <span aria-hidden="true">→</span></span></button>`;
+ <button type="button" class="home-action home-action-life" data-view="lifestyle"><span class="home-action-icon" aria-hidden="true">☀️</span><span class="home-action-copy"><strong>오늘의 생활 습관, 내 장은 만족했을까요?</strong><small>수분·수면·스트레스와 하루의 습관을 돌아봐요.</small></span><span class="home-action-cta">생활 기록하기 <span aria-hidden="true">→</span></span></button>`;
  dashboard.querySelector('.page-intro').after(homeActions);
  const mealPanel=byId('timedMealPanel');
   if(mealPanel){
@@ -2613,13 +2726,16 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.8.0';
+const JANGILGI_VERSION='1.8.3';
 const JANGILGI_RELEASE_STEPS=[
-  ['v1.7.4 → v1.8.0 · 화면 개편', '부드러운 녹색의 카드형 레이아웃으로 화면을 정리했어요. 점수 기능은 추가하지 않았어요.'],
-  ['v1.7.4 → v1.8.0 · 음식 9종', '오므라이스·두루치기·돼지국밥·순대국밥·시래기국·해장국·뼈해장국·선지국·전골이 추가됐어요.'],
-  ['v1.7.4 → v1.8.0 · 대화창', '문의 대화가 길어져도 메일함 페이지 전체가 늘지 않고, 대화 내용만 스크롤할 수 있어요.']
+  ['v1.8.2 → v1.8.3 · 120일 이상 기록 복원','JSON 전체 기록을 가져올 때 암호화된 데이터를 여러 문서로 안전하게 분리해 저장해요. 기존 백업 형식은 유지해요.'],
+  ['v1.8.2 → v1.8.3 · 저장·복원 검증','조각마다 AES-GCM 인증을 적용하고 전체 SHA-256 검증을 통과한 뒤 기록을 교체해요. 저장 실패 시 이전 기록을 가리키는 정보를 유지해요.'],
+  ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.8.3',date:'2026-10-31',title:'120일 이상 JSON 기록의 분할 암호화 저장·복원 검증',details:['기존 전체 백업 JSON 형식과 교체 확인 절차 유지','암호화 데이터 조각을 먼저 저장하고 읽기·SHA-256 검증을 마친 후 활성 기록을 전환','중복 기록 ID 및 생활습관 값 검사 보강, 기존 Firebase 암호화 키·프로필 유지']},
+  {version:'1.8.2',date:'2026-10-31',title:'생활 기록 3항목 정리 및 배변 연관성 분석 추가',details:['채소·과일 입력과 분석을 제외하고 과거 데이터는 삭제하지 않음','수분·수면·스트레스와 같은 날짜의 배변 형태·복부 불편 기록을 비교','음식 특성 분석 시 수분·수면·스트레스의 집단 차이를 함께 확인하며 인과관계는 판단하지 않음']},
+  {version:'1.8.1',date:'2026-10-31',title:'승인한 시안과 동일한 홈·사이드바 화면 구성',details:['홈 상단과 작성 카드 3개를 시안에 맞춰 재구성','사이드바에 기록 작성·조회·리포트·캘린더·인사이트·설정·문의 경로 추가','최근 3종 기록과 주간 막대그래프를 실제 데이터와 연결하고 점수는 사용하지 않음']},
   {version:'1.8.0',date:'2026-10-30',title:'장일기 UI 새단장·음식 메뉴·메일 대화창 개선',details:[
    '점수 없이 기록 중심의 포근한 녹색 카드형 화면과 사이드바 구성',
    '오므라이스·두루치기·돼지국밥·순대국밥·시래기국·해장국·뼈해장국·선지국·전골 추가',
@@ -3059,7 +3175,7 @@ function initDetailedHelp(){
 }
 // 업데이트 안내는 항상 바로 전 릴리스와 현재 릴리스의 차이만 설명합니다.
 // 과거 버전 내역은 관리자가 편집할 수 있지만, 안내에 자동으로 누적하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.7.2';
+const JANGILGI_PREVIOUS_RELEASE='1.8.0';
 const JANG_CURRENT_UPDATE_TARGETS=[
  ['dashboard','.page-intro','오늘의 장 컨디션'],
  ['dashboard','.home-main-shortcuts','질문형 기록 카드'],
@@ -3328,7 +3444,22 @@ async function createVault(password,uid,payload){
   return {vault,key,recoveryKey:formatRecovery(hex(recovery))};
  }finally{raw.fill(0);recovery.fill(0);}
 }
-async function decryptData(key,vault,uid){return JSON.parse(textDecoder.decode(await unseal(key,vault.data,`jangilgi:${uid}:data`)));}
+// The DEK and password/recovery wraps remain unchanged; only large diary payloads are split.
+const JG_CHUNK_KIND='JG_AESGCM_CHUNKS_V1';
+const JG_CHUNK_SIZE=192*1024;
+const JG_CHUNK_MAX_PARTS=96; // More than 18 MiB of UTF-8 JSON, ample for 120+ days.
+function jgHexDigest(buffer){return crypto.subtle.digest('SHA-256',buffer).then(b=>Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join(''));}
+function jgValidManifest(m){return m&&m.kind===JG_CHUNK_KIND&&/^[0-9a-f]{32}$/.test(m.generation||'')&&Number.isInteger(m.count)&&m.count>=1&&m.count<=JG_CHUNK_MAX_PARTS&&Number.isInteger(m.bytes)&&m.bytes>0&&m.bytes<=JG_CHUNK_SIZE*m.count&&/^[0-9a-f]{64}$/.test(m.sha256||'');}
+function jgChunkId(g,i){return `${g}_${String(i).padStart(4,'0')}`;}
+class JgStorageError extends Error{constructor(message){super(message);this.storageUnavailable=true;}}
+async function decryptData(key,vault,uid,version=2,chunkReader=null){
+ let payload;
+ try{payload=JSON.parse(textDecoder.decode(await unseal(key,vault.data,`jangilgi:${uid}:data`)));}
+ catch(e){throw e;}
+ if(version===2)return payload;
+ if(version!==3||!jgValidManifest(payload)||typeof chunkReader!=='function')throw new JgStorageError('암호화 기록의 분할 저장 정보가 올바르지 않아요. 기존 기록을 변경하지 않았어요.');
+ return chunkReader(key,uid,payload);
+}
 async function fromPassword(password,vault,uid){
  for(const candidate of [{kdf:vault.kdf,passwordWrap:vault.passwordWrap},vault.pendingPassword].filter(Boolean)){
   try{const kek=await passwordKEK(password,candidate.kdf);const raw=await unseal(kek,candidate.passwordWrap,`jangilgi:${uid}:wrap`);
@@ -3502,6 +3633,89 @@ else{
     'permission-denied':'Firestore 규칙에서 요청을 거부했어요. 배포된 보안 규칙을 확인해 주세요.'
    }[e?.code])||e?.message||'네트워크나 보안 설정을 확인해 주세요.';}
   const stateRef=uid=>doc(db,'users',uid,'private','state');
+  // Immutable, separately encrypted chunk documents. The state document points
+  // to a generation only after ALL chunks have been uploaded and read back.
+  const chunkRef=(uid,gen,i)=>doc(db,'users',uid,'private','state','payloadChunks',jgChunkId(gen,i));
+  async function jgReadChunks(key,uid,m){
+   if(!jgValidManifest(m))throw new JgStorageError('기록 조각의 색인 정보가 올바르지 않아요.');
+   const output=new Uint8Array(m.bytes);let offset=0;
+   for(let first=0;first<m.count;first+=8){
+    const end=Math.min(first+8,m.count);
+    const docs=await Promise.all(Array.from({length:end-first},(_,j)=>getDoc(chunkRef(uid,m.generation,first+j))));
+    for(let j=0;j<docs.length;j++){
+     const index=first+j,item=docs[j];
+     if(!item.exists())throw new JgStorageError(`저장된 기록 조각 ${index+1}개 중 일부를 찾지 못했어요. 다시 시도해 주세요.`);
+     const d=item.data();
+     if(d.generation!==m.generation||d.index!==index||!d.box)throw new JgStorageError('저장된 기록 조각의 순서가 일치하지 않아요.');
+     let plain;
+     try{plain=await unseal(key,d.box,`jangilgi:${uid}:chunk:${m.generation}:${index}`);}
+     catch{throw new JgStorageError('기록 조각의 암호화 무결성 검증에 실패했어요.');}
+     if(plain.byteLength===0||plain.byteLength>JG_CHUNK_SIZE||offset+plain.byteLength>output.byteLength)throw new JgStorageError('기록 조각의 크기가 올바르지 않아요.');
+     output.set(plain,offset);offset+=plain.byteLength;
+    }
+   }
+   if(offset!==m.bytes||await jgHexDigest(output)!==m.sha256)throw new JgStorageError('복원된 기록의 SHA-256 검증에 실패했어요.');
+   try{return JSON.parse(textDecoder.decode(output));}
+   catch{throw new JgStorageError('복원된 JSON 데이터의 구조가 손상되었어요.');}
+  }
+  async function jgRemoveGeneration(uid,gen,count){
+   if(!/^[0-9a-f]{32}$/.test(gen||'')||!Number.isInteger(count)||count<1||count>JG_CHUNK_MAX_PARTS)return;
+   for(let i=0;i<count;i+=10){
+    await Promise.allSettled(Array.from({length:Math.min(10,count-i)},(_,j)=>deleteDoc(chunkRef(uid,gen,i+j))));
+   }
+  }
+  async function jgSaveEncrypted(user,key,next){
+   const uid=user.uid;assertUser(uid);
+   const raw=bytes(JSON.stringify(next));
+   if(raw.byteLength>JG_CHUNK_SIZE*JG_CHUNK_MAX_PARTS)throw Error('기록이 현재 최대 저장 용량을 초과했어요. 데이터 파일을 나누어 백업해 주세요.');
+   const snap=await getDoc(stateRef(uid));assertUser(uid);
+   const existing=snap.data();
+   if(!snap.exists()||![2,3].includes(existing?.schemaVersion)||!existing.vault)throw Error('암호화 계정 기록을 열 수 없어요. 다시 로그인해 주세요.');
+   const originalBox=JSON.stringify(existing.vault.data);
+   let oldManifest=null;
+   if(existing.schemaVersion===3){
+    try{oldManifest=JSON.parse(textDecoder.decode(await unseal(key,existing.vault.data,`jangilgi:${uid}:data`)));}
+    catch{throw new JgStorageError('기존 저장 위치를 복호화할 수 없어요. 저장을 중단했어요.');}
+    if(!jgValidManifest(oldManifest))throw new JgStorageError('기존 기록 저장 정보가 올바르지 않아 저장을 중단했어요.');
+   }
+   const gen=Array.from(randomBytes(16),x=>x.toString(16).padStart(2,'0')).join('');
+   const count=Math.ceil(raw.length/JG_CHUNK_SIZE),uploaded=[];
+   let commitStarted=false;
+   try{
+    // Two-phase save: create encrypted chunks first, then atomically switch
+    // the active state pointer. A partial upload leaves the old data readable.
+    for(let i=0;i<count;i++){
+     assertUser(uid);
+     const piece=raw.subarray(i*JG_CHUNK_SIZE,Math.min(raw.length,(i+1)*JG_CHUNK_SIZE));
+     const box=await seal(key,piece,`jangilgi:${uid}:chunk:${gen}:${i}`);
+     await setDoc(chunkRef(uid,gen,i),{generation:gen,index:i,box,createdAt:serverTimestamp()});
+     uploaded.push(i);
+    }
+    const manifest={kind:JG_CHUNK_KIND,generation:gen,count,bytes:raw.byteLength,sha256:await jgHexDigest(raw),previous:oldManifest?{generation:oldManifest.generation,count:oldManifest.count}:null};
+    // A real Firestore read/decrypt/checksum round trip BEFORE changing the pointer.
+    const verified=await jgReadChunks(key,uid,manifest);
+    if(JSON.stringify(verified)!==JSON.stringify(next))throw new JgStorageError('복원 검증 결과가 원본과 일치하지 않아 저장을 중단했어요.');
+    const pointer=await seal(key,bytes(JSON.stringify(manifest)),`jangilgi:${uid}:data`);
+    commitStarted=true;
+    await runTransaction(db,async tx=>{
+     const current=await tx.get(stateRef(uid));assertUser(uid);
+     if(!current.exists()||![2,3].includes(current.data().schemaVersion)||JSON.stringify(current.data().vault?.data)!==originalBox)throw Error('다른 기기에서 기록이 변경되었어요. 새로 로그인한 뒤 다시 시도해 주세요.');
+     // Preserve any concurrent password-wrap update from the account settings.
+     tx.set(stateRef(uid),{schemaVersion:3,vault:{...current.data().vault,data:pointer},updatedAt:serverTimestamp()});
+    });
+    // Retain the immediately preceding generation for in-flight readers;
+    // reclaim the generation before it only after the new pointer commits.
+    if(oldManifest?.previous&&oldManifest.previous.generation!==gen){
+     jgRemoveGeneration(uid,oldManifest.previous.generation,oldManifest.previous.count).catch(e=>console.warn('이전 데이터 조각 정리 실패',e));
+    }
+   }catch(e){
+    // Once a commit starts, the server may have accepted it even if the network
+    // reports an error. NEVER delete possibly-active chunks in that case.
+    if(commitStarted)e.jgCommitUncertain=true;
+    if(uploaded.length&&!commitStarted)jgRemoveGeneration(uid,gen,count).catch(err=>console.warn('완료되지 않은 저장 조각 정리 실패',err));
+    throw e;
+   }
+  }
   function assertUser(uid){if(auth.currentUser?.uid!==uid||!auth.currentUser?.emailVerified)throw Error('인증된 계정이 아닙니다. 다시 로그인해 주세요.');}
   function securityStatus(s){const node=el('securityStatus');if(node)node.textContent=s;}
   function showLogin(){mode='signin';el('authTitle').textContent='로그인';el('authSubmit').textContent='로그인';el('toggleAuthMode').textContent='회원가입';el('authPassword').autocomplete='current-password';el('signupPasswordRule').hidden=true;el('signupPrivacyNotice').hidden=true;showPanel('authFormSection');}
@@ -3511,13 +3725,7 @@ else{
    window.__jangilgiStart(data,user.email,async next=>{
     assertUser(user.uid);
     if(!currentKey)throw Error('암호화 키가 잠겨 있어요. 다시 로그인해 주세요.');
-    const encrypted=await seal(currentKey,bytes(JSON.stringify(next)),`jangilgi:${user.uid}:data`);
-    await runTransaction(db,async tx=>{
-     const snap=await tx.get(stateRef(user.uid));
-     if(!snap.exists()||snap.data().schemaVersion!==2||!snap.data().vault)throw Error('암호화 문서가 없습니다. 다시 로그인해 주세요.');
-     // Preserve password-wrap changes written from another session.
-     tx.set(stateRef(user.uid),{schemaVersion:2,vault:{...snap.data().vault,data:encrypted},updatedAt:serverTimestamp()});
-    });
+    await jgSaveEncrypted(user,currentKey,next);
    });
    await keyStore(user.uid,key);
    securityStatus('AES-256-GCM · 기기에서 암호화 중');
@@ -3542,7 +3750,7 @@ else{
     await runTransaction(db,async tx=>{
       const before=await tx.get(ref);
       assertUser(user.uid);
-      if(before.exists()&&before.data().schemaVersion===2)throw Error('다른 기기에서 이미 암호화가 완료되었습니다. 다시 로그인해 주세요.');
+      if(before.exists()&&[2,3].includes(before.data().schemaVersion))throw Error('다른 기기에서 이미 암호화가 완료되었습니다. 다시 로그인해 주세요.');
       // Encrypt the newest legacy payload to avoid silently losing recent writes.
       const rawPayload=before.exists()?before.data().payload:setup.legacy||{profile:{ageGroup:null,firstRunGuideSeen:false},records:[],events:[],history:[],eventBaselines:{},demo:false};
       const data=await seal(setup.key,bytes(JSON.stringify(rawPayload)),`jangilgi:${user.uid}:data`);
@@ -3564,11 +3772,17 @@ else{
       if(!password){showPanel('authVaultUnlock');return;}
       await launchSetup(user,password,payload?.payload||null);return;
     }
-    if(payload.schemaVersion!==2||!payload.vault)throw Error('지원하지 않는 저장 형식이에요. 데이터를 덮어쓰지 않았습니다.');
+    if(![2,3].includes(payload.schemaVersion)||!payload.vault)throw Error('지원하지 않는 저장 형식이에요. 데이터를 덮어쓰지 않았습니다.');
     unlockRef=payload.vault;
     let key=await keyLoad(uid),data=null;
-    if(key){try{data=await decryptData(key,payload.vault,uid);}catch{key=null;}}
-    if(!key&&password){try{key=await fromPassword(password,payload.vault,uid);data=await decryptData(key,payload.vault,uid);}catch(e){recoveryPassword=password;showPanel('authVaultRecovery');tell('비밀번호로 기존 암호화 열쇠를 열지 못했어요. 이전 비밀번호가 바뀌었다면 복구 키를 사용해 주세요.');return;}}
+    if(key){try{data=await decryptData(key,payload.vault,uid,payload.schemaVersion,jgReadChunks);}catch(e){if(e.storageUnavailable||e.code==='permission-denied'||e.code==='unavailable')throw e;key=null;}}
+    if(!key&&password){
+     try{key=await fromPassword(password,payload.vault,uid);data=await decryptData(key,payload.vault,uid,payload.schemaVersion,jgReadChunks);}
+     catch(e){
+      if(e.storageUnavailable||e.code==='permission-denied'||e.code==='unavailable')throw e;
+      recoveryPassword=password;showPanel('authVaultRecovery');tell('비밀번호로 기존 암호화 열쇠를 열지 못했어요. 이전 비밀번호가 바뀌었다면 복구 키를 사용해 주세요.');return;
+     }
+    }
     if(!key){showPanel('authVaultUnlock');return;}
     await sessionStart(user,key,payload.vault,data,false);
    }catch(e){showPanel('authLoading');tell(friendly(e));el('authLoadingText').textContent='기록을 열지 못했어요. 서버 연결과 보안 규칙을 확인해 주세요.';}
@@ -3607,12 +3821,12 @@ else{
    try{
     const snap=await getDoc(stateRef(uid));assertUser(uid);const vault=snap.data()?.vault;
     if(!vault)throw Error('복구할 암호화 기록이 없습니다.');
-    const key=await fromRecovery(secret,vault,uid),data=await decryptData(key,vault,uid);
+    const key=await fromRecovery(secret,vault,uid),data=await decryptData(key,vault,uid,snap.data().schemaVersion,jgReadChunks);
     const raw=await unseal(await recoveryKEK(parseRecovery(secret),vault.recoverySalt),vault.recoveryWrap,`jangilgi:${uid}:recovery`);
     try{
      const kdf={name:'PBKDF2-SHA256',iterations:KDF_ITERS,salt:b64(randomBytes(16))};
      const passwordWrap=await seal(await passwordKEK(pass,kdf),raw,`jangilgi:${uid}:wrap`);
-     await runTransaction(db,async tx=>{const cur=await tx.get(stateRef(uid));if(cur.data()?.schemaVersion!==2)throw Error('암호화 설정이 변경되었습니다.');tx.update(stateRef(uid),{'vault.kdf':kdf,'vault.passwordWrap':passwordWrap,'vault.pendingPassword':deleteField(),updatedAt:serverTimestamp()});});
+     await runTransaction(db,async tx=>{const cur=await tx.get(stateRef(uid));if(![2,3].includes(cur.data()?.schemaVersion))throw Error('암호화 설정이 변경되었습니다.');tx.update(stateRef(uid),{'vault.kdf':kdf,'vault.passwordWrap':passwordWrap,'vault.pendingPassword':deleteField(),updatedAt:serverTimestamp()});});
     }finally{raw.fill(0);}
     el('vaultRecoverKey').value='';el('vaultRecoverPassword').value='';
     await sessionStart(user,key,vault,data,false);
@@ -3633,14 +3847,14 @@ else{
    try{
     assertUser(user.uid);
     await reauthenticateWithCredential(user,EmailAuthProvider.credential(user.email,current));
-    const ref=stateRef(user.uid),snap=await getDoc(ref);if(snap.data()?.schemaVersion!==2)throw Error('기록 암호화 설정이 아직 완료되지 않았어요.');
+    const ref=stateRef(user.uid),snap=await getDoc(ref);if(![2,3].includes(snap.data()?.schemaVersion))throw Error('기록 암호화 설정이 아직 완료되지 않았어요.');
     const vault=snap.data().vault;
     // Re-wrap the random DEK without changing it. Do not expose raw DEK to Firebase.
     const oldKEK=await passwordKEK(current,vault.kdf),raw=await unseal(oldKEK,vault.passwordWrap,`jangilgi:${user.uid}:wrap`);
     let pending;
     try{const kdf={name:'PBKDF2-SHA256',iterations:KDF_ITERS,salt:b64(randomBytes(16))};pending={kdf,passwordWrap:await seal(await passwordKEK(newPass,kdf),raw,`jangilgi:${user.uid}:wrap`)};}finally{raw.fill(0);}
     // Two-phase change: retain old and pending wrapped keys until Auth update completes.
-    await runTransaction(db,async tx=>{const cur=await tx.get(ref);if(cur.data()?.schemaVersion!==2)throw Error('암호화 기록이 변경됐어요.');tx.update(ref,{'vault.pendingPassword':pending,updatedAt:serverTimestamp()});});
+    await runTransaction(db,async tx=>{const cur=await tx.get(ref);if(![2,3].includes(cur.data()?.schemaVersion))throw Error('암호화 기록이 변경됐어요.');tx.update(ref,{'vault.pendingPassword':pending,updatedAt:serverTimestamp()});});
     try{await updatePassword(user,newPass);}catch(error){await runTransaction(db,async tx=>{await tx.get(ref);tx.update(ref,{'vault.pendingPassword':deleteField(),updatedAt:serverTimestamp()});});throw error;}
     try{await runTransaction(db,async tx=>{await tx.get(ref);tx.update(ref,{'vault.kdf':pending.kdf,'vault.passwordWrap':pending.passwordWrap,'vault.pendingPassword':deleteField(),updatedAt:serverTimestamp()});});}
     catch(error){console.warn('Password change finalization pending: pending wrapper remains usable',error);status.textContent='비밀번호가 변경되었어요. 새 비밀번호로 기록을 열 수 있지만 키 설정의 최종 동기화가 지연됐어요. 다음 접속 때 확인해 주세요.';return;}
@@ -4256,5 +4470,229 @@ input,select,textarea{border-radius:11px}
  #adminSupportView .jg-mail-header h3,#supportView .jg-mail-header h3{font-size:17px!important}
 }
 </style>
+
+<style id="jangilgi-v181-image-fidelity">
+/* v1.8.1: approved dashboard concept re-created as working interface, with record data and without scores. */
+:root {--ink:#172e28;--deep:#163b2d;--paper:#f8fbf7;--surface:#fff;--line:#e7eee8;--green:#347f4c;--muted:#738077;--shadow:0 9px 27px rgba(40,66,44,.052)}
+body{background:linear-gradient(140deg,#eef5ea 0%,#fdfefb 25%,#f5f9f2 100%)}
+.app-shell{min-height:100dvh}
+@media(min-width:1051px){
+.sidebar{width:242px!important;min-width:242px!important;flex-basis:242px!important;padding:22px 17px 22px!important;background:#fbfdf9!important;border-right:1px solid #e9eee8!important;gap:0!important}
+.main-content{width:calc(100% - 242px)!important;max-width:none!important}
+}
+.sidebar>.jg180-side-brand,.sidebar>.compact-side-button,.sidebar>.compact-side-fill{display:none!important}
+.sidebar>.jg181-sidebar{display:flex!important;min-width:0;flex:1;flex-direction:column;gap:20px;height:100%;padding:0 0 4px}
+.jg181-brand{padding:11px 10px 17px;display:flex;align-items:center;gap:12px;color:#173d2c}
+.jg181-brand-logo{display:grid;place-items:center;flex:0 0 38px;width:38px;height:42px;color:#4c9558}
+.jg181-brand-logo svg{width:36px;height:36px}
+.jg181-brand span{display:grid;gap:2px;min-width:0}.jg181-brand strong{font-size:20px;line-height:1.1;font-weight:850;letter-spacing:-.07em}.jg181-brand small{font-size:11px;color:#8c9c91;white-space:nowrap}
+.jg181-nav{display:grid;gap:5px;flex:0 0 auto}
+.jg181-navitem{min-height:45px;display:flex;gap:13px;align-items:center;justify-content:flex-start;width:100%;padding:8px 14px;border:0;border-radius:11px;color:#26392e;background:transparent;font-size:13px;font-weight:700;white-space:nowrap;text-align:left}
+.jg181-navitem:hover,.jg181-navitem.active,.jg181-navitem[aria-expanded="true"]{background:#e6f3e4;color:#26623c}
+.jg181-navitem svg{width:20px;height:20px;flex:0 0 20px;stroke:currentColor;stroke-width:1.85;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.jg181-navitem .jg181-chevron{margin-left:auto;width:14px;height:14px;opacity:.65;transition:transform .15s}
+.jg181-navitem[aria-expanded="true"] .jg181-chevron{transform:rotate(180deg)}
+.jg181-subnav[hidden]{display:none!important}.jg181-subnav{display:grid;gap:3px;padding:1px 4px 7px 42px}
+.jg181-subnav button{color:#627a68;border:0;background:transparent;text-align:left;font-size:12px;padding:8px;border-radius:8px}
+.jg181-subnav button:hover{background:#edf5ee;color:#225739}
+.jg181-nav-separator{margin:7px 8px;border-top:1px solid #e5ece6}
+.jg181-sidebar-bottom{margin-top:auto;display:grid;gap:12px}
+.jg181-support-tip{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:14px 12px;border-radius:13px;background:#eaf5e7;color:#286542;border:1px solid #dfeddd;min-width:0}
+.jg181-support-tip svg{flex:0 0 22px;width:22px;height:22px}.jg181-support-tip span{min-width:0;display:grid;gap:4px}.jg181-support-tip strong{font-size:12px}.jg181-support-tip small{font-size:10px;color:#607f67}
+.topbar{height:68px!important;min-height:68px;justify-content:flex-end!important;padding:0 clamp(16px,2vw,36px)!important;background:#fff!important;border-bottom:1px solid #e9eee9!important}
+.topbar .breadcrumb{margin-right:auto}.topbar .breadcrumb #breadcrumbHome{font-size:11px!important}.topbar .top-actions{gap:12px!important}
+.jg181-top-search,.jg181-top-notify{width:37px;height:37px;border-radius:50%;display:grid;place-items:center;color:#304837;background:transparent;border:0}
+.jg181-top-search:hover,.jg181-top-notify:hover{background:#eef6ee}
+.jg181-top-search svg,.jg181-top-notify svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.jg181-top-notice-wrap{position:relative}
+.jg181-notice-popup[hidden]{display:none!important}.jg181-notice-popup{position:absolute;top:calc(100% + 10px);right:0;z-index:100;width:min(355px,calc(100vw - 32px));padding:10px;background:#fff;border:1px solid #e5ece4;box-shadow:0 16px 45px #162b2024;border-radius:15px}
+.jg181-notice-popup .release-notice{display:flex!important;flex-direction:column;align-items:stretch;background:#f0f8f0!important;box-shadow:none;border-radius:12px}
+.topbar .top-actions>.help-button{display:none!important}
+.topbar .account-avatar{border:0}
+.jg181-top-hello{display:grid;gap:1px;margin:0 3px 0 4px;text-align:right;white-space:nowrap;font-size:11px;color:#708073}
+.jg181-top-hello strong{font-size:12px;color:#294a36}
+#dashboardView{padding:0!important;max-width:none!important;background:#fbfdf9!important;overflow-y:auto!important;scrollbar-width:thin}
+#dashboardView > :not(.jg181-home){display:none!important}
+#dashboardView > .jg181-home{display:grid!important;gap:16px;margin:0 auto;max-width:1440px;padding:clamp(16px,2.1vw,32px)!important;width:100%;color:#20342a;min-width:0}
+.jg181-hero{position:relative;overflow:hidden;isolation:isolate;min-height:166px;padding:22px 26px 25px;background:linear-gradient(105deg,#fcfefa 0%,#f9fcf6 52%,#eaf4e6 100%);border-radius:19px}
+.jg181-hero-copy{position:relative;z-index:2;max-width:61%}
+.jg181-kicker{color:#2e8552;letter-spacing:.025em;font-weight:800;font-size:11px;margin:0 0 11px}
+.jg181-hero h1{font-size:clamp(25px,3.5vw,43px);font-weight:900;line-height:1.19;letter-spacing:-.075em;color:#142f24;margin:0 0 9px}
+.jg181-hero p{font-size:clamp(12px,1.1vw,15px);line-height:1.6;color:#52665b;margin:0}
+.jg181-hero-art{position:absolute;right:-7px;bottom:-36px;width:39%;height:180px;pointer-events:none;opacity:.74}
+.jg181-hero-art svg{width:100%;height:100%}
+.jg181-hero-quote{position:absolute;top:37px;right:28px;z-index:2;display:flex;align-items:center;gap:11px;padding:13px 16px;border-radius:16px;border:1px solid #dfe9dd;background:#ffffffd9;box-shadow:0 8px 17px #41674614;color:#587462;font-size:11px;line-height:1.6;font-weight:700;max-width:220px}
+.jg181-hero-quote svg{width:27px;height:27px;flex:none}
+.jg181-action-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.jg181-action-card{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:11px;min-width:0;min-height:213px;text-align:left;padding:19px 20px 18px;background:#fff;border:1px solid #e9eee8;border-radius:18px;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s;color:#1c3227}
+.jg181-action-card:hover{transform:translateY(-3px);box-shadow:0 15px 34px #254c3218}
+.jg181-action-card:focus-visible,.jg181-item:focus-visible,.jg181-navitem:focus-visible{outline:3px solid #569b6c;outline-offset:2px}
+.jg181-action-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;font-size:27px;background:#e7f4e7}
+.jg181-action-card[data-kind="bowel"] .jg181-action-icon{background:#fff1df}
+.jg181-action-card[data-kind="life"] .jg181-action-icon{background:#e4f3ed}
+.jg181-action-chevron{position:absolute;right:19px;top:21px;width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#eff7ee;color:#377c4b;font-size:20px}
+.jg181-action-card strong{font-size:clamp(13px,1.2vw,17px);font-weight:850;letter-spacing:-.045em;line-height:1.4;word-break:keep-all}
+.jg181-action-description{font-size:12px;color:#718077;line-height:1.55;min-height:36px}
+.jg181-action-cta{margin-top:auto;display:flex;justify-content:center;align-items:center;gap:10px;width:100%;padding:11px 8px;border-radius:13px;background:#e6f3e1;color:#215f39;font-size:12px;font-weight:850}
+.jg181-action-card[data-kind="bowel"] .jg181-action-cta{background:#fff3e5;color:#815532}
+.jg181-action-card[data-kind="life"] .jg181-action-cta{background:#e5f3ed;color:#336752}
+.jg181-recent-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.jg181-panel{min-width:0;padding:18px 19px;border-radius:18px;background:#fff;border:1px solid #e9eee8;box-shadow:var(--shadow)}
+.jg181-panel-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:7px}
+.jg181-panel-head strong{font-size:14px;letter-spacing:-.03em;display:flex;align-items:center;gap:8px}
+.jg181-panel-head strong i{font-style:normal;font-size:17px;color:#34824d}
+.jg181-more{font-size:11px;color:#658072;padding:7px 2px;white-space:nowrap}
+.jg181-more:hover{color:#2e8350}
+.jg181-items{display:grid;gap:0}
+.jg181-item{width:100%;display:flex;align-items:center;gap:11px;padding:9px 1px;min-width:0;text-align:left;border-top:1px solid #f0f3ef;background:transparent;color:inherit}
+.jg181-record-icon{flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#edf5e9;display:grid;place-items:center;font-size:20px}
+.jg181-record-icon.bowel{border-radius:50%;background:#ecf6e9;color:#448459}.jg181-record-icon.life{border-radius:50%;background:#edf2f7}
+.jg181-item-text{flex:1;min-width:0;display:grid;gap:4px}.jg181-item-date{font-size:11px;color:#6e8075;font-weight:750}
+.jg181-item-description{font-size:12px;color:#465d50;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.jg181-record-chevron{flex:0 0 auto;font-size:18px;color:#9aa9a0}
+.jg181-empty{color:#7b8b81;padding:23px 5px;font-size:12px;line-height:1.6;min-height:120px}
+.jg181-bottom-row{display:grid;grid-template-columns:minmax(0,2.05fr) minmax(250px,1fr);gap:14px}
+.jg181-week-panel{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(185px,.85fr);gap:15px}
+.jg181-week-main{min-width:0}
+.jg181-week-sub{font-size:11px;color:#849187;margin:0 0 11px}
+.jg181-week-chart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:94px;align-items:end}
+.jg181-week-day{min-width:0;display:flex;align-items:center;flex-direction:column;justify-content:flex-end;gap:6px;height:100%;font-size:10px;color:#8c9b90}
+.jg181-bar-holder{width:min(32px,100%);height:75px;display:flex;align-items:flex-end;border-radius:8px 8px 5px 5px;background:#f3f7f2;overflow:hidden}
+.jg181-bar{width:100%;min-height:5px;background:linear-gradient(to top,#94cda0,#c6e4ba);border-radius:8px 8px 5px 5px}
+.jg181-week-tip{border-radius:15px;background:linear-gradient(135deg,#f2f8eb,#eaf5e6);padding:18px 12px;display:grid;align-content:center;gap:10px;text-align:center;font-size:12px;color:#597464;line-height:1.5}
+.jg181-week-tip strong{font-size:12px;color:#2d7046}.jg181-week-tip span{font-size:29px}
+.jg181-contact{display:flex;flex-direction:column;gap:12px;justify-content:center}
+.jg181-contact h2{font-size:15px;margin:0}.jg181-contact p{font-size:12px;line-height:1.65;margin:0;color:#738479}
+.jg181-contact-icon{font-size:26px;color:#368853}
+.jg181-contact button{margin-top:auto;background:#e6f3e2;border-radius:13px;color:#256b3d;min-height:42px;font-weight:800;font-size:12px}
+.jg181-disclaimer{margin:0 2px;color:#829186;font-size:10px;line-height:1.6}
+@media(max-width:1050px){
+ .sidebar{position:fixed!important;top:0!important;bottom:0!important;left:-270px!important;width:242px!important;min-width:242px!important;flex:0 0 242px!important;height:100dvh!important;z-index:1100!important;padding:21px 16px!important;background:#fbfdf9!important;border-right:1px solid #e4ede5!important;box-shadow:10px 0 38px #122b2120!important;overflow-y:auto!important;align-items:stretch!important}
+ .sidebar.open{left:0!important}.sidebar>.jg181-sidebar{display:flex!important}
+ .main-content{width:100%!important;max-width:none!important}
+ .topbar .mobile-menu{display:block!important;margin-right:auto}
+ #dashboardView>.jg181-home{padding:18px!important}
+ .jg181-action-row,.jg181-recent-row{gap:10px}
+ .jg181-action-card{padding:15px;min-height:204px}
+ .jg181-bottom-row{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .topbar .breadcrumb{display:none!important}.topbar .mobile-menu{margin-right:auto}
+ .jg181-top-hello{display:none}
+ #dashboardView>.jg181-home{padding:13px!important;gap:12px!important}
+ .jg181-hero{min-height:157px;padding:19px 16px;border-radius:15px}
+ .jg181-hero-copy{max-width:100%}.jg181-hero h1{font-size:26px}
+ .jg181-hero-quote{display:none}.jg181-hero-art{opacity:.25;width:66%;right:-18px}
+ .jg181-action-row,.jg181-recent-row{grid-template-columns:1fr!important;gap:9px}
+ .jg181-action-card{min-height:0;display:grid;grid-template-columns:47px 1fr;gap:7px 12px;padding:14px;align-items:center}
+ .jg181-action-icon{grid-row:1/span 2;width:44px;height:44px;font-size:23px}
+ .jg181-action-card strong{font-size:14px;grid-column:2}
+ .jg181-action-description{font-size:11px;grid-column:2;min-height:0}
+ .jg181-action-cta{grid-column:2;min-height:35px;font-size:11px}
+ .jg181-action-chevron{right:13px;top:13px}
+ .jg181-panel{padding:15px}
+ .jg181-week-panel{grid-template-columns:1fr}.jg181-week-tip{display:none}
+}
+@media(min-width:701px) and (max-width:920px){.jg181-action-row{grid-template-columns:repeat(3,minmax(0,1fr))}.jg181-recent-row{grid-template-columns:repeat(3,minmax(0,1fr))}.jg181-action-card{min-height:236px}}
+/* Honor user-chosen themes on other screens; visual dashboard uses a consistent botanical palette. */
+</style>
+
+
+<script id="jangilgi-v181-image-controller">
+/* Visual reconstruction of approved concept. DOM nodes for original record/chart logic remain intact. */
+(function(){'use strict';
+const $=id=>document.getElementById(id);
+const S=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const paths={home:'<path d="m3 10 9-7 9 7v10H5V10m4 11v-7h6v7"/>',edit:'<path d="M4 20h4l12-12-4-4L4 16zM14 6l4 4"/>',list:'<path d="M7 4h10l3 3v14H4V4zM8 11h8M8 15h8"/>',report:'<path d="M4 19V9M10 19V5M16 19v-9M22 19V7"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',insight:'<path d="M9 18h6M10 21h4M9 15a7 7 0 1 1 6 0c-.8.5-1 1-1 3h-4c0-2-.2-2.5-1-3z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3-6 8-6s8 2 8 6"/>',settings:'<path d="M9.8 3.5 9 5.6l-1.4.8-2.1-.4-2 3.5 1.4 1.5v2l-1.4 1.5 2 3.5 2.1-.4 1.4.8.8 2.1h4l.8-2.1 1.4-.8 2.1.4 2-3.5-1.4-1.5v-2l1.4-1.5-2-3.5-2.1.4-1.4-.8-.8-2.1z"/><circle cx="11.8" cy="12" r="2.7"/>',book:'<path d="M3 4a3 3 0 0 1 3-2h14v18H6a3 3 0 0 0-3 3zM3 20a3 3 0 0 1 3-3h14"/>',mail:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="m3 7 9 7 9-7"/>',search:'<circle cx="10" cy="10" r="7"/><path d="m15.2 15.2 6 6"/>',bell:'<path d="M5 17h14c-1.5-2-2-3.8-2-7a5 5 0 0 0-10 0c0 3.2-.5 5-2 7zm5 3a2 2 0 0 0 4 0"/>',chev:'<path d="m6 9 6 6 6-6"/>'};
+const icon=n=>`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${paths[n]||paths.home}</svg>`;
+const plant=`<svg viewBox="0 0 450 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 210C40 70 200 30 450 70V210Z" fill="#dcefd5"/><path d="M100 220c32-70 75-87 150-85m-15 85c25-70 90-94 150-85" stroke="#8ab38d" stroke-width="5" fill="none"/><g fill="#94c28c"><ellipse cx="120" cy="139" rx="22" ry="52" transform="rotate(-47 120 139)"/><ellipse cx="169" cy="95" rx="18" ry="42" transform="rotate(32 169 95)"/><ellipse cx="220" cy="160" rx="25" ry="60" transform="rotate(48 220 160)"/><ellipse cx="315" cy="130" rx="22" ry="62" transform="rotate(-45 315 130)"/><ellipse cx="382" cy="91" rx="20" ry="61" transform="rotate(27 382 91)"/></g><circle cx="100" cy="54" r="20" fill="#fbeecf"/></svg>`;
+const sidebar=$('dashboardView')?.closest('.app-shell')?.querySelector('.sidebar');
+const dash=$('dashboardView'); if(!sidebar||!dash)return;
+// Keep original sidebar elements for existing handlers; display the reference-style navigation.
+const side=document.createElement('div');side.className='jg181-sidebar';
+side.innerHTML=`<div class="jg181-brand"><div class="jg181-brand-logo" aria-hidden="true"><svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23 40V20" stroke="#418b56" stroke-width="4" stroke-linecap="round"/><path d="M22 25C5 27 5 11 7 6c11 0 19 6 15 19Z" fill="#46975a"/><path d="M23 24C24 10 32 5 41 5c1 12-5 21-18 19Z" fill="#78ad70"/><path d="M23 28c2-11 12-13 21-10-2 12-8 20-21 10Z" fill="#34774d"/></svg></div><span><strong>장일기</strong><small>오늘도, 편안한 하루</small></span></div>
+<nav class="jg181-nav" aria-label="주요 메뉴">
+<button type="button" class="jg181-navitem active" data-image-route="dashboard">${icon('home')}홈</button>
+<button type="button" class="jg181-navitem" data-image-expand="write" aria-expanded="false">${icon('edit')}기록하기${icon('chev').replace('viewBox','class="jg181-chevron" viewBox')}</button>
+<div class="jg181-subnav" data-image-panel="write" hidden><button data-image-route="meal">식사 기록 작성</button><button data-image-route="record">배변 기록 작성</button><button data-image-route="lifestyle">생활 기록</button></div>
+<button type="button" class="jg181-navitem" data-image-expand="read" aria-expanded="false">${icon('list')}기록 조회${icon('chev').replace('viewBox','class="jg181-chevron" viewBox')}</button>
+<div class="jg181-subnav" data-image-panel="read" hidden><button data-image-route="mealDay">식사 기록 조회</button><button data-image-route="bowelHistory">배변 기록 조회</button><button data-image-route="lifestyle">생활 기록 조회</button><button data-image-route="foodHistory">식사 통계 (7일·30일)</button><button data-image-route="week">배변 통계 (7일·30일)</button></div>
+<button type="button" class="jg181-navitem" data-image-route="report">${icon('report')}리포트</button>
+<button type="button" class="jg181-navitem" data-image-route="week">${icon('calendar')}캘린더</button>
+<button type="button" class="jg181-navitem" data-image-route="analysis">${icon('insight')}건강 인사이트</button>
+<button type="button" class="jg181-navitem" data-image-account="true">${icon('user')}내 정보</button>
+<button type="button" class="jg181-navitem" data-image-route="settings">${icon('settings')}설정</button>
+<div class="jg181-nav-separator"></div><button type="button" class="jg181-navitem" data-image-route="reference">${icon('book')}참고 자료</button>
+</nav><div class="jg181-sidebar-bottom"><button type="button" class="jg181-support-tip" data-image-route="support">${icon('mail')}<span><strong>궁금한 점이 있으신가요?</strong><small>장일기에게 물어보세요 ›</small></span></button></div>`;
+sidebar.appendChild(side);
+const bar=document.querySelector('.topbar'),actions=bar?.querySelector('.top-actions');
+if(actions){
+ const search=document.createElement('button'); search.className='jg181-top-search';search.type='button';search.setAttribute('aria-label','음식 검색 열기');search.title='음식 검색';search.innerHTML=icon('search');actions.prepend(search);
+ search.addEventListener('click',()=>{navigate('meal');const q=$('mealFoodSearch')||$('mealFoodQuery')||document.querySelector('#mealView input[type="search"],#mealView .food-catalog-bar input');q?.focus();});
+ const wr=document.createElement('div');wr.className='jg181-top-notice-wrap';wr.innerHTML=`<button type="button" class="jg181-top-notify" aria-expanded="false" aria-label="운영 공지 보기">${icon('bell')}</button><div class="jg181-notice-popup" hidden></div>`;
+ search.after(wr);
+ const notice=$('releaseNotice');if(notice)wr.querySelector('.jg181-notice-popup').appendChild(notice);
+ wr.querySelector('.jg181-top-notify').addEventListener('click',()=>{const p=wr.querySelector('.jg181-notice-popup');p.hidden=!p.hidden;wr.querySelector('button').setAttribute('aria-expanded',String(!p.hidden));});
+ document.addEventListener('click',e=>{if(wr.contains(e.target))return;const p=wr.querySelector('.jg181-notice-popup');p.hidden=true;wr.querySelector('button').setAttribute('aria-expanded','false');});
+ const hello=document.createElement('div');hello.className='jg181-top-hello';hello.innerHTML='<span>안녕하세요,</span><strong id="jg181-greeting-name">장일기님!</strong>';
+ const account=actions.querySelector('.account-menu-holder');if(account)account.before(hello);
+}
+const home=document.createElement('div');home.className='jg181-home';home.innerHTML=`
+<div class="jg181-hero"><div class="jg181-hero-copy"><p class="jg181-kicker">오늘도 잘하고 있어요 🌿</p><h1>오늘의 장 컨디션은?</h1><p>작은 기록이 만드는, 더 편안한 하루.<br>지금, 오늘의 모습을 기록해 보세요.</p></div><div class="jg181-hero-art">${plant}</div><div class="jg181-hero-quote"><span aria-hidden="true">🌱</span><span>하루를 기록하는 습관이<br>내일의 편안함을 만듭니다.</span></div></div>
+<div class="jg181-action-row" aria-label="오늘 기록 작성">
+<button type="button" class="jg181-action-card" data-kind="meal" data-image-route="meal"><span class="jg181-action-icon" aria-hidden="true">🥗</span><span class="jg181-action-chevron" aria-hidden="true">›</span><strong>오늘 어떤 음식을 드셨나요?</strong><span class="jg181-action-description">오늘 먹은 음식과<br>식후 몸의 반응을 기록해 보세요.</span><span class="jg181-action-cta">식사 기록하기　›</span></button>
+<button type="button" class="jg181-action-card" data-kind="bowel" data-image-route="record"><span class="jg181-action-icon" aria-hidden="true">🚽</span><span class="jg181-action-chevron" aria-hidden="true">›</span><strong>오늘의 배변 신호는 어땠나요?</strong><span class="jg181-action-description">배변 횟수, 상태, 불편함 등을<br>간단히 기록해 보세요.</span><span class="jg181-action-cta">배변 기록하기　›</span></button>
+<button type="button" class="jg181-action-card" data-kind="life" data-image-route="lifestyle"><span class="jg181-action-icon" aria-hidden="true">🏃</span><span class="jg181-action-chevron" aria-hidden="true">›</span><strong>오늘 어떤 생활을 하셨나요?</strong><span class="jg181-action-description">수분, 수면, 스트레스 등<br>일상의 습관을 기록해 보세요.</span><span class="jg181-action-cta">생활 기록하기　›</span></button>
+</div>
+<div class="jg181-recent-row">
+<article class="jg181-panel"><div class="jg181-panel-head"><strong><i aria-hidden="true">♧</i> 최근 식사 기록</strong><button class="jg181-more" data-image-route="mealDay">더보기 ›</button></div><div class="jg181-items" id="jg181-meal-list"></div></article>
+<article class="jg181-panel"><div class="jg181-panel-head"><strong><i aria-hidden="true">♧</i> 최근 배변 기록</strong><button class="jg181-more" data-image-route="bowelHistory">더보기 ›</button></div><div class="jg181-items" id="jg181-bowel-list"></div></article>
+<article class="jg181-panel"><div class="jg181-panel-head"><strong><i aria-hidden="true">♧</i> 최근 생활 기록</strong><button class="jg181-more" data-image-route="lifestyle">더보기 ›</button></div><div class="jg181-items" id="jg181-life-list"></div></article>
+</div>
+<div class="jg181-bottom-row">
+<article class="jg181-panel jg181-week-panel"><div class="jg181-week-main"><div class="jg181-panel-head"><strong><i aria-hidden="true">▥</i> 이번 주 기록 요약</strong><button class="jg181-more" data-image-route="week">자세히 ›</button></div><p class="jg181-week-sub">이번 주의 기록을 한눈에 확인해 보세요.</p><div class="jg181-week-chart" id="jg181-week-chart"></div></div><div class="jg181-week-tip"><span aria-hidden="true">🌱</span><strong>꾸준한 기록이<br>더 편안한 내일을 만들어요.</strong><small>작은 습관이 모여<br>몸의 변화를 알아가는 데 도움이 돼요.</small></div></article>
+<article class="jg181-panel jg181-contact"><div class="jg181-contact-icon" aria-hidden="true">✉</div><h2>장일기가 함께해요</h2><p>사용 중 궁금한 점이나 의견이 있으신가요?<br>언제든 편하게 문의해 주세요.</p><button type="button" data-image-route="support">문의하기　›</button></article>
+</div><p class="jg181-disclaimer">장일기는 건강 기록을 돕는 도구이며, 기록만으로 질병이나 원인을 진단하지 않습니다.</p>`;
+dash.prepend(home);
+// Reuse the existing demo controls and listeners instead of cloning them.
+const demo=$('demoBanner');if(demo)home.insertBefore(demo,home.children[1]);
+function route(view,key){
+ if(typeof navigate!=='function')return;
+ if(view==='mealDay'){window.__jangSetMealDate?.(key||today());navigate('mealDay');window.__jangRenderDayMeals?.(readData());return;}
+ if(view==='bowelHistory'){window.__jangSetBowelDate?.(key||today());navigate('bowelHistory');return;}
+ if(view==='lifestyle'){window.__jangSetLifeDate?.(key||today(),false);navigate('lifestyle');return;}
+ navigate(view);
+}
+document.addEventListener('click',e=>{
+ const exp=e.target.closest('[data-image-expand]');if(exp){const panel=side.querySelector(`[data-image-panel="${exp.dataset.imageExpand}"]`);const open=exp.getAttribute('aria-expanded')==='true';exp.setAttribute('aria-expanded',String(!open));panel.hidden=open;return;}
+ const account=e.target.closest('[data-image-account]');if(account){$('accountMenuButton')?.click();return;}
+ const b=e.target.closest('[data-image-route]');if(!b)return;
+ if(!b.closest('.jg181-sidebar,.jg181-home'))return;
+ route(b.dataset.imageRoute,b.dataset.imageDay||null);
+ side.querySelectorAll('.jg181-navitem').forEach(el=>el.classList.toggle('active',el===b));
+});
+function dateText(v){let d=new Date(v);if(!Number.isFinite(d.getTime()))return String(v||'');return new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'short'}).format(d);}
+function content(items,kind){if(!items.length)return '<p class="jg181-empty">아직 저장된 기록이 없어요.<br>오늘의 작은 기록부터 시작해 보세요.</p>';
+ return items.slice(0,3).map(v=>`<button type="button" class="jg181-item" data-image-route="${kind==='meal'?'mealDay':kind==='bowel'?'bowelHistory':'lifestyle'}" data-image-day="${S(v.date)}"><span class="jg181-record-icon ${kind==='meal'?'':kind}">${kind==='meal'?'🍚':kind==='bowel'?'🌿':'☀️'}</span><span class="jg181-item-text"><span class="jg181-item-date">${S(dateText(v.date))}</span><span class="jg181-item-description">${S(v.label)}</span></span><span class="jg181-record-chevron" aria-hidden="true">›</span></button>`).join('');}
+function render(data){if(!data||!data.records||!data.events)return;
+ const meals=timedMeals(data).slice().sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).map(m=>({date:dateKey(m.at),label:(m.foods||[]).join(', ')||'음식 기록'}));
+ const bowel=eventObservations(data).real.slice().sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).map(e=>({date:e.date,label:`브리스톨 ${e.bristol}형 · 배변 기록` }));
+ const life=data.records.filter(r=>r?.kind==='daily-context'&&r?.date&&Object.keys(jgActiveLifestyle(r.lifestyle)).length).sort((a,b)=>b.date.localeCompare(a.date)).map(r=>({date:r.date,label:HABIT_LABELS.filter(h=>jgActiveLifestyle(r.lifestyle)[h.key]!=null).slice(0,2).map(h=>h.label+': '+h.choices[jgActiveLifestyle(r.lifestyle)[h.key]]).join(' · ')||'생활 습관을 기록했어요'}));
+ $('jg181-meal-list').innerHTML=content(meals,'meal');$('jg181-bowel-list').innerHTML=content(bowel,'bowel');$('jg181-life-list').innerHTML=content(life,'life');
+ const events=eventObservations(data).real;let counts=[];let days=[];
+ const now=new Date();const day=now.getDay();const mondayOffset=(day+6)%7;
+ for(let i=0;i<7;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-mondayOffset+i);const key=dateKey(d);const n=events.filter(e=>e.date===key).length+meals.filter(m=>m.date===key).length+life.filter(l=>l.date===key).length;counts.push(n);days.push('월화수목금토일'[i]);}
+ const max=Math.max(1,...counts);$('jg181-week-chart').innerHTML=counts.map((n,i)=>`<div class="jg181-week-day" title="${days[i]}요일 기록 ${n}건"><div class="jg181-bar-holder"><div class="jg181-bar" style="height:${n?Math.max(12,Math.round(100*n/max)):0}%"></div></div><span>${days[i]}</span></div>`).join('');
+ let profileName=String(data.profile?.displayName||'').trim();const name=$('jg181-greeting-name');if(name)name.textContent=profileName?profileName+'님!':'장일기님!';
+}
+// Keep the original data-update pipeline; the new visual layer is a read-only projection.
+const originalRefresh=refreshAllViews;
+refreshAllViews=function(){originalRefresh();render(readData());};
+const originalTimeline=renderTimeline;
+renderTimeline=function(data){originalTimeline(data);render(data);};
+window.__jg181Render=render;
+})();
+</script>
+
 </body>
 </html>
