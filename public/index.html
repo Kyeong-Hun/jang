@@ -47,7 +47,7 @@
 .profile-avatar,.avatar-small.cheer-avatar{overflow:hidden}.cheer-avatar svg{display:block;width:100%;height:100%}.life-card{min-width:0}.life-card>div:first-child{display:block;min-width:0}.life-card>div:first-child strong,.life-card>div:first-child span{display:block;min-width:0}.life-card>div:first-child span{margin-top:3px;line-height:1.35;white-space:normal;overflow-wrap:anywhere}.report-summary-tiles small{display:block;margin-top:4px;color:#9aa69d;font-size:9px;line-height:1.35}.report-summary-tiles>div{min-width:0}
 .nav-icon{display:grid;place-items:center}.nav-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav-dashboard svg{fill:currentColor;stroke:none}.nav-record svg{stroke-width:2.3}.nav-report svg{stroke-width:1.7}.history-control>span{display:none}.history-audit-note{margin:14px 0 0;padding:10px 12px;border-radius:8px;background:#f1f7ef;color:#5f8066;font-size:10px;line-height:1.5}
 
-  
+
 /* v6: 사건별 배변 기록과 투어 */
 .help-button{background:#e4efe3;border:1px solid #cddfca;border-radius:11px;color:#285f42;padding:10px 14px;font-size:13px;font-weight:800;white-space:nowrap}
 .help-button:hover{background:#d5e9d3}.quick-home-hero{background:#d9efd5;border-radius:18px;padding:22px 24px;margin:0 0 17px;display:flex;align-items:center;justify-content:space-between;gap:20px}.quick-home-info span{color:#427651;font-size:12px;font-weight:700}.quick-home-info h2{font-size:23px;letter-spacing:-.055em;margin:6px 0 3px}.quick-home-info p{color:#5f7968;font-size:12px;margin:0}.quick-home-button{font-size:15px;min-height:50px;white-space:nowrap;padding:13px 21px;position:relative;z-index:1}.recent-events{margin-bottom:16px}.recent-events .card-heading h2{margin:0;font-size:17px}.recent-events .card-heading span{color:#64826d;font-size:12px}.event-line{border-top:1px solid #ebefeb;padding:12px 0;display:flex;align-items:center;gap:12px}.event-line:first-child{margin-top:15px}.event-time{font-size:12px;font-weight:800;color:#467654;min-width:66px}.event-main{flex:1}.event-main strong{font-size:14px}.event-main small{display:block;color:#83918a;font-size:11px;margin-top:2px}.event-edit,.event-delete{border:1px solid #dae4da;padding:7px 9px;border-radius:8px;font-size:11px}.event-delete{color:#a85d59}.empty-events{font-size:13px;color:#82908a;margin:17px 0 0}
@@ -1092,7 +1092,8 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
  <button type="button" class="compact-side-button compact-home" data-view="dashboard" aria-label="홈으로 이동" title="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>홈</span></button>
  <button type="button" class="compact-side-button compact-report" data-view="report" aria-label="월간 리포트 보기" title="월간 리포트"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7 16v-4M12 16V8M17 16v-6"/></svg><span>리포트</span></button>
  <button type="button" class="compact-side-button compact-analysis" data-view="analysis" aria-label="개인별 분석 보기" title="개인별 분석"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16l5-5 4 3 8-9"/><path d="M15 5h5v5"/><path d="M3 20h18"/></svg><span>분석</span></button>
- <div class="compact-side-fill"></div>
+ <button type="button" class="compact-side-button compact-lab" data-view="lab" aria-label="생활 습관 실험실 열기" title="생활 습관 실험실"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v7l-5.2 8.2A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.8L14 10V3"/><path d="M7.5 16h9"/></svg><span>실험실</span></button>
+  <div class="compact-side-fill"></div>
  <button type="button" class="compact-side-button compact-reference" data-view="reference" aria-label="참고 자료 보기" title="참고 자료"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zm0 12A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/></svg><span>자료</span></button>
  <button type="button" class="compact-side-button compact-settings" data-view="settings" aria-label="설정 열기" title="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.2 3.1 9.6 5a7 7 0 0 0-1.4.8l-1.9-.4-2 3.4 1.4 1.4a7 7 0 0 0 0 1.6l-1.4 1.4 2 3.4 1.9-.4c.4.3.9.6 1.4.8l.6 1.9h3.9l.6-1.9c.5-.2 1-.5 1.4-.8l1.9.4 2-3.4-1.4-1.4a7 7 0 0 0 0-1.6L20 8.8l-2-3.4-1.9.4a7 7 0 0 0-1.4-.8l-.6-1.9z"/><circle cx="12.15" cy="11" r="2.75"/></svg><span>설정</span></button>
  </aside>
@@ -1115,7 +1116,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.9.6</strong><p id="releaseText">캘린더에서 날짜를 선택하면 식사·배변·생활 기록을 한곳에서 볼 수 있어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.0</strong><p id="releaseText">개인 기록을 바탕으로 작은 생활 실험을 선택하고 전후 변화를 확인할 수 있어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1195,7 +1196,18 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </article>
 <article class="foodlife-summary card-surface" id="foodlifeSavedSummary"><div class="card-heading"><div><span class="section-kicker">SAVED DAILY NOTES</span><h2>선택한 날짜의 기록</h2></div></div><p id="foodlifeSummaryText">저장한 기록이 아직 없어요.</p></article>
 <div class="foodlife-analysis" id="foodlifeAnalysisPane"><div class="foodlife-help jg1812-analysis-guide"><div><b>생활습관 분석</b><span>수분·수면·스트레스의 당일 및 이전 날짜 기록을 배변과 비교해요.</span></div><div><b>식사 분석</b><span>식사 후 0~6, 6~24, 24~48, 48~72시간의 배변 기록을 나누어 살펴봐요.</span></div></div></div>
+<article id="jg110-analysis-bridge" class="jg110-analysis-bridge"><div><span class="section-kicker">NEXT STEP · 생활 습관 실험실</span><h2>기록을 확인했다면, 작은 실천도 해볼까요?</h2><p>기록을 바탕으로 선택 가능한 생활 습관을 찾아보고, 7일간 실천한 뒤 변화가 있었는지 살펴볼 수 있어요.</p></div><button type="button" data-view="lab">실험실 열기 →</button></article>
 <p class="foodlife-disclaimer">음식·생활 통계는 건강 점수나 질병 진단이 아니에요. 기록이 없으면 '섭취하지 않음'으로 간주하지 않습니다.</p>
+</section>
+<section class="view" id="labView" aria-label="생활 습관 실험실">
+  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
+  <div class="jg110-main">
+    <div class="jg110-intro" role="note"><span aria-hidden="true">🧪</span><div><strong>건강 점수가 아닌, 작은 관찰 실험</strong><p>참여는 선택이에요. 기록하지 않은 날을 실패로 취급하지 않으며, 실천 후 변화가 관찰되더라도 원인으로 단정하지 않아요.</p></div></div>
+    <div id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">DISCOVER</span><h2>내 기록에서 시작하기</h2></div><small>개인 관찰과 일반 권고를 구분해서 표시</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></div>
+    <div id="jg110-lab-active" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">TRY</span><h2>진행 중인 작은 실험</h2></div><small>7일 · 언제든 중단 가능</small></div><div id="jg110-active-content" aria-live="polite"></div></div>
+    <div id="jg110-lab-history" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">REVIEW</span><h2>실험 결과 돌아보기</h2></div><small>전후의 실제 배변 기록으로만 비교</small></div><div id="jg110-history-content" aria-live="polite"></div></div>
+    <p class="jg110-footer-note">생활 습관 제안은 일반적인 건강 정보이며 진단이나 처방이 아닙니다. 혈변·검은색 변·지속적인 복통 등의 경고 증상이 있다면 실험보다 보호자 또는 의료진과 상담하는 것이 우선입니다. 개인 기록은 로그인한 계정의 기존 암호화 저장 방식을 사용합니다.</p>
+  </div>
 </section>
 <section class="view" id="settingsView">
 <div class="record-header"><div><div class="eyebrow">PERSONALIZE YOUR DIARY</div><h1>화면 설정</h1><p>장일기의 색상과 배경을 취향에 맞게 바꿔보세요.</p></div></div>
@@ -1454,7 +1466,13 @@ function validateJangJsonBackup(payload){
    // Older veg/fruit values are retained verbatim but never analyzed.
   }
  }
- if(payload.history.some(x=>!isJsonObject(x)))throw Error('변경 이력 항목의 형식이 올바르지 않아요.');
+ if(payload.profile.labExperiments!=null){
+   if(!Array.isArray(payload.profile.labExperiments)||payload.profile.labExperiments.length>100)throw Error('실험실 기록의 목록 형식이 올바르지 않아요.');
+   for(const item of payload.profile.labExperiments){
+    if(!isJsonObject(item)||typeof item.id!=='string'||item.id.length>120||!['water','fiber','routine','meals','sleep'].includes(item.templateId)||!isValidDate(item.startDate)||!['active','completed','stopped'].includes(item.status)||!Array.isArray(item.checkIns)||item.checkIns.length>7||item.checkIns.some(x=>!isValidDate(x)))throw Error('실험실 기록의 항목 형식이 올바르지 않아요.');
+   }
+  }
+  if(payload.history.some(x=>!isJsonObject(x)))throw Error('변경 이력 항목의 형식이 올바르지 않아요.');
  if(Object.values(payload.eventBaselines).some(x=>x!=null&&!isJsonObject(x)))throw Error('과거 기록 비교 기준의 형식이 올바르지 않아요.');
  if(payload.records.some(x=>Object.prototype.hasOwnProperty.call(x,'score'))||Object.values(payload.eventBaselines).some(x=>isJsonObject(x)&&Object.prototype.hasOwnProperty.call(x,'score')))throw Error('이 백업에는 현재 앱에서 제외하는 과거 점수(score) 필드가 있어요. 손실 없는 복원을 위해 가져오기를 중단했어요.');
  return normalizeData(payload);
@@ -1700,7 +1718,7 @@ function renderReport(data){
  renderFood(data);
 }
 function refreshAllViews(){const data=readData();applyAppearance(data.profile);renderFoodLife(data);renderAgeGuide(data);renderTimeline(data);renderSafetyFeedback(data);renderWeek(data);renderMonthCalendar();renderReport(data);document.querySelector('#dashboardView .page-intro .eyebrow').textContent=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(new Date());}
-function navigate(view){if(view==='foodlife')view='meal';if(view==='week')window.__jangBowelPeriod=window.__jangBowelPeriod||7;if(view==='adminSupport'&&!window.__jangilgiAdminSession?.())return;const target=document.querySelector(`#${view}View`);if(!target)return;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active-view',x===target));document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelector('#pageTitle').textContent={support:'소통 센터',adminSupport:'관리자 운영 센터',dashboard:'홈',reference:'참고 정보',record:'배변 기록',foodlife:'식사 기록',meal:'식사 기록 작성',mealDay:'식사 기록 조회',lifestyle:'생활 기록',analysis:'개인별 분석',bowelHistory:'오늘 배변 기록',foodHistory:'식사 기록 통계',week:'배변 통계',report:'월간 리포트',settings:'설정'}[view]||'장일기';document.querySelector('.sidebar')?.classList.remove('open');closeAccountMenu();window.__jangilgiScreen?.(view,0);if(view==='support')window.__jangilgiLoadOwnSupport?.();}
+function navigate(view){if(view==='foodlife')view='meal';if(view==='week')window.__jangBowelPeriod=window.__jangBowelPeriod||7;if(view==='adminSupport'&&!window.__jangilgiAdminSession?.())return;const target=document.querySelector(`#${view}View`);if(!target)return;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active-view',x===target));document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelector('#pageTitle').textContent={support:'소통 센터',adminSupport:'관리자 운영 센터',dashboard:'홈',reference:'참고 정보',record:'배변 기록',foodlife:'식사 기록',meal:'식사 기록 작성',mealDay:'식사 기록 조회',lifestyle:'생활 기록',analysis:'개인별 분석',lab:'생활 습관 실험실',bowelHistory:'오늘 배변 기록',foodHistory:'식사 기록 통계',week:'배변 통계',report:'월간 리포트',settings:'설정'}[view]||'장일기';document.querySelector('.sidebar')?.classList.remove('open');closeAccountMenu();window.__jangilgiScreen?.(view,0);if(view==='support')window.__jangilgiLoadOwnSupport?.();}
 async function saveAge(age){if(age&&!ageGuides[age])return;const data=readData();data.profile.ageGroup=age||null;data.profile.displayName=String(document.querySelector('#settingsDisplayName')?.value||'').trim().slice(0,30);if(!data.profile.displayName){showToast('이름 또는 닉네임을 입력해 주세요.');return;}data.profile.onboardingComplete=!!data.profile.ageGroup;const sex=document.querySelector('#settingsGender');if(sex)data.profile.gender=sex.value;if(await writeData(data)){adoptCloudData(data,cloudUserEmail);showToast('프로필을 업데이트했어요.');}}
 const THEMES=['leaf','cream','ocean','lavender','rose','graphite'], BACKGROUNDS=['plain','soft','dots'];
 function applyAppearance(profile){
@@ -1829,6 +1847,7 @@ function initClearRecordsDialog(){
   const d=readData(),erased=blankData();
   // Preserve account profile, theme and analytic-window preferences.
   erased.profile={...d.profile};
+  delete erased.profile.labExperiments;
   modal.dataset.busy='true';yes.disabled=true;no.disabled=true;input.disabled=true;
   document.getElementById('clearRecordsStatus').textContent='클라우드에서 기록을 삭제하는 중이에요…';
   const ok=await writeData(erased);
@@ -3021,7 +3040,7 @@ initialize=function(){originalInitializeBeforeAnalysis();initPersonalAnalysis();
  byId('foodlifeDateBlock').prepend(lifeAtLabel);
  lifeAt.value=localDateTime(new Date());
  lifeAt.addEventListener('change',()=>{if(!lifeAt.value)return;const v=new Date(lifeAt.value);if(!Number.isFinite(v.getTime())||v.getTime()>Date.now()+60000){showToast('현재 또는 과거 시각을 선택해 주세요.');return;}lifeDate.value=dateKey(v);lifeDate.dispatchEvent(new Event('change',{bubbles:true}));});
- 
+
  function nowButton(id,input,kind){if(!input)return;const b=document.createElement('button');b.id=id;b.className='jg-time-now';b.type='button';b.textContent=kind==='date'?'오늘 날짜로':'현재 시각';b.setAttribute('aria-label',kind==='date'?'생활 기록 날짜를 오늘로':'현재 날짜와 시각으로 맞추기');input.closest('label')?.after(b);
  b.onclick=()=>{if(kind==='date'){input.value=today();input.dispatchEvent(new Event('change',{bubbles:true}));}else{input.value=localDateTime(new Date());input.dispatchEvent(new Event('change',{bubbles:true}));}showToast(kind==='date'?'오늘 날짜로 변경했어요.':'현재 시각으로 변경했어요.');};}
  nowButton('bowelNow',bowelAt,'datetime');nowButton('mealNow',mealAt,'datetime');nowButton('lifeNow',lifeAt,'datetime');
@@ -3490,11 +3509,11 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.9.6';
+const JANGILGI_VERSION='1.10.0';
 const JANGILGI_RELEASE_STEPS=[
- ['날짜별 전체 기록','캘린더에서 날짜를 누르면 그날의 배변·식사·생활 기록을 함께 확인할 수 있어요.'],
- ['캘린더만 집중','캘린더 옆의 불필요한 형태·증상 그래프를 제거했어요.'],
- ['여러 기록과 과거 데이터','같은 날 여러 번 작성한 기록과 이전 형식의 날짜별 기록도 확인할 수 있어요.']
+  ['생활 습관 실험실','개인 기록을 확인한 다음, 근거 기반의 작은 행동 실험을 선택할 수 있어요.'],
+  ['부담 없는 실천 기록','7일 중 선택한 날에만 실천 여부를 기록합니다. 점수·연속 출석·벌점은 없어요.'],
+  ['전후 기록 비교','실천 전후의 실제 배변 기록을 비교하고, 표본이 부족하면 결론을 보류합니다.']
 ];
 
 /* old release steps (preserved in changelog below) */
@@ -3504,6 +3523,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.10.0',date:'2026-11-02',title:'생활 습관 실험실 및 근거 기반 실천 제안',details:['개인 배변·생활 기록을 바탕으로 실험 주제의 우선순위를 제안하고 관찰 근거를 표시','일반적 생활 습관 실천 지침과 의학 자료 출처를 제시하되 개인의 원인·효과로 단정하지 않음','자발적인 7일 실천 기록을 암호화된 프로필에 저장하고 실천 전후의 실제 배변 기록을 비교','기록이 부족한 경우 판단을 보류하고 필요 시 진료 안내를 우선','점수·경험치·연속 출석 보상 없이 선택적 참여, 기존 기록·Firebase 구조 호환 유지']},
  {version:'1.9.6',date:'2026-11-02',title:'캘린더에서 모든 기록 한눈에 보기',details:['캘린더를 중심으로 화면을 재구성하고 옆의 형태·증상 그래프 제거','날짜를 선택하면 해당 날짜의 배변·식사·생활 기록을 항목별로 모두 표시','하루 여러 건의 식사·배변 기록 및 기존 날짜별 음식·생활·배변 요약도 조회','캘린더 이전·다음 달 이동 및 기존 기록 저장·암호화 구조 유지']},
  {version:'1.9.5',date:'2026-11-01',title:'홈·통계 레이아웃 정리 및 캘린더 이동',details:['홈 마지막 통계 그래프의 높이·레이블 넘침 및 넓은 화면의 불필요한 스크롤 개선','배변·생활 7/30일 통계를 식사 통계와 같은 막대·날짜·기록 횟수 형식으로 통일','참고 자료의 중복 관찰·연령별 카드를 화면에서 제외하되 기존 데이터 갱신 함수 호환 유지','캘린더 이전·다음 달 탐색 버튼 추가','기록 저장·암호화·Firebase 규칙·JSON 구조 변경 없음']},
  {version:'1.9.4',date:'2026-11-01',title:'암호화 기록 저장 충돌 감지 개선',details:['저장 시 서버의 최신 암호화 상태를 직접 읽어 비교','암호화 데이터는 필드 값으로 비교해 객체 속성 순서에 따른 오탐 방지','같은 탭에서 중복 저장 요청 차단 및 다른 기기의 최신 기록 보호','저장 충돌과 저장 완료 여부 불확실 오류를 별도로 안내','기록·JSON·Firebase 규칙·분석 UI 구조 변경 없음']},
@@ -3875,11 +3895,11 @@ function initDetailedHelp(){
 }
 // 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
 // GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.9.5';
+const JANGILGI_PREVIOUS_RELEASE='1.9.6';
 const JANG_CURRENT_UPDATE_STEPS=[
- {view:'week',selector:'#weekView .calendar-card',title:'기록 통합 캘린더',text:'선택한 날짜의 배변·식사·생활 기록을 한곳에서 확인할 수 있어요.'},
- {view:'week',selector:'#weekView .jg196-detail-grid',title:'날짜별 상세 기록',text:'하루에 여러 번 작성한 식사·배변 기록과 생활 기록을 종류별로 확인해요.'},
- {view:'week',selector:'#weekView .jg184-calendar-layout',title:'캘린더 중심 화면',text:'불필요한 형태·증상 그래프를 없애고 달력과 날짜별 기록에 집중했어요.'}
+  {view:'lab',selector:'#jg110-lab-recommendations',title:'근거 기반 생활 습관 제안',text:'실제 기록의 경향을 참고해 작은 실천을 추천하지만 원인을 단정하지 않아요.'},
+  {view:'lab',selector:'#jg110-lab-active',title:'7일간의 작은 실험',text:'원하는 날짜에 실천 여부를 기록해요. 연속 출석이나 점수는 없어요.'},
+  {view:'lab',selector:'#jg110-lab-history',title:'전후 변화 살펴보기',text:'실험 전후 실제 배변 형태와 불편 기록을 비교하고 기록 부족 여부를 함께 보여줘요.'}
 ];
 function jangReleaseBaselineLabel(){
  return /^\d+\.\d+\.\d+$/.test(JANGILGI_PREVIOUS_RELEASE)
@@ -6351,5 +6371,184 @@ const oldNavigate=navigate;navigate=function(v){oldNavigate(v);if(v==='bowelStat
  #dashboardView .jg181-week-sub{margin-bottom:5px!important}
 }
 </style>
+<style id="jangilgi-v110-habit-lab-style">
+#labView{overflow-y:auto!important;overflow-x:hidden!important;display:none;gap:14px!important;scrollbar-gutter:stable;align-content:start}
+#labView.active-view{display:flex!important}
+#labView .jg110-top{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:2px 0 9px;flex-wrap:wrap}
+#labView .jg110-top h1{font-size:clamp(25px,3vw,37px);margin:4px 0;font-weight:800;letter-spacing:-.065em}
+#labView .jg110-top h1 em{font-style:normal;color:var(--green)}
+#labView .jg110-top p{color:var(--muted);font-size:12px;line-height:1.65;margin:0}
+#labView .jg110-main{display:grid;gap:17px;min-width:0;max-width:1170px;width:100%;margin:0 auto;padding-bottom:25px}
+#labView .jg110-outline{border:1px solid #b5d0b9;border-radius:10px;padding:9px 14px;background:var(--surface);color:var(--deep);font-size:12px;font-weight:750}
+#labView .jg110-intro{display:flex;align-items:flex-start;gap:12px;background:#e5f1e3;border-radius:16px;padding:14px 17px;border:1px solid #cfdecf;color:#325b43}
+#labView .jg110-intro>span{font-size:24px}
+#labView .jg110-intro strong{display:block;font-size:13px}
+#labView .jg110-intro p{font-size:12px;line-height:1.65;margin:4px 0 0}
+#labView .jg110-section{background:var(--surface);border:1px solid var(--line);border-radius:17px;padding:18px 20px;min-width:0;box-shadow:var(--shadow)}
+#labView .jg110-section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:15px}
+#labView .jg110-section-title h2{font-size:19px;letter-spacing:-.06em;margin:5px 0 0;color:var(--deep)}
+#labView .jg110-section-title small{color:var(--muted);font-size:10px}
+#labView .jg110-rec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#labView .jg110-rec{border:1px solid #dfe9df;border-radius:14px;background:#fbfdfb;padding:17px;display:grid;gap:9px;min-width:0}
+#labView .jg110-rec:first-child{border-color:#a4cdad;background:#f4faf3}
+#labView .jg110-chip{color:#388256;font-size:10px;font-weight:800;letter-spacing:.025em}
+#labView .jg110-rec h3{color:#254a36;font-size:16px;margin:0;line-height:1.45}
+#labView .jg110-rec p,#labView .jg110-rec small{color:#647b6c;font-size:12px;line-height:1.7;margin:0;overflow-wrap:anywhere}
+#labView .jg110-observation{border-left:3px solid #a2c9aa;padding:7px 10px;background:#f0f6ef;border-radius:0 7px 7px 0}
+#labView .jg110-rec .jg110-evidence{font-size:10px;color:#7c8e81}
+#labView .jg110-rec a{color:#2f7950;text-decoration:underline;font-size:11px;overflow-wrap:anywhere}
+#labView .jg110-primary{background:#2f8051;color:#fff;border-radius:10px;padding:11px 16px;font-size:12px;font-weight:750;text-align:center}
+#labView .jg110-primary:disabled{opacity:.45;cursor:not-allowed}
+#labView .jg110-textbtn{border:1px solid var(--line);padding:10px 13px;border-radius:10px;color:#657a6b;background:#fff;font-size:12px}
+#labView .jg110-rec .jg110-primary{justify-self:start;margin-top:4px}
+#labView .jg110-empty{padding:18px;background:#f7faf6;border:1px dashed #cfddcf;border-radius:13px;color:#6c816e;font-size:12px;line-height:1.7}
+#labView .jg110-active-card{border:1px solid #d3e4d4;border-radius:15px;padding:17px;background:#f9fcf8;display:grid;gap:12px}
+#labView .jg110-active-card h3{font-size:20px;letter-spacing:-.04em;margin:0;color:var(--deep)}
+#labView .jg110-active-card p{color:#688071;font-size:12px;line-height:1.7;margin:0}
+#labView .jg110-dates{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+#labView .jg110-day{background:#fff;border:1px solid #d8e7d7;border-radius:12px;padding:12px 4px;min-height:74px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0}
+#labView .jg110-day b{font-size:12px;color:#627c6b}
+#labView .jg110-day span{font-size:13px;color:#9bad9f}
+#labView .jg110-day[aria-pressed="true"]{background:#e2f2e3;border-color:#5b9f6d}
+#labView .jg110-day[aria-pressed="true"] span{color:#287849;font-weight:800}
+#labView .jg110-day:disabled{cursor:default;opacity:.5}
+#labView .jg110-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#labView .jg110-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:11px}
+#labView .jg110-stat{padding:13px;background:#f5f8f4;border:1px solid #e1ebe1;border-radius:12px}
+#labView .jg110-stat span{display:block;font-size:11px;color:#748778}
+#labView .jg110-stat strong{display:block;font-size:19px;color:#315c41;margin-top:4px}
+#labView .jg110-stat small{display:block;font-size:10px;color:#84958a;line-height:1.55}
+#labView .jg110-history-entry{border-bottom:1px solid var(--line);padding:15px 0}
+#labView .jg110-history-entry:last-child{border-bottom:0}
+#labView .jg110-history-entry h3{font-size:15px;margin:0 0 6px;color:var(--deep)}
+#labView .jg110-history-entry p{font-size:12px;color:#65796b;line-height:1.7;margin:7px 0}
+#labView .jg110-caution{border-left:3px solid #d8a362;background:#fff8ed;padding:12px 14px;color:#84552a;border-radius:0 10px 10px 0;line-height:1.7;font-size:12px;margin-bottom:12px}
+#labView .jg110-footer-note{font-size:11px;color:#7f9083;line-height:1.8;margin:0;padding:2px 4px}
+#labView :is(button,a):focus-visible{outline:3px solid #8abf96;outline-offset:2px}
+#analysisView .jg110-analysis-bridge{margin:15px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#e8f3e7;padding:18px 20px;border:1px solid #d3e5d4;border-radius:15px}
+#analysisView .jg110-analysis-bridge h2{font-size:16px;margin:5px 0;color:#24563b}
+#analysisView .jg110-analysis-bridge p{font-size:12px;line-height:1.6;margin:0;color:#5b7b64}
+#analysisView .jg110-analysis-bridge button{flex:none;background:#307d50;border-radius:9px;padding:11px 14px;color:#fff;font-size:12px;font-weight:700}
+@media(max-width:760px){#labView .jg110-rec-grid,#labView .jg110-stats{grid-template-columns:1fr}#labView .jg110-section{padding:14px}#labView .jg110-main{gap:12px}#labView .jg110-dates{gap:4px}#labView .jg110-day{min-height:63px;padding:6px 1px}#labView .jg110-day b{font-size:10px}#labView .jg110-day span{font-size:11px}#analysisView .jg110-analysis-bridge{align-items:stretch;flex-direction:column}#analysisView .jg110-analysis-bridge button{align-self:flex-start}}
+</style>
+<script id="jangilgi-v110-habit-lab-script">
+/* v1.10.0 optional Habit Lab. Existing encrypted diary/profile remains the storage layer. */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const E=escapeHTML;
+const SOURCES={
+  water:'https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/eating-diet-nutrition',
+  fiber:'https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/eating-diet-nutrition',
+  routine:'https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/treatment',
+  meals:'https://www.niddk.nih.gov/health-information/digestive-diseases/bowel-control-problems-fecal-incontinence/eating-diet-nutrition',
+  sleep:null
+};
+const TEMPLATES={
+  water:{title:'물 마시는 습관 돌아보기',action:'식사 전후와 쉬는 시간에 평소의 수분 섭취를 챙겼는지 확인하기',basis:'충분한 수분 섭취는 일반적인 소화 건강 관리에 도움이 될 수 있어요. 일률적인 섭취량을 강제하지 않아요.',src:'NIDDK · 어린이·청소년 변비와 식이 관리'},
+  fiber:{title:'식사의 다양성 살펴보기',action:'평소 식사에 과일·채소·통곡물 등을 자연스럽게 포함할 기회 찾아보기',basis:'식이섬유를 충분히 섭취하는 것은 변비 관리에 도움이 될 수 있어요. 특정 음식을 금지하거나 식사량을 제한하지 않아요.',src:'NIDDK · 어린이·청소년 변비와 식이 관리'},
+  routine:{title:'편안한 배변 시간 만들기',action:'식사 후 여유가 있을 때 화장실에 편안히 앉아보고, 신호를 억지로 참지 않기',basis:'규칙적이고 편안한 화장실 습관은 일반적인 배변 관리에 도움이 될 수 있어요. 무리하게 힘주거나 배변을 강요하지 않아요.',src:'NIDDK · 변비의 생활 관리'},
+  meals:{title:'식사·불편 기록 연결해 보기',action:'먹은 음식과 시각, 이후 불편이 있다면 함께 기록해 경향 살펴보기',basis:'식사 일기는 증상과 식사의 관계를 탐색하는 도구예요. 한두 번의 기록만으로 음식을 금지하지 않아요.',src:'NIDDK · 식사 기록의 활용'},
+  sleep:{title:'수면 기록을 규칙적으로 남기기',action:'기상 후 지난밤의 수면 상태를 기록하고, 가능한 일정한 수면 습관을 살펴보기',basis:'일상 기록을 더 정확히 관찰하기 위한 실험이에요. 수면과 배변 사이의 원인 관계를 단정하지 않아요.',src:'장일기 · 기록 방법 제안'}
+};
+const shift=(key,days)=>{const dt=new Date(key+'T12:00:00');dt.setDate(dt.getDate()+days);return dateKey(dt);};
+const unique=(xs)=>[...new Set(xs)];
+const validLab=(lab)=>lab&&typeof lab.id==='string'&&TEMPLATES[lab.templateId]&&/^\d{4}-\d{2}-\d{2}$/.test(lab.startDate)&&['active','completed','stopped'].includes(lab.status);
+function labs(d){return (Array.isArray(d?.profile?.labExperiments)?d.profile.labExperiments:[]).filter(validLab).slice(0,100);}
+function activeLab(d){return labs(d).find(x=>x.status==='active');}
+function measurements(data,start,end){
+ const events=(data?.events||[]).filter(e=>e&&e.at&&Number.isFinite(Number(e.bristol))&&Number(e.bristol)>=1&&Number(e.bristol)<=7);
+ const rows=events.filter(e=>{const date=dateKey(e.at);return date>=start&&date<=end;});
+ return {n:rows.length,hard:rows.filter(e=>Number(e.bristol)<=2).length,loose:rows.filter(e=>Number(e.bristol)>=6).length,pain:rows.filter(e=>Number(e.pain)>=2).length,days:new Set(rows.map(e=>dateKey(e.at))).size};
+}
+function warningInRecent(data){const start=shift(today(),-13);return (data?.events||[]).some(e=>e?.at&&dateKey(e.at)>=start&&dateKey(e.at)<=today()&&Array.isArray(e.redFlags)&&e.redFlags.length>0);}
+function recommendations(data){
+ const current=measurements(data,shift(today(),-29),today());
+ const lifestyle=jgLifestyleByDay(data);
+ const recentLife=[...lifestyle.entries()].filter(([k])=>k>=shift(today(),-29)&&k<=today());
+ const waterLow=recentLife.filter(([,v])=>v?.water===0).length;
+ const sleepLow=recentLife.filter(([,v])=>v?.sleep===0).length;
+ const ranked=[];
+ const add=(id,weight,why)=>ranked.push({id,weight,why});
+ if(current.n>=8&&current.hard>=3){
+   add('fiber',4,`최근 30일 배변 ${current.n}건 중 1~2형이 ${current.hard}건 기록됐어요. 식이섬유 섭취량 자체는 알 수 없어요.`);
+   add('routine',3,`최근 30일에 1~2형이 ${current.hard}건 기록됐어요. 규칙적인 배변 습관과의 관계는 아직 확인되지 않았어요.`);
+ }
+ if(waterLow>=3)add('water',5,`최근 30일 동안 수분 섭취를 '적음'으로 표시한 날짜가 ${waterLow}일 있었어요. 실제 수분량이나 원인은 알 수 없어요.`);
+ if(sleepLow>=4)add('sleep',2,`최근 30일 동안 수면을 '부족'으로 표시한 날짜가 ${sleepLow}일 있었어요. 배변에 미친 영향은 확인되지 않았어요.`);
+ if(current.n>=8&&current.loose>=3)add('meals',3,`최근 30일 배변 ${current.n}건 중 6~7형이 ${current.loose}건 있었어요. 특정 음식이 원인이라는 뜻은 아니에요.`);
+ if(ranked.length===0)add('meals',1,`최근 30일 배변 ${current.n}건을 확인했어요. 개인별 추천을 뒷받침할 뚜렷한 신호가 없어 기록 습관부터 제안해요.`);
+ // Keep alternatives available even without a personal signal. They are explicitly labelled general advice.
+ for(const id of ['water','fiber','routine','meals','sleep'])if(!ranked.some(x=>x.id===id))add(id,0,'이 행동을 특별히 추천할 개인 기록상 근거는 아직 확인되지 않았어요. 일반적인 선택지입니다.');
+ return ranked.sort((a,b)=>b.weight-a.weight);
+}
+function sourceBlock(id){const url=SOURCES[id],template=TEMPLATES[id];return url?`<a href="${E(url)}" target="_blank" rel="noopener noreferrer">근거 자료: ${E(template.src)} ↗</a>`:`<small class="jg110-evidence">${E(template.src)} · 의학적 효과 주장 없음</small>`;}
+function empty(msg){return `<div class="jg110-empty">${E(msg)}</div>`;}
+function stats(pre,post,after){
+ const pct=(k,x)=>x.n?`${Math.round(x[k]/x.n*100)}% (${x[k]}/${x.n}건)`:'확인 불가';
+ return `<div class="jg110-stats"><div class="jg110-stat"><span>실험 전 7일 · 배변 기록</span><strong>${pre.n}건</strong><small>1~2형 ${pct('hard',pre)}<br>불편 보통 이상 ${pct('pain',pre)}</small></div><div class="jg110-stat"><span>실험 기간 7일 · 배변 기록</span><strong>${post.n}건</strong><small>1~2형 ${pct('hard',post)}<br>불편 보통 이상 ${pct('pain',post)}</small></div></div>`;
+}
+function reviewHTML(data,lab){
+ const start=lab.startDate,end=shift(start,6);
+ const pre=measurements(data,shift(start,-7),shift(start,-1));
+ const post=measurements(data,start,end);
+ const coverage=`전 ${pre.days}일 · 실험 기간 ${post.days}일에 배변 기록이 있어요.`;
+ const enough=pre.n>=3&&post.n>=3;
+ let result;
+ if(lab.status==='stopped')result='실험을 중단했어요. 실천하지 않은 날은 실패가 아니에요.';
+ else if(today()<end)result='아직 7일이 지나지 않았어요. 중간 결과는 평가하지 않습니다.';
+ else if(!enough)result='실험 전후 각각 실제 배변 기록이 3건 이상 필요해요. 현재는 변화에 대한 판단을 보류합니다.';
+ else result='전후 기록의 횟수와 비율을 보여줍니다. 차이가 있더라도 실험 행동 때문이라고 확정할 수 없어요.';
+ return `${stats(pre,post,lab.status==='completed')}<p><strong>${E(result)}</strong> ${E(coverage)} 기록이 없는 날을 증상이 없는 날로 간주하지 않았어요.</p>`;
+}
+function drawRecommendations(data){
+ const root=$('jg110-recommendation-list');if(!root)return;
+ const active=activeLab(data),recs=recommendations(data),warning=warningInRecent(data);
+ root.innerHTML=(warning?'<div class="jg110-caution"><strong>주의 증상 기록이 최근 14일에 있어요.</strong> 생활 실험보다 보호자 또는 의료진과의 상담을 우선하세요. 이 앱은 질환 여부를 판단하지 않습니다.</div>':'')+`<div class="jg110-rec-grid">${recs.map((r,i)=>{const t=TEMPLATES[r.id];return `<article class="jg110-rec"><span class="jg110-chip">${r.weight>=2&&i===0?'기록을 참고한 우선 제안':r.weight>=2?'기록 기반 제안':r.weight===1?'기록 시작 제안':'일반적인 선택지'}</span><h3>${E(t.title)}</h3><p class="jg110-observation"><strong>내 기록:</strong> ${E(r.why)}</p><p><strong>해볼 일:</strong> ${E(t.action)}</p><p><strong>일반적 근거:</strong> ${E(t.basis)}</p>${sourceBlock(r.id)}<button type="button" class="jg110-primary" data-jg110-start="${r.id}" ${active||data.demo||warning?'disabled':''}>${active?'다른 실험 진행 중':data.demo?'데모 기록은 시작할 수 없어요':warning?'건강 상담 우선':'7일 실험 시작하기'}</button></article>`;}).join('')}</div>`;
+}
+function drawActive(data){
+ const root=$('jg110-active-content');if(!root)return;
+ const lab=activeLab(data);if(!lab){root.innerHTML=empty('진행 중인 실험이 없어요. 위에서 부담 없이 해볼 행동을 선택할 수 있어요.');return;}
+ const template=TEMPLATES[lab.templateId],end=shift(lab.startDate,6),done=unique(Array.isArray(lab.checkIns)?lab.checkIns:[]);
+ const week=['일','월','화','수','목','금','토'];
+ const days=Array.from({length:7},(_,i)=>{const day=shift(lab.startDate,i);const isDone=done.includes(day);const weekday=week[new Date(day+'T12:00:00').getDay()];return `<button class="jg110-day" type="button" data-jg110-check="${day}" aria-pressed="${isDone}" aria-label="${day} 실천 ${isDone?'기록됨':'기록하기'}" ${day>today()?'disabled':''}><b>${weekday} ${Number(day.slice(-2))}일</b><span>${isDone?'✓':'＋'}</span></button>`;}).join('');
+ const reached=today()>=end;
+ root.innerHTML=`<article class="jg110-active-card"><span class="jg110-chip">실험 기간 · ${E(lab.startDate)} ~ ${E(end)}</span><h3>${E(template.title)}</h3><p>${E(template.action)}</p><div class="jg110-dates" role="group" aria-label="실천한 날짜 선택">${days}</div><p>실천했다고 표시한 날 <strong>${done.length}일</strong>. 미표시 날짜는 실패나 미실천으로 단정하지 않아요.</p><div class="jg110-actions"><button type="button" class="jg110-primary" data-jg110-finish ${reached?'':'disabled'}>${reached?'실험 마치고 결과 보기':'7일 경과 후 결과 확인'}</button><button type="button" class="jg110-textbtn" data-jg110-stop>실험 중단하기</button></div>${reviewHTML(data,lab)}</article>`;
+}
+function drawHistory(data){
+ const root=$('jg110-history-content');if(!root)return;
+ const items=labs(data).filter(x=>x.status!=='active').slice().reverse();
+ root.innerHTML=items.length?items.map(x=>`<article class="jg110-history-entry"><span class="jg110-chip">${x.status==='completed'?'완료한 실험':'중단한 실험'} · ${E(x.startDate)}</span><h3>${E(TEMPLATES[x.templateId].title)}</h3><p>실천을 표시한 날 ${unique(Array.isArray(x.checkIns)?x.checkIns:[]).length}일. 진단이나 효과의 증명에 사용하지 않아요.</p>${reviewHTML(data,x)}</article>`).join(''):empty('아직 마친 실험이 없어요. 실험을 선택하고 7일이 지난 뒤 결과를 확인할 수 있어요.');
+}
+function draw(){const d=window.__jangilgiSecurityRead?.();if(!d){$('jg110-recommendation-list').innerHTML=empty('로그인한 뒤 개인 기록과 제안을 확인할 수 있어요.');$('jg110-active-content').innerHTML=empty('로그인이 필요해요.');$('jg110-history-content').innerHTML=empty('로그인이 필요해요.');return;}drawRecommendations(d);drawActive(d);drawHistory(d);}
+let saving=false;
+async function update(op){if(saving)return;const d=window.__jangilgiSecurityRead?.();if(!d){showToast('먼저 로그인해 주세요.');return;}if(d.demo){showToast('데모 기록은 실험 결과에 저장하지 않아요.');return;}if(!d.profile)d.profile={};d.profile.labExperiments=labs(d);try{saving=true;const changed=op(d.profile.labExperiments);if(!changed)return;const saved=await window.__jangilgiSecurityWrite(d);if(saved){refreshAllViews();draw();}else draw();}finally{saving=false;}}
+$('labView').addEventListener('click',async ev=>{
+ const start=ev.target.closest('[data-jg110-start]');if(start){const id=start.dataset.jg110Start;if(!TEMPLATES[id])return;await update(arr=>{if(arr.some(x=>x.status==='active')){showToast('진행 중인 실험을 먼저 완료하거나 중단해 주세요.');return false;}if(arr.length>=100){showToast('기록 한도(100개)에 도달했어요.');return false;}const data=window.__jangilgiSecurityRead();if(warningInRecent(data)){showToast('주의 증상 기록이 있어 상담 안내를 먼저 확인해 주세요.');return false;}arr.push({id:(crypto.randomUUID?.()||`lab-${Date.now()}`),templateId:id,startDate:today(),status:'active',checkIns:[]});return true;});return;}
+ const toggle=ev.target.closest('[data-jg110-check]');if(toggle){const day=toggle.dataset.jg110Check;await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur||day<cur.startDate||day>shift(cur.startDate,6)||day>today())return false;cur.checkIns=unique(Array.isArray(cur.checkIns)?cur.checkIns:[]);cur.checkIns=cur.checkIns.includes(day)?cur.checkIns.filter(d=>d!==day):[...cur.checkIns,day].sort();return true;});return;}
+ const finish=ev.target.closest('[data-jg110-finish]');if(finish){await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur||today()<shift(cur.startDate,6))return false;cur.status='completed';cur.closedAt=new Date().toISOString();return true;});return;}
+ const stop=ev.target.closest('[data-jg110-stop]');if(stop){if(!confirm('실험을 중단할까요? 지금까지의 기록은 결과 목록에 남습니다.'))return;await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur)return false;cur.status='stopped';cur.closedAt=new Date().toISOString();return true;});return;}
+});
+// Read-only refresh: no additional Firestore writes, no polling or auto-changes.
+const originalRefresh=refreshAllViews;refreshAllViews=function(){originalRefresh();draw();};
+const originalNavigate=navigate;navigate=function(view){originalNavigate(view);if(view==='lab'){const title=$('pageTitle');if(title)title.textContent='생활 습관 실험실';draw();}};
+// Existing initNav already binds data-view; do not register duplicate handlers.
+
+// v1.8+ app recreates its visible sidebar; attach the Lab to that actual navigation.
+const realSideNav=document.querySelector('.jg181-sidebar .jg181-nav');
+if(realSideNav&&!realSideNav.querySelector('[data-image-route="lab"]')){
+  const labButton=document.createElement('button');labButton.type='button';
+  labButton.className='jg181-navitem';labButton.dataset.imageRoute='lab';
+  labButton.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v7l-5.2 8.2A2 2 0 0 0 6.5 21h11a2 2 0 0 0 1.7-2.8L14 10V3"/><path d="M7.5 16h9"/></svg>생활 실험실';
+  const account=realSideNav.querySelector('[data-image-account]');
+  if(account)account.before(labButton);else realSideNav.appendChild(labButton);
+}
+// Make the next-step bridge visible inside the genuine personal-analysis view.
+const bridge=$('jg110-analysis-bridge'),analysisPage=$('analysisView');
+if(bridge&&analysisPage&&!analysisPage.contains(bridge))analysisPage.appendChild(bridge);
+window.__jangilgiLabDiagnostics={recommendations,measurements,labs};
+draw();
+})();
+</script>
 </body>
 </html>
