@@ -1115,7 +1115,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.9.5</strong><p id="releaseText">v1.9.4 이후 참고 자료 정리, 캘린더 월 이동, 홈 화면 정리를 반영했어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.9.6</strong><p id="releaseText">캘린더에서 날짜를 선택하면 식사·배변·생활 기록을 한곳에서 볼 수 있어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1586,53 +1586,99 @@ function renderWeek(data){
  document.querySelector('#demoBanner').style.display=data.demo?'flex':'none';
 }
 function renderMonthCalendar(){
- const grid=document.querySelector('#calendarGrid'),data=readData(),{real,old}=eventObservations(data);
- const base=window.__jgCalendarCursor instanceof Date&&!Number.isNaN(window.__jgCalendarCursor)
-  ? new Date(window.__jgCalendarCursor.getFullYear(),window.__jgCalendarCursor.getMonth(),1)
-  : new Date(new Date().getFullYear(),new Date().getMonth(),1);
- window.__jgCalendarCursor=base;
- const year=base.getFullYear(),month=base.getMonth();
- const first=(new Date(year,month,1).getDay()+6)%7,max=new Date(year,month+1,0).getDate();
- const monthLabel=document.querySelector('#weekView .month-label');
- if(monthLabel)monthLabel.textContent=`${year}. ${String(month+1).padStart(2,'0')}`;
- let html=Array.from({length:first},()=>'<span></span>').join('');
- for(let d=1;d<=max;d++){
-  const key=dateKey(new Date(year,month,d));
-  const recorded=real.some(e=>e.date===key)||old.some(r=>r.date===key);
-  const todayClass=key===today()?'today':'';
-  const stateClass=recorded?'recorded':'empty';
-  html+=`<button type="button" class="cal-day ${todayClass} ${stateClass}" data-month-date="${key}">${d}</button>`;
- }
- grid.innerHTML=html;
- const renderDate=key=>{
-  const items=real.filter(e=>e.date===key),legacy=old.find(r=>r.date===key),el=document.querySelector('#monthCalendarDetail');
-  el.innerHTML=items.length
-   ? `<strong>${key} · 배변 ${items.length}회</strong><span>형태: ${items.map(e=>`${e.bristol}형`).join(', ')}</span>`
-   : legacy
-    ? `<strong>${key} · 이전 일일 요약</strong><span>대표 형태 ${legacy.bristol}형 · 당시 입력한 횟수 ${legacy.frequency??'미기록'}회</span>`
-    : `<span>${key} · 기록이 없습니다.</span>`;
- };
- grid.onclick=e=>{
-  const button=e.target.closest('[data-month-date]');
-  if(button){
-   grid.querySelectorAll('button').forEach(b=>b.classList.toggle('selected',b===button));
-   renderDate(button.dataset.monthDate);
+  const grid=document.getElementById('calendarGrid');
+  const detail=document.getElementById('monthCalendarDetail');
+  if(!grid||!detail)return;
+  const data=readData();
+  const base=window.__jgCalendarCursor instanceof Date&&!Number.isNaN(window.__jgCalendarCursor.getTime())
+   ? new Date(window.__jgCalendarCursor.getFullYear(),window.__jgCalendarCursor.getMonth(),1)
+   : new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  window.__jgCalendarCursor=base;
+  const year=base.getFullYear(),month=base.getMonth();
+  const first=(new Date(year,month,1).getDay()+6)%7,max=new Date(year,month+1,0).getDate();
+  const monthLabel=document.querySelector('#weekView .month-label');
+  if(monthLabel)monthLabel.textContent=`${year}. ${String(month+1).padStart(2,'0')}`;
+  const dayRecords=key=>{
+    // Live bowel events, timed meals and daily lifestyle/food notes are independent records.
+    const bowel=(data.events||[]).filter(e=>e?.at&&Number.isFinite(Date.parse(e.at))&&dateKey(e.at)===key)
+      .sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+    const meals=(data.records||[]).filter(r=>r?.kind==='meal'&&r.at&&Number.isFinite(Date.parse(r.at))&&dateKey(r.at)===key)
+      .sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+    const daily=(data.records||[]).filter(r=>r?.date===key&&r.kind!=='meal'&&!r.aggregateOfEvents);
+    const food=daily.filter(r=>r.foodLogged===true||(Array.isArray(r.foods)&&r.foods.length>0));
+    const life=daily.filter(r=>r.lifestyle&&typeof r.lifestyle==='object'&&Object.values(r.lifestyle).some(v=>v!==null&&v!==undefined&&v!==''));
+    const legacy=daily.filter(r=>Number(r.bristol)>=1&&Number(r.bristol)<=7);
+    return {bowel,meals,food,life,legacy};
+  };
+  const timeOf=at=>at&&Number.isFinite(Date.parse(at))?formatTime(at):'시각 미기록';
+  const painLabel=n=>['없음','약간','보통','심함'][Number(n)]??'미기록';
+  const keyIsWithinMonth=key=>typeof key==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(key)&&key.startsWith(`${year}-${String(month+1).padStart(2,'0')}-`);
+  const summaries=new Map();
+  let html=Array.from({length:first},()=>'<span class="jg196-calendar-pad" aria-hidden="true"></span>').join('');
+  for(let d=1;d<=max;d++){
+    const key=dateKey(new Date(year,month,d)),items=dayRecords(key);
+    const bowelCount=items.bowel.length+items.legacy.length;
+    const mealCount=items.meals.length+items.food.length;
+    const lifeCount=items.life.length;
+    const marked=bowelCount+mealCount+lifeCount>0;
+    summaries.set(key,{bowelCount,mealCount,lifeCount,marked});
+    const parts=[bowelCount?`배변 ${bowelCount}건`:null,mealCount?`식사 ${mealCount}건`:null,lifeCount?`생활 ${lifeCount}건`:null].filter(Boolean);
+    const dots=`<span class="jg196-date-markers" aria-hidden="true">${bowelCount?'<i class="jg196-marker-bowel"></i>':''}${mealCount?'<i class="jg196-marker-meal"></i>':''}${lifeCount?'<i class="jg196-marker-life"></i>':''}</span>`;
+    html+=`<button type="button" class="cal-day ${key===today()?'today ':''}${marked?'recorded':'empty'}" data-month-date="${key}" aria-label="${key}${parts.length?', '+parts.join(', '):', 기록 없음'}"><span class="jg196-date-number">${d}</span>${dots}</button>`;
   }
- };
- const currentMonthPrefix=`${year}-${String(month+1).padStart(2,'0')}`;
- const preferred=today().startsWith(currentMonthPrefix)?today():((real.find(e=>e.date.startsWith(currentMonthPrefix))||old.find(r=>r.date.startsWith(currentMonthPrefix))||{}).date);
- const firstButton=preferred?grid.querySelector(`[data-month-date="${preferred}"]`):grid.querySelector('[data-month-date]');
- if(firstButton){firstButton.classList.add('selected');renderDate(firstButton.dataset.monthDate);}else{document.querySelector('#monthCalendarDetail').innerHTML='<span>이 달에는 기록이 없습니다.</span>';}
- const prevBtn=document.getElementById('calendarPrevMonth');
- const nextBtn=document.getElementById('calendarNextMonth');
- if(prevBtn&&!prevBtn.dataset.bound){
-  prevBtn.dataset.bound='true';
-  prevBtn.addEventListener('click',()=>{const c=window.__jgCalendarCursor||new Date();window.__jgCalendarCursor=new Date(c.getFullYear(),c.getMonth()-1,1);renderMonthCalendar();});
- }
- if(nextBtn&&!nextBtn.dataset.bound){
-  nextBtn.dataset.bound='true';
-  nextBtn.addEventListener('click',()=>{const c=window.__jgCalendarCursor||new Date();window.__jgCalendarCursor=new Date(c.getFullYear(),c.getMonth()+1,1);renderMonthCalendar();});
- }
+  grid.innerHTML=html;
+  const recordCard=(tag,body)=>`<div class="jg196-entry"><strong>${escapeHTML(tag)}</strong><p>${body}</p></div>`;
+  const empty=text=>`<div class="jg196-no-record">${escapeHTML(text)}</div>`;
+  const section=(label,icon,count,entries)=>`<section class="jg196-record-group" aria-label="${label} 기록"><div class="jg196-group-title"><span aria-hidden="true">${icon}</span><strong>${label}</strong><span class="jg196-count">${count}건</span></div><div class="jg196-record-items">${entries||empty('이날 기록이 없어요.')}</div></section>`;
+  const renderDate=key=>{
+    if(!keyIsWithinMonth(key))return;
+    window.__jgCalendarSelectedDate=key;
+    grid.querySelectorAll('[data-month-date]').forEach(b=>{
+      const selected=b.dataset.monthDate===key;
+      b.classList.toggle('selected',selected);
+      b.setAttribute('aria-pressed',String(selected));
+    });
+    const {bowel,meals,food,life,legacy}=dayRecords(key);
+    const bowelParts=bowel.map(e=>{
+      const bristol=Number(e.bristol);
+      const rows=[Number.isInteger(bristol)&&bristol>=1&&bristol<=7?`브리스톨 ${bristol}형`:'형태 미기록',`복부 불편 ${painLabel(e.pain)}`,`힘주기·잔변감 ${painLabel(e.strain)}`];
+      if(Array.isArray(e.redFlags)&&e.redFlags.length)rows.push(`<span class="jg196-caution">주의 증상: ${escapeHTML(e.redFlags.join(', '))}</span>`);
+      return recordCard(timeOf(e.at),rows.join(' · '));
+    });
+    legacy.forEach(r=>{
+      const rows=[`대표 형태 ${escapeHTML(r.bristol)}형`];
+      if(r.frequency!==null&&r.frequency!==undefined)rows.push(`당시 입력 횟수 ${escapeHTML(r.frequency)}회`);
+      if(r.pain!==null&&r.pain!==undefined)rows.push(`복부 불편 ${painLabel(r.pain)}`);
+      bowelParts.push(recordCard('이전 버전 일일 요약',rows.join(' · ')));
+    });
+    const mealParts=meals.map(r=>recordCard(timeOf(r.at),Array.isArray(r.foods)&&r.foods.length?escapeHTML(r.foods.join(', ')):'음식 선택 기록 없음'));
+    food.forEach(r=>mealParts.push(recordCard('날짜별 음식 기록',Array.isArray(r.foods)&&r.foods.length?escapeHTML(r.foods.join(', ')):'섭취 항목 없음')));
+    const lifeParts=life.map(r=>{
+      const values=Object.entries(r.lifestyle||{}).filter(([,v])=>v!==null&&v!==undefined&&v!=='').map(([k,v])=>{
+        const habit=HABIT_LABELS.find(h=>h.key===k);
+        return `${escapeHTML(habit?.label||k)}: ${escapeHTML(habit?.choices?.[Number(v)]??v)}`;
+      });
+      return recordCard(timeOf(r.lifestyleAt),values.join(' · '));
+    });
+    const total=bowelParts.length+mealParts.length+lifeParts.length;
+    detail.innerHTML=`<div class="jg196-selected-head"><div><small>SELECTED DATE</small><h3>${escapeHTML(key.replaceAll('-','.'))} 기록</h3></div><span>${total?`총 ${total}건`:'기록 없음'}</span></div><div class="jg196-detail-grid">${section('배변','🚽',bowelParts.length,bowelParts.join(''))}${section('식사','🍚',mealParts.length,mealParts.join(''))}${section('생활','☀️',lifeParts.length,lifeParts.join(''))}</div>`;
+  };
+  grid.onclick=e=>{const button=e.target.closest('[data-month-date]');if(button&&grid.contains(button))renderDate(button.dataset.monthDate);};
+  const monthPrefix=`${year}-${String(month+1).padStart(2,'0')}-`;
+  const selected=window.__jgCalendarSelectedDate;
+  const candidates=[...summaries.entries()].filter(([,s])=>s.marked).map(([key])=>key).sort().reverse();
+  const preferred=keyIsWithinMonth(selected)?selected:(today().startsWith(monthPrefix)?today():(candidates[0]||`${monthPrefix}01`));
+  renderDate(preferred);
+  const prevBtn=document.getElementById('calendarPrevMonth');
+  const nextBtn=document.getElementById('calendarNextMonth');
+  if(prevBtn&&!prevBtn.dataset.bound){
+    prevBtn.dataset.bound='true';
+    prevBtn.addEventListener('click',()=>{const c=window.__jgCalendarCursor||new Date();window.__jgCalendarCursor=new Date(c.getFullYear(),c.getMonth()-1,1);window.__jgCalendarSelectedDate=null;renderMonthCalendar();});
+  }
+  if(nextBtn&&!nextBtn.dataset.bound){
+    nextBtn.dataset.bound='true';
+    nextBtn.addEventListener('click',()=>{const c=window.__jgCalendarCursor||new Date();window.__jgCalendarCursor=new Date(c.getFullYear(),c.getMonth()+1,1);window.__jgCalendarSelectedDate=null;renderMonthCalendar();});
+  }
 }
 function renderFood(data){ renderPersonalAnalysis(data); }
 function renderReport(data){
@@ -1962,7 +2008,7 @@ function moveTour(diff){
  if(step.view)navigate(step.view);
  window.__jangilgiShowTarget?.(step.selector?document.querySelector(step.selector):null);
  const screen=document.getElementById('tourScreen');screen.hidden=false;screen.setAttribute('aria-hidden','false');
- const label=jangGuideMode==='update'?`v${JANGILGI_PREVIOUS_RELEASE} → v${JANGILGI_VERSION}`:(JANGILGI_HELP.find(x=>x.id===jangGuideCategory)?.label||'사용 안내');
+ const label=jangGuideMode==='update'?jangReleaseBaselineLabel():(JANGILGI_HELP.find(x=>x.id===jangGuideCategory)?.label||'사용 안내');
  document.getElementById('tourProgress').textContent=`${label} · ${activeTour+1} / ${tourSteps.length}`;
  document.getElementById('tourProgressFill').style.width=`${(activeTour+1)/tourSteps.length*100}%`;
  document.getElementById('tourTitle').textContent=step.title;
@@ -3444,11 +3490,11 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.9.5';
+const JANGILGI_VERSION='1.9.6';
 const JANGILGI_RELEASE_STEPS=[
- ['홈 레이아웃 정리','홈 하단 차트의 막대·날짜·숫자가 카드 밖으로 나가지 않도록 배치를 정리했어요.'],
- ['통계 화면 통일','배변·생활 7일·30일 차트를 식사 통계와 같은 막대 및 날짜 표시 형식으로 맞췄어요.'],
- ['캘린더와 참고 자료','달력의 이전 달·다음 달 버튼을 추가하고 참고 자료의 중복된 관찰·연령별 카드를 숨겼어요.']
+ ['날짜별 전체 기록','캘린더에서 날짜를 누르면 그날의 배변·식사·생활 기록을 함께 확인할 수 있어요.'],
+ ['캘린더만 집중','캘린더 옆의 불필요한 형태·증상 그래프를 제거했어요.'],
+ ['여러 기록과 과거 데이터','같은 날 여러 번 작성한 기록과 이전 형식의 날짜별 기록도 확인할 수 있어요.']
 ];
 
 /* old release steps (preserved in changelog below) */
@@ -3458,6 +3504,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.9.6',date:'2026-11-02',title:'캘린더에서 모든 기록 한눈에 보기',details:['캘린더를 중심으로 화면을 재구성하고 옆의 형태·증상 그래프 제거','날짜를 선택하면 해당 날짜의 배변·식사·생활 기록을 항목별로 모두 표시','하루 여러 건의 식사·배변 기록 및 기존 날짜별 음식·생활·배변 요약도 조회','캘린더 이전·다음 달 이동 및 기존 기록 저장·암호화 구조 유지']},
  {version:'1.9.5',date:'2026-11-01',title:'홈·통계 레이아웃 정리 및 캘린더 이동',details:['홈 마지막 통계 그래프의 높이·레이블 넘침 및 넓은 화면의 불필요한 스크롤 개선','배변·생활 7/30일 통계를 식사 통계와 같은 막대·날짜·기록 횟수 형식으로 통일','참고 자료의 중복 관찰·연령별 카드를 화면에서 제외하되 기존 데이터 갱신 함수 호환 유지','캘린더 이전·다음 달 탐색 버튼 추가','기록 저장·암호화·Firebase 규칙·JSON 구조 변경 없음']},
  {version:'1.9.4',date:'2026-11-01',title:'암호화 기록 저장 충돌 감지 개선',details:['저장 시 서버의 최신 암호화 상태를 직접 읽어 비교','암호화 데이터는 필드 값으로 비교해 객체 속성 순서에 따른 오탐 방지','같은 탭에서 중복 저장 요청 차단 및 다른 기기의 최신 기록 보호','저장 충돌과 저장 완료 여부 불확실 오류를 별도로 안내','기록·JSON·Firebase 규칙·분석 UI 구조 변경 없음']},
  {version:'1.9.2',date:'2026-11-01',title:'홈 생활 입력 바로가기·분석 안내 연결 개선',details:['홈 생활 기록 작성 카드에서 생활습관 입력창 직접 열기','날짜별 생활 기록 조회·추가·수정 버튼 동작은 그대로 유지','새 통합 분석 UI에 맞춘 업데이트 튜토리얼 안내 위치 정정','기존 분석·Firebase·JSON 저장 구조 변경 없음']},
@@ -3696,7 +3743,7 @@ function jangUpdateOverrides(override,food,tag,checked){
  const defaults=jangDefaultTags(food);if(JSON.stringify([...next].sort())===JSON.stringify([...defaults].sort()))delete override[food];else override[food]=next;
 }
 function jangDigestPanel(id,foods,overrides,mode){const root=document.getElementById(id);if(root)root.innerHTML=jangTagEditorHTML(foods,overrides,mode);}
-const JANGILGI_HELP=[{"id":"first","label":"처음 시작","title":"장일기 시작하기","steps":["내 정보에서 프로필을 확인하거나 이름·연령대 등을 수정할 수 있어요.","설정의 데이터 백업·복원에서 JSON 전체 기록을 보관할 수 있어요. 내려받은 파일은 암호화되어 있지 않아요.","홈의 식사·배변·생활 기록하기 카드에서 각각의 기록을 작성할 수 있어요.","홈의 최근 기록 목록에서 과거에 작성한 식사·배변·생활 기록으로 이동할 수 있어요.","상단 도움말 옆 업데이트 버튼에서 현재 버전의 변경 사항을 확인할 수 있어요."],"note":"일정 기간의 기록을 모아 관찰하는 용도이며, 기록만으로 특정 질병이나 원인을 확정할 수 없어요."},{"id":"bowel","label":"배변 기록","title":"배변 기록 작성하기","steps":["배변 기록 작성 화면에서 실제 배변 시각을 확인하고 필요하면 바꿔 주세요.","브리스톨 1~7형 중 기록할 때의 형태와 가장 가까운 항목을 골라 주세요.","복부 불편과 힘주기·잔변감을 각각 선택해요.","특이한 증상을 기록해야 한다면 주의 증상 영역을 펼쳐 해당 항목을 선택해요.","식사 기록 확인 상태를 함께 점검한 뒤 저장해요."],"note":"배변 형태만으로 질병이나 음식의 영향을 확정하지 않아요."},{"id":"food","label":"식사 기록","title":"식사 기록 작성하기","steps":["식사 기록 작성 화면에서 실제 섭취 날짜와 시각을 입력하고, 필요하면 현재 시간 버튼을 이용하세요.","음식 검색창에 음식명을 입력하면 일치하는 메뉴가 표시돼요.","한 끼에 함께 먹은 여러 음식을 선택할 수 있어요.","음식별 조리 특성은 필요할 때만 펼쳐 실제 조리 방법과 일치하도록 수정할 수 있어요.","선택한 음식과 시각을 확인하고 식사를 저장해요."],"note":"기록하지 않은 날짜를 음식을 먹지 않은 날짜로 단정하지 않아요."},{"id":"custom","label":"음식·조리 특성","title":"음식 선택과 조리 특성","steps":["검색창에서 음식 메뉴를 먼저 찾아 주세요.","검색 결과에서 실제로 먹은 메뉴를 선택해요.","선택된 음식 목록을 확인하고 잘못 선택한 메뉴는 제외해요.","실제 조리 방법이 다를 때만 음식별 조리 특성을 수정해요.","목록에 없는 음식은 메뉴 추가 요청 버튼을 눌러 문의할 수 있어요."],"note":"기본 조리 특성은 일반적인 분류이며 실제 식사의 정확한 구성은 사용자가 조정할 수 있어요."},{"id":"life","label":"생활 기록","title":"수분·수면·스트레스 기록","steps":["사이드바의 생활 기록 작성에서 해당 날짜의 생활 기록 화면을 열어요.","수분 섭취 상태를 기억하는 만큼 입력해요.","수면은 선택한 날짜 아침까지 잔 지난밤을 기준으로 기록해요. 과거 기록의 날짜 기준이 다를 수 있다는 점에 유의해 주세요.","스트레스 상태도 같은 날짜의 기록으로 남길 수 있어요.","저장된 생활 기록은 날짜를 바꿔 다시 확인하고 수정할 수 있어요."],"note":"채소·과일은 현재 생활 기록의 입력·분석 항목이 아니며, 수분·수면·스트레스가 핵심 세 항목이에요."},{"id":"edit","label":"기록 조회·수정","title":"지난 기록 다시 살펴보기","steps":["배변 기록 조회에서 날짜를 바꾸고 해당 날짜의 배변 기록을 살펴볼 수 있어요.","식사 기록 조회에서 특정 날짜의 음식과 기록 시각을 확인할 수 있어요.","생활 기록 조회에서도 원하는 날짜로 이동해 저장된 값을 수정할 수 있어요.","전체 데이터를 교체하는 JSON 가져오기는 일반 기록 수정과 다르므로 설정에서 주의하여 실행해요."],"note":"일반 조회·수정에서는 다른 날짜의 기록을 임의로 삭제하지 않아요."},{"id":"home","label":"홈·캘린더","title":"홈과 캘린더 살펴보기","steps":["홈의 세 카드에서 식사·배변·생활 기록을 각각 작성할 수 있어요.","바로 아래 최근 기록 목록에서 저장된 내용을 확인해요.","이번 주 기록 횟수는 월요일부터 일요일까지의 식사·배변·생활 기록 수를 합산해 보여줘요. 건강 점수가 아니에요.","캘린더에서 날짜별 배변 기록과 최근 30일의 형태 분포·증상 정보를 확인할 수 있어요.","홈 하단 문의하기를 누르면 개발자와 대화하는 소통 센터로 이동해요."],"note":"기록이 없는 날을 배변이 없었던 날로 해석하지 않아요."},{"id":"analysis","label":"개인별 분석","title":"음식과 생활습관 연관성","steps":["건강 인사이트에서 개인별 음식·배변 분석을 볼 수 있어요.","분석은 식사 시각과 배변 시각 사이의 시간차와 반복된 기록을 비교해요.","수분은 당일·전날·2일 전·최근 3일, 수면은 지난밤과 최근 2~3회, 스트레스는 당일·전날 기록을 배변 형태 및 불편 증상과 비교해요.","자료가 부족하거나 다른 생활습관의 차이가 함께 나타나면 결과 해석을 보류해요."],"note":"모든 결과는 관찰된 연관성일 뿐 인과관계나 진단을 확정하지 않아요."},{"id":"support","label":"문의·답변","title":"장일기 소통 센터","steps":["홈 하단 문의하기 카드나 사이드바의 문의 버튼을 눌러 소통 센터에 들어가요.","새 문의 작성에서는 분류, 제목, 내용을 작성한 뒤 직접 보내요.","내 문의함 목록에서 이전 대화를 선택해 답변을 확인할 수 있어요.","추가 질문은 같은 대화에서 이어서 보낼 수 있어요."],"note":"건강 기록은 문의와 함께 자동 전송되지 않으며, 비밀번호나 복구 키는 문의에 적지 마세요."},{"id":"account","label":"내 정보·보안","title":"프로필과 계정 보안","steps":["사이드바 내 정보에서 프로필 설정 화면을 열 수 있어요.","기존 이름·연령대·성별 입력에서 수정한 뒤 저장하세요.","계정과 보안 영역에서 이메일·비밀번호 변경, 암호화·복구 안내를 확인할 수 있어요.","설정에서는 데이터 백업을 내려받거나 전체 교체 복원을 신중하게 실행할 수 있어요."],"note":"JSON 다운로드 파일은 암호화되지 않으므로 안전한 곳에 보관하세요."},{"id":"version","label":"공지·업데이트","title":"새 공지와 변경 사항 확인","steps":["상단 종 모양을 누르면 관리자가 게시한 전체 공지를 확인할 수 있어요.","새 공지를 확인하면 종 아이콘의 미확인 공지 숫자가 줄어들어요.","도움말 옆 업데이트 버튼에는 확인하지 않은 새 버전이 있을 때 숫자 1이 표시돼요.","업데이트 확인의 변경 사항 보기를 누르면 직전 버전에서 실제 바뀐 기능만 안내해요."],"note":"업데이트 안내는 로그인이나 새로고침만으로 자동으로 뜨지 않아요."}];
+const JANGILGI_HELP=[{"id":"first","label":"처음 시작","title":"장일기 시작하기","steps":["내 정보에서 프로필을 확인하거나 이름·연령대 등을 수정할 수 있어요.","설정의 데이터 백업·복원에서 JSON 전체 기록을 보관할 수 있어요. 내려받은 파일은 암호화되어 있지 않아요.","홈의 식사·배변·생활 기록하기 카드에서 각각의 기록을 작성할 수 있어요.","홈의 최근 기록 목록에서 과거에 작성한 식사·배변·생활 기록으로 이동할 수 있어요.","상단 도움말 옆 업데이트 버튼에서 현재 버전의 변경 사항을 확인할 수 있어요."],"note":"일정 기간의 기록을 모아 관찰하는 용도이며, 기록만으로 특정 질병이나 원인을 확정할 수 없어요."},{"id":"bowel","label":"배변 기록","title":"배변 기록 작성하기","steps":["배변 기록 작성 화면에서 실제 배변 시각을 확인하고 필요하면 바꿔 주세요.","브리스톨 1~7형 중 기록할 때의 형태와 가장 가까운 항목을 골라 주세요.","복부 불편과 힘주기·잔변감을 각각 선택해요.","특이한 증상을 기록해야 한다면 주의 증상 영역을 펼쳐 해당 항목을 선택해요.","식사 기록 확인 상태를 함께 점검한 뒤 저장해요."],"note":"배변 형태만으로 질병이나 음식의 영향을 확정하지 않아요."},{"id":"food","label":"식사 기록","title":"식사 기록 작성하기","steps":["식사 기록 작성 화면에서 실제 섭취 날짜와 시각을 입력하고, 필요하면 현재 시간 버튼을 이용하세요.","음식 검색창에 음식명을 입력하면 일치하는 메뉴가 표시돼요.","한 끼에 함께 먹은 여러 음식을 선택할 수 있어요.","음식별 조리 특성은 필요할 때만 펼쳐 실제 조리 방법과 일치하도록 수정할 수 있어요.","선택한 음식과 시각을 확인하고 식사를 저장해요."],"note":"기록하지 않은 날짜를 음식을 먹지 않은 날짜로 단정하지 않아요."},{"id":"custom","label":"음식·조리 특성","title":"음식 선택과 조리 특성","steps":["검색창에서 음식 메뉴를 먼저 찾아 주세요.","검색 결과에서 실제로 먹은 메뉴를 선택해요.","선택된 음식 목록을 확인하고 잘못 선택한 메뉴는 제외해요.","실제 조리 방법이 다를 때만 음식별 조리 특성을 수정해요.","목록에 없는 음식은 메뉴 추가 요청 버튼을 눌러 문의할 수 있어요."],"note":"기본 조리 특성은 일반적인 분류이며 실제 식사의 정확한 구성은 사용자가 조정할 수 있어요."},{"id":"life","label":"생활 기록","title":"수분·수면·스트레스 기록","steps":["사이드바의 생활 기록 작성에서 해당 날짜의 생활 기록 화면을 열어요.","수분 섭취 상태를 기억하는 만큼 입력해요.","수면은 선택한 날짜 아침까지 잔 지난밤을 기준으로 기록해요. 과거 기록의 날짜 기준이 다를 수 있다는 점에 유의해 주세요.","스트레스 상태도 같은 날짜의 기록으로 남길 수 있어요.","저장된 생활 기록은 날짜를 바꿔 다시 확인하고 수정할 수 있어요."],"note":"채소·과일은 현재 생활 기록의 입력·분석 항목이 아니며, 수분·수면·스트레스가 핵심 세 항목이에요."},{"id":"edit","label":"기록 조회·수정","title":"지난 기록 다시 살펴보기","steps":["배변 기록 조회에서 날짜를 바꾸고 해당 날짜의 배변 기록을 살펴볼 수 있어요.","식사 기록 조회에서 특정 날짜의 음식과 기록 시각을 확인할 수 있어요.","생활 기록 조회에서도 원하는 날짜로 이동해 저장된 값을 수정할 수 있어요.","전체 데이터를 교체하는 JSON 가져오기는 일반 기록 수정과 다르므로 설정에서 주의하여 실행해요."],"note":"일반 조회·수정에서는 다른 날짜의 기록을 임의로 삭제하지 않아요."},{"id":"home","label":"홈·캘린더","title":"홈과 캘린더 살펴보기","steps":["홈의 세 카드에서 식사·배변·생활 기록을 각각 작성할 수 있어요.","바로 아래 최근 기록 목록에서 저장된 내용을 확인해요.","이번 주 기록 횟수는 월요일부터 일요일까지의 식사·배변·생활 기록 수를 합산해 보여줘요. 건강 점수가 아니에요.","캘린더에서 날짜를 선택하면 그날의 배변·식사·생활 기록을 모두 볼 수 있어요.","홈 하단 문의하기를 누르면 개발자와 대화하는 소통 센터로 이동해요."],"note":"기록이 없는 날을 배변이 없었던 날로 해석하지 않아요."},{"id":"analysis","label":"개인별 분석","title":"음식과 생활습관 연관성","steps":["건강 인사이트에서 개인별 음식·배변 분석을 볼 수 있어요.","분석은 식사 시각과 배변 시각 사이의 시간차와 반복된 기록을 비교해요.","수분은 당일·전날·2일 전·최근 3일, 수면은 지난밤과 최근 2~3회, 스트레스는 당일·전날 기록을 배변 형태 및 불편 증상과 비교해요.","자료가 부족하거나 다른 생활습관의 차이가 함께 나타나면 결과 해석을 보류해요."],"note":"모든 결과는 관찰된 연관성일 뿐 인과관계나 진단을 확정하지 않아요."},{"id":"support","label":"문의·답변","title":"장일기 소통 센터","steps":["홈 하단 문의하기 카드나 사이드바의 문의 버튼을 눌러 소통 센터에 들어가요.","새 문의 작성에서는 분류, 제목, 내용을 작성한 뒤 직접 보내요.","내 문의함 목록에서 이전 대화를 선택해 답변을 확인할 수 있어요.","추가 질문은 같은 대화에서 이어서 보낼 수 있어요."],"note":"건강 기록은 문의와 함께 자동 전송되지 않으며, 비밀번호나 복구 키는 문의에 적지 마세요."},{"id":"account","label":"내 정보·보안","title":"프로필과 계정 보안","steps":["사이드바 내 정보에서 프로필 설정 화면을 열 수 있어요.","기존 이름·연령대·성별 입력에서 수정한 뒤 저장하세요.","계정과 보안 영역에서 이메일·비밀번호 변경, 암호화·복구 안내를 확인할 수 있어요.","설정에서는 데이터 백업을 내려받거나 전체 교체 복원을 신중하게 실행할 수 있어요."],"note":"JSON 다운로드 파일은 암호화되지 않으므로 안전한 곳에 보관하세요."},{"id":"version","label":"공지·업데이트","title":"새 공지와 변경 사항 확인","steps":["상단 종 모양을 누르면 관리자가 게시한 전체 공지를 확인할 수 있어요.","새 공지를 확인하면 종 아이콘의 미확인 공지 숫자가 줄어들어요.","도움말 옆 업데이트 버튼에는 확인하지 않은 새 버전이 있을 때 숫자 1이 표시돼요.","업데이트 확인의 변경 사항 보기를 누르면 GitHub 배포 기준 버전 이후 변경 내용을 안내해요."],"note":"업데이트 안내는 로그인이나 새로고침만으로 자동으로 뜨지 않아요."}];
 const JANGILGI_BUILTIN_HELP=structuredClone(JANGILGI_HELP);
 
 function jangFoodGroups(data){
@@ -3826,23 +3873,42 @@ function initDetailedHelp(){
  document.getElementById('helpModalDone').onclick=()=>closeHelp();
  document.getElementById('launchGuidedTour').onclick=()=>startHelpCategory(jangCurrentHelp);
 }
-// 업데이트 안내는 항상 바로 전 릴리스와 현재 릴리스의 차이만 설명합니다.
-// 과거 버전 내역은 관리자가 편집할 수 있지만, 안내에 자동으로 누적하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.9.4';
-// The update tour describes only the v1.9.4 → v1.9.5 changes.
-// 과거 릴리스 배열 인덱스를 재사용하지 않는다.
+// 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
+// GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
+const JANGILGI_PREVIOUS_RELEASE='1.9.5';
 const JANG_CURRENT_UPDATE_STEPS=[
- {view:'dashboard',selector:'.jg181-week-panel',title:'홈 통계 막대 정리',text:'홈 하단 통계의 막대·날짜·기록 수를 카드 안에서 선명하게 볼 수 있어요.'},
- {view:'bowelStats',selector:'#bowelStatsView .jg194-stats',title:'7일·30일 배변 통계',text:'식사 통계와 같은 모양으로 날짜별 기록 건수를 확인할 수 있어요.'},
- {view:'week',selector:'#weekView .calendar-card',title:'캘린더 이전·다음 달',text:'달력 오른쪽의 화살표로 지난달과 다음 달의 기록을 확인해요.'},
- {view:'reference',selector:'#referenceView .report-references',title:'간결한 참고 자료',text:'중복된 카드 대신 실제 참고 자료를 중심으로 정리했어요.'}
+ {view:'week',selector:'#weekView .calendar-card',title:'기록 통합 캘린더',text:'선택한 날짜의 배변·식사·생활 기록을 한곳에서 확인할 수 있어요.'},
+ {view:'week',selector:'#weekView .jg196-detail-grid',title:'날짜별 상세 기록',text:'하루에 여러 번 작성한 식사·배변 기록과 생활 기록을 종류별로 확인해요.'},
+ {view:'week',selector:'#weekView .jg184-calendar-layout',title:'캘린더 중심 화면',text:'불필요한 형태·증상 그래프를 없애고 달력과 날짜별 기록에 집중했어요.'}
 ];
+function jangReleaseBaselineLabel(){
+ return /^\d+\.\d+\.\d+$/.test(JANGILGI_PREVIOUS_RELEASE)
+  ?`v${JANGILGI_PREVIOUS_RELEASE} → v${JANGILGI_VERSION}`:`v${JANGILGI_VERSION} 업데이트`;
+}
+function jangUpdateSteps(){
+ const base=JANGILGI_PREVIOUS_RELEASE;
+ if(!/^\d+\.\d+\.\d+$/.test(base))return JANG_CURRENT_UPDATE_STEPS.map(x=>({...x}));
+ // 배포 기준선과 최신 버전 사이의 모든 릴리스 변경점을 누적합니다.
+ const releases=JANGILGI_CHANGELOG
+  .filter(x=>jangCompareVersion(x.version,base)>0&&jangCompareVersion(x.version,JANGILGI_VERSION)<=0)
+  .sort((a,b)=>jangCompareVersion(a.version,b.version));
+ if(!releases.length)return JANG_CURRENT_UPDATE_STEPS.map(x=>({...x}));
+ const steps=[];
+ for(const release of releases){
+  if(release.version===JANGILGI_VERSION){
+   steps.push(...JANG_CURRENT_UPDATE_STEPS.map(x=>({...x})));
+  }else{
+   steps.push({view:'dashboard',selector:null,title:`v${release.version} · ${release.title}`,text:(release.details||[]).join(' · ')});
+  }
+ }
+ return steps;
+}
 
 function showUpdateNotes(){
  const data=window.__jangilgiSecurityRead?.();
  if(!data){showToast('먼저 로그인해 주세요.');return;}
  document.getElementById('updateNotesModal').hidden=true;
- jangBeginGuide(JANG_CURRENT_UPDATE_STEPS.map(step=>({...step})),'update','version');
+ jangBeginGuide(jangUpdateSteps(),'update','version');
 }
 // 로그인·새로고침·버전 확인만으로 업데이트 튜토리얼을 띄우지 않습니다.
 window.__jangilgiMaybeShowUpdate=()=>false;
@@ -3868,7 +3934,7 @@ function jangRefreshAnnouncement(){
  }
  const current=JANGILGI_CHANGELOG.find(entry=>entry.version===JANGILGI_VERSION);
  headline.textContent=`📢 장일기 v${JANGILGI_VERSION} 안내`;
- desc.textContent=current?`v${JANGILGI_PREVIOUS_RELEASE} → v${JANGILGI_VERSION}에서 달라진 ${JANG_CURRENT_UPDATE_STEPS.length}가지 기능을 「변경 사항 보기」에서 확인할 수 있어요. 자동으로 열리지는 않아요.`:'현재 버전의 변경 사항을 확인할 수 있어요.';
+ desc.textContent=current?`${jangReleaseBaselineLabel()}에서 변경된 ${jangUpdateSteps().length}개 안내 항목을 「변경 사항 보기」에서 확인할 수 있어요. 자동으로 열리지는 않아요.`:'현재 버전의 변경 사항을 확인할 수 있어요.';
  card.classList.remove('release-new');
 }
 async function jangCheckRemoteVersion(){
@@ -5568,6 +5634,38 @@ body[data-bg="dots"] .view.active-view,body[data-bg="dots"] .main-content{backgr
 @media(max-width:1050px){.sidebar.open{left:0!important;transform:translateX(0)!important;visibility:visible!important;pointer-events:auto!important;z-index:1100!important}}
 @media(max-width:850px){#weekView>.jg184-calendar-layout,#profileView .jg184-profile-grid{grid-template-columns:1fr}}
 @media(max-width:600px){#weekView .calendar-grid .cal-day{font-size:12px!important;min-height:38px!important;height:41px!important}#weekView .calendar-head,#weekView .calendar-grid{gap:3px!important}.jg181-week-chart{height:100px!important}}
+/* Calendar-only date archive: show all three diary types, no adjacent graphs. */
+#weekView>.jg184-calendar-layout{display:block!important;grid-template-columns:none!important;width:100%!important;max-width:1050px!important;margin:0 auto!important}
+#weekView .jg184-report-column{display:none!important}
+#weekView .calendar-card{width:100%!important;max-width:100%!important;max-height:none!important;overflow:visible!important;padding:clamp(17px,2vw,26px)!important}
+#weekView .calendar-head,#weekView .calendar-grid{gap:clamp(4px,.7vw,9px)!important}
+#weekView .calendar-grid .cal-day{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;min-height:55px!important;height:clamp(55px,6vw,76px)!important;transition:background .15s,border-color .15s}
+#weekView .calendar-grid .cal-day:focus-visible{outline:3px solid var(--jg184-accent,#327e50)!important;outline-offset:2px!important}
+#weekView .calendar-grid .cal-day .jg196-date-number{font-size:clamp(13px,1.3vw,16px);font-weight:750;line-height:1.2}
+#weekView .jg196-date-markers{display:flex;align-items:center;gap:4px;min-height:7px}
+#weekView .jg196-date-markers i{display:block;width:7px;height:7px;border-radius:50%;flex:none}
+#weekView .jg196-marker-bowel{background:#419b66}
+#weekView .jg196-marker-meal{background:#ddaf55}
+#weekView .jg196-marker-life{background:#659fd1}
+#weekView .calendar-grid .cal-day.selected .jg196-date-markers i{box-shadow:0 0 0 1px #fff8}
+#weekView .month-calendar-detail{display:block!important;margin-top:22px!important;padding:20px 0 0!important;background:transparent!important;border:0!important;border-top:1px solid var(--line)!important;min-height:0!important;font-size:13px!important;line-height:1.55!important}
+#weekView .jg196-selected-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+#weekView .jg196-selected-head small{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em}
+#weekView .jg196-selected-head h3{font-size:clamp(17px,1.8vw,22px);color:var(--ink);margin:3px 0 0}
+#weekView .jg196-selected-head>span{font-size:12px;color:var(--jg184-accent,#327e50);background:var(--jg184-tint,#e8f3e6);padding:6px 10px;border-radius:999px;white-space:nowrap}
+#weekView .jg196-detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%}
+#weekView .jg196-record-group{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:13px;padding:13px}
+#weekView .jg196-group-title{display:flex;align-items:center;gap:7px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:13px}
+#weekView .jg196-group-title>strong{color:var(--ink);font-size:13px}
+#weekView .jg196-count{margin-left:auto;color:var(--muted);font-size:11px}
+#weekView .jg196-record-items{display:grid;gap:7px;max-height:260px;overflow:auto;padding-top:9px;scrollbar-width:thin}
+#weekView .jg196-entry{padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow-wrap:anywhere}
+#weekView .jg196-entry>strong{display:block;color:var(--deep);font-size:12px!important}
+#weekView .jg196-entry>p{margin:5px 0 0;font-size:12px;color:var(--muted);line-height:1.65}
+#weekView .jg196-caution{color:#ac594b;font-weight:750}
+#weekView .jg196-no-record{font-size:12px;color:var(--muted);padding:10px 3px}
+#weekView .calendar-legend{display:none!important}
+@media(max-width:740px){#weekView .jg196-detail-grid{grid-template-columns:1fr}#weekView .jg196-record-items{max-height:none;overflow:visible}#weekView .calendar-grid .cal-day{min-height:42px!important;height:clamp(42px,9.6vw,60px)!important}#weekView .jg196-date-markers i{width:5px;height:5px}#weekView .month-calendar-detail{padding-top:16px!important}}
 </style>
 <script id="jg184-screen-coordinator">
 (function(){'use strict';
@@ -5575,22 +5673,17 @@ body[data-bg="dots"] .view.active-view,body[data-bg="dots"] .main-content{backgr
  const side=document.querySelector('.jg181-sidebar');
  const week=$('weekView');const report=$('reportView');const main=document.querySelector('.main-content');
  if(!side||!week||!report||!main)return;
- // Keep original report input elements and calculations, but put their result cards in calendar.
+ // Only the calendar is visible on this screen. Keep report calculation nodes in reportView.
  const calendar=week.querySelector('.calendar-card');
- const dist=report.querySelector('.distribution-card');
- const symptoms=report.querySelector('.symptom-report');
  const layout=document.createElement('section');layout.className='jg184-calendar-layout';
- const column=document.createElement('div');column.className='jg184-report-column';
  if(calendar)layout.appendChild(calendar);
- if(dist)column.appendChild(dist);
- if(symptoms)column.appendChild(symptoms);
- layout.appendChild(column);week.appendChild(layout);
- const heading=week.querySelector('.jg-subpage-head h1');if(heading)heading.textContent='캘린더 · 배변 형태와 증상';
- const description=week.querySelector(':scope > .foodlife-help');if(description)description.textContent='달력에서 배변 기록 날짜를 확인하고, 오른쪽에서 최근 30일의 배변 형태와 함께 기록한 증상을 비교해요.';
+ week.appendChild(layout);
+ const heading=week.querySelector('.jg-subpage-head h1');if(heading)heading.textContent='캘린더';
+ const description=week.querySelector(':scope > .foodlife-help');if(description)description.textContent='날짜를 선택하면 그날 저장한 식사·배변·생활 기록을 모두 확인할 수 있어요.';
  // One clear calendar route. Other old screens are retained for safe parsing by legacy renderers.
  side.querySelector('[data-image-route="report"]')?.remove();
  side.querySelector('.jg181-navitem[data-image-route="week"]')?.setAttribute('data-image-route','calendar');
- side.querySelector('[data-image-route="calendar"]')?.setAttribute('title','날짜별 배변 기록과 형태·증상 통계');
+ side.querySelector('[data-image-route="calendar"]')?.setAttribute('title','날짜별 식사·배변·생활 기록');
  side.querySelectorAll('.jg181-subnav button').forEach(b=>{if(b.dataset.imageRoute==='week')b.remove();});
  // Reuse original profile edit fields and save handlers, do not clone them.
  const profile=document.createElement('section');profile.id='profileView';profile.className='view';profile.setAttribute('aria-label','내 정보 및 프로필');
@@ -5624,7 +5717,7 @@ body[data-bg="dots"] .view.active-view,body[data-bg="dots"] .main-content{backgr
   const actual=(view==='report'||view==='calendar')?'week':view;
   oldNavigate(actual);
   const newlyOpened=$(actual+'View');if(newlyOpened)newlyOpened.scrollTop=0;main.scrollTop=0;
-  if(view==='report'||view==='calendar'||view==='week')$('pageTitle').textContent='캘린더 · 형태·증상';
+  if(view==='report'||view==='calendar'||view==='week')$('pageTitle').textContent='캘린더';
   else if(view==='profile')$('pageTitle').textContent='내 정보';
   if(actual==='profile'){
    const d=typeof readData==='function'?readData():null;
