@@ -1116,7 +1116,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.0</strong><p id="releaseText">개인 기록을 바탕으로 작은 생활 실험을 선택하고 전후 변화를 확인할 수 있어요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.1</strong><p id="releaseText">개인별 분석 결과가 검증 기준을 통과한 경우에만 맞춤 실험을 제안하고, 일반 선택지와 구분해요. 자동으로 열리지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1200,7 +1200,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <p class="foodlife-disclaimer">음식·생활 통계는 건강 점수나 질병 진단이 아니에요. 기록이 없으면 '섭취하지 않음'으로 간주하지 않습니다.</p>
 </section>
 <section class="view" id="labView" aria-label="생활 습관 실험실">
-  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
+  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.1</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
   <div class="jg110-main">
     <div class="jg110-intro" role="note"><span aria-hidden="true">🧪</span><div><strong>건강 점수가 아닌, 작은 관찰 실험</strong><p>참여는 선택이에요. 기록하지 않은 날을 실패로 취급하지 않으며, 실천 후 변화가 관찰되더라도 원인으로 단정하지 않아요.</p></div></div>
     <div id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">DISCOVER</span><h2>내 기록에서 시작하기</h2></div><small>개인 관찰과 일반 권고를 구분해서 표시</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></div>
@@ -1469,7 +1469,7 @@ function validateJangJsonBackup(payload){
  if(payload.profile.labExperiments!=null){
    if(!Array.isArray(payload.profile.labExperiments)||payload.profile.labExperiments.length>100)throw Error('실험실 기록의 목록 형식이 올바르지 않아요.');
    for(const item of payload.profile.labExperiments){
-    if(!isJsonObject(item)||typeof item.id!=='string'||item.id.length>120||!['water','fiber','routine','meals','sleep'].includes(item.templateId)||!isValidDate(item.startDate)||!['active','completed','stopped'].includes(item.status)||!Array.isArray(item.checkIns)||item.checkIns.length>7||item.checkIns.some(x=>!isValidDate(x)))throw Error('실험실 기록의 항목 형식이 올바르지 않아요.');
+    if(!isJsonObject(item)||typeof item.id!=='string'||item.id.length>120||!['water','fiber','routine','meals','sleep','stress'].includes(item.templateId)||!isValidDate(item.startDate)||!['active','completed','stopped'].includes(item.status)||!Array.isArray(item.checkIns)||item.checkIns.length>7||item.checkIns.some(x=>!isValidDate(x)))throw Error('실험실 기록의 항목 형식이 올바르지 않아요.');
    }
   }
   if(payload.history.some(x=>!isJsonObject(x)))throw Error('변경 이력 항목의 형식이 올바르지 않아요.');
@@ -3509,11 +3509,11 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.10.0';
+const JANGILGI_VERSION='1.10.1';
 const JANGILGI_RELEASE_STEPS=[
-  ['생활 습관 실험실','개인 기록을 확인한 다음, 근거 기반의 작은 행동 실험을 선택할 수 있어요.'],
-  ['부담 없는 실천 기록','7일 중 선택한 날에만 실천 여부를 기록합니다. 점수·연속 출석·벌점은 없어요.'],
-  ['전후 기록 비교','실천 전후의 실제 배변 기록을 비교하고, 표본이 부족하면 결론을 보류합니다.']
+  ['개인 분석과 실험실 연결','수분·수면·스트레스의 시간순 검증을 통과한 대표 분석을 개인 맞춤 실험 제안과 연결해요.'],
+  ['식사 탐색 결과 구분','식사 특성과 배변의 후속 반복 결과는 별도 탐색 제안으로 표시하며 분석의 한계를 함께 안내해요.'],
+  ['근거 없는 개인화 방지','분석 기준을 통과하지 못하면 일반 선택지만 안내하고, 식이섬유·배변 습관을 실제 측정한 것처럼 표시하지 않아요.']
 ];
 
 /* old release steps (preserved in changelog below) */
@@ -3523,6 +3523,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.10.1',date:'2026-11-02',title:'실험실 개인 분석 연동 및 근거 수준 구분',details:['기존 수분·수면·스트레스 분석 엔진의 검증 통과 대표 결과를 실험 추천에 연결','식사 특성의 후속 반복 탐색 결과는 검증 수준을 별도로 표시하고 기록 실험에 연결','뚜렷한 개인 분석이 없으면 개인 맞춤 추천을 만들지 않고 일반 선택지만 표시','기록하지 않은 식이섬유·배변 습관을 맞춤형 추천의 개인 근거로 사용하지 않음','실험 체크·완료·암호화 저장·기존 기록의 구조 및 안전 안내 유지']},
   {version:'1.10.0',date:'2026-11-02',title:'생활 습관 실험실 및 근거 기반 실천 제안',details:['개인 배변·생활 기록을 바탕으로 실험 주제의 우선순위를 제안하고 관찰 근거를 표시','일반적 생활 습관 실천 지침과 의학 자료 출처를 제시하되 개인의 원인·효과로 단정하지 않음','자발적인 7일 실천 기록을 암호화된 프로필에 저장하고 실천 전후의 실제 배변 기록을 비교','기록이 부족한 경우 판단을 보류하고 필요 시 진료 안내를 우선','점수·경험치·연속 출석 보상 없이 선택적 참여, 기존 기록·Firebase 구조 호환 유지']},
  {version:'1.9.6',date:'2026-11-02',title:'캘린더에서 모든 기록 한눈에 보기',details:['캘린더를 중심으로 화면을 재구성하고 옆의 형태·증상 그래프 제거','날짜를 선택하면 해당 날짜의 배변·식사·생활 기록을 항목별로 모두 표시','하루 여러 건의 식사·배변 기록 및 기존 날짜별 음식·생활·배변 요약도 조회','캘린더 이전·다음 달 이동 및 기존 기록 저장·암호화 구조 유지']},
  {version:'1.9.5',date:'2026-11-01',title:'홈·통계 레이아웃 정리 및 캘린더 이동',details:['홈 마지막 통계 그래프의 높이·레이블 넘침 및 넓은 화면의 불필요한 스크롤 개선','배변·생활 7/30일 통계를 식사 통계와 같은 막대·날짜·기록 횟수 형식으로 통일','참고 자료의 중복 관찰·연령별 카드를 화면에서 제외하되 기존 데이터 갱신 함수 호환 유지','캘린더 이전·다음 달 탐색 버튼 추가','기록 저장·암호화·Firebase 규칙·JSON 구조 변경 없음']},
@@ -3895,7 +3896,7 @@ function initDetailedHelp(){
 }
 // 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
 // GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.9.6';
+const JANGILGI_PREVIOUS_RELEASE='1.10.0';
 const JANG_CURRENT_UPDATE_STEPS=[
   {view:'lab',selector:'#jg110-lab-recommendations',title:'근거 기반 생활 습관 제안',text:'실제 기록의 경향을 참고해 작은 실천을 추천하지만 원인을 단정하지 않아요.'},
   {view:'lab',selector:'#jg110-lab-active',title:'7일간의 작은 실험',text:'원하는 날짜에 실천 여부를 기록해요. 연속 출석이나 점수는 없어요.'},
@@ -6391,6 +6392,15 @@ const oldNavigate=navigate;navigate=function(v){oldNavigate(v);if(v==='bowelStat
 #labView .jg110-rec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 #labView .jg110-rec{border:1px solid #dfe9df;border-radius:14px;background:#fbfdfb;padding:17px;display:grid;gap:9px;min-width:0}
 #labView .jg110-rec:first-child{border-color:#a4cdad;background:#f4faf3}
+#labView .jg110-rec.jg110-general-card{background:#fbfdfb;border-color:#dfe9df}
+#labView .jg110-rec.jg110-personal-card{background:#f4faf3;border-color:#a4cdad}
+#labView .jg110-subsection{display:grid;gap:11px}
+#labView .jg110-subsection>h3{margin:12px 0 0;color:var(--deep);font-size:15px}
+#labView .jg110-subsection>h3 small{font-size:11px;color:#6b8874;margin-left:8px}
+#labView .jg110-general-note,#labView .jg110-analysis-period{font-size:12px;line-height:1.65;color:#66796d;margin:0}
+#labView .jg110-analysis-period button,#labView .jg110-analysis-link{color:#246c44;text-decoration:underline;font-size:12px;font-weight:650;justify-self:start;padding:2px 0;text-align:left}
+#labView .jg110-rec .jg110-analysis-link{font-size:11px}
+
 #labView .jg110-chip{color:#388256;font-size:10px;font-weight:800;letter-spacing:.025em}
 #labView .jg110-rec h3{color:#254a36;font-size:16px;margin:0;line-height:1.45}
 #labView .jg110-rec p,#labView .jg110-rec small{color:#647b6c;font-size:12px;line-height:1.7;margin:0;overflow-wrap:anywhere}
@@ -6432,7 +6442,7 @@ const oldNavigate=navigate;navigate=function(v){oldNavigate(v);if(v==='bowelStat
 @media(max-width:760px){#labView .jg110-rec-grid,#labView .jg110-stats{grid-template-columns:1fr}#labView .jg110-section{padding:14px}#labView .jg110-main{gap:12px}#labView .jg110-dates{gap:4px}#labView .jg110-day{min-height:63px;padding:6px 1px}#labView .jg110-day b{font-size:10px}#labView .jg110-day span{font-size:11px}#analysisView .jg110-analysis-bridge{align-items:stretch;flex-direction:column}#analysisView .jg110-analysis-bridge button{align-self:flex-start}}
 </style>
 <script id="jangilgi-v110-habit-lab-script">
-/* v1.10.0 optional Habit Lab. Existing encrypted diary/profile remains the storage layer. */
+/* v1.10.1 analysis-connected Habit Lab. Existing encrypted diary/profile remains the storage layer. */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
@@ -6442,14 +6452,16 @@ const SOURCES={
   fiber:'https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/eating-diet-nutrition',
   routine:'https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/treatment',
   meals:'https://www.niddk.nih.gov/health-information/digestive-diseases/bowel-control-problems-fecal-incontinence/eating-diet-nutrition',
-  sleep:null
+  sleep:null,
+  stress:null
 };
 const TEMPLATES={
   water:{title:'물 마시는 습관 돌아보기',action:'식사 전후와 쉬는 시간에 평소의 수분 섭취를 챙겼는지 확인하기',basis:'충분한 수분 섭취는 일반적인 소화 건강 관리에 도움이 될 수 있어요. 일률적인 섭취량을 강제하지 않아요.',src:'NIDDK · 어린이·청소년 변비와 식이 관리'},
   fiber:{title:'식사의 다양성 살펴보기',action:'평소 식사에 과일·채소·통곡물 등을 자연스럽게 포함할 기회 찾아보기',basis:'식이섬유를 충분히 섭취하는 것은 변비 관리에 도움이 될 수 있어요. 특정 음식을 금지하거나 식사량을 제한하지 않아요.',src:'NIDDK · 어린이·청소년 변비와 식이 관리'},
   routine:{title:'편안한 배변 시간 만들기',action:'식사 후 여유가 있을 때 화장실에 편안히 앉아보고, 신호를 억지로 참지 않기',basis:'규칙적이고 편안한 화장실 습관은 일반적인 배변 관리에 도움이 될 수 있어요. 무리하게 힘주거나 배변을 강요하지 않아요.',src:'NIDDK · 변비의 생활 관리'},
   meals:{title:'식사·불편 기록 연결해 보기',action:'먹은 음식과 시각, 이후 불편이 있다면 함께 기록해 경향 살펴보기',basis:'식사 일기는 증상과 식사의 관계를 탐색하는 도구예요. 한두 번의 기록만으로 음식을 금지하지 않아요.',src:'NIDDK · 식사 기록의 활용'},
-  sleep:{title:'수면 기록을 규칙적으로 남기기',action:'기상 후 지난밤의 수면 상태를 기록하고, 가능한 일정한 수면 습관을 살펴보기',basis:'일상 기록을 더 정확히 관찰하기 위한 실험이에요. 수면과 배변 사이의 원인 관계를 단정하지 않아요.',src:'장일기 · 기록 방법 제안'}
+  sleep:{title:'수면 기록을 규칙적으로 남기기',action:'기상 후 지난밤의 수면 상태를 기록하고, 가능한 일정한 수면 습관을 살펴보기',basis:'일상 기록을 더 정확히 관찰하기 위한 실험이에요. 수면과 배변 사이의 원인 관계를 단정하지 않아요.',src:'장일기 · 기록 방법 제안'},
+  stress:{title:'긴장과 불편감 관찰하기',action:'하루 중 잠깐 쉬는 시간을 가지며 스트레스 상태를 기록하고 불편감의 변화를 살펴보기',basis:'휴식과 스트레스 기록을 통해 개인의 일상 패턴을 관찰하는 선택적 실험이에요. 스트레스가 증상의 원인이라고 단정하지 않아요.',src:'장일기 · 기록 방법 제안'}
 };
 const shift=(key,days)=>{const dt=new Date(key+'T12:00:00');dt.setDate(dt.getDate()+days);return dateKey(dt);};
 const unique=(xs)=>[...new Set(xs)];
@@ -6462,25 +6474,46 @@ function measurements(data,start,end){
  return {n:rows.length,hard:rows.filter(e=>Number(e.bristol)<=2).length,loose:rows.filter(e=>Number(e.bristol)>=6).length,pain:rows.filter(e=>Number(e.pain)>=2).length,days:new Set(rows.map(e=>dateKey(e.at))).size};
 }
 function warningInRecent(data){const start=shift(today(),-13);return (data?.events||[]).some(e=>e?.at&&dateKey(e.at)>=start&&dateKey(e.at)<=today()&&Array.isArray(e.redFlags)&&e.redFlags.length>0);}
+/* v1.10.1: reuse the SAME qualified results shown in Personal Analysis.
+ * No extra threshold pretending to be clinical evidence, no synthetic inferences.
+ * Only a validated adverse-outcome increase becomes a personal habit suggestion.
+ * The older independent count-based rule ranking is deliberately removed.
+ */
+const PERSONAL_OUTCOMES=new Set(['hard','loose','pain','strain']);
 function recommendations(data){
- const current=measurements(data,shift(today(),-29),today());
- const lifestyle=jgLifestyleByDay(data);
- const recentLife=[...lifestyle.entries()].filter(([k])=>k>=shift(today(),-29)&&k<=today());
- const waterLow=recentLife.filter(([,v])=>v?.water===0).length;
- const sleepLow=recentLife.filter(([,v])=>v?.sleep===0).length;
- const ranked=[];
- const add=(id,weight,why)=>ranked.push({id,weight,why});
- if(current.n>=8&&current.hard>=3){
-   add('fiber',4,`최근 30일 배변 ${current.n}건 중 1~2형이 ${current.hard}건 기록됐어요. 식이섬유 섭취량 자체는 알 수 없어요.`);
-   add('routine',3,`최근 30일에 1~2형이 ${current.hard}건 기록됐어요. 규칙적인 배변 습관과의 관계는 아직 확인되지 않았어요.`);
+ const days=selectedAnalysisDays(data),personal=[];
+ const lifestyleResults=analyzeLifestylePatterns(data,days);
+ const byHabit={water:'water',sleep:'sleep',stress:'stress'};
+ for(const h of lifestyleResults){
+   const o=h.primary; // The exact representative result displayed by Personal Analysis.
+   if(!o||!o.qualified||!PERSONAL_OUTCOMES.has(o.id)||!(o.diff>0))continue;
+   const id=byHabit[h.key];if(!TEMPLATES[id])continue;
+   const p=o.panel;if(!p)continue;
+   const first=`${p.exposedLabel} ${o.exposedCases}/${o.exposedCount}일 (${Math.round(o.pA*100)}%)`;
+   const second=`${p.otherLabel} ${o.otherCases}/${o.otherCount}일 (${Math.round(o.pB*100)}%)`;
+   const why=`개인 분석의 대표 결과: ${h.label} · ${p.label} · ${o.label}. ${first}, ${second}. 차이 ${(o.diff*100).toFixed(1)}%p.`;
+   personal.push({id,kind:'confirmed',weight:10,why,analysisDays:days,
+     evidence:'개인별 분석의 대표 선정 기준 통과: 과거·이후 기록의 방향 재확인, Holm 다중검정 보정 및 다른 기록과의 겹침 검토. 연관성은 원인·효과를 증명하지 않아요.',
+     rank:o.q??1,order:Math.abs(o.diff),habit:h.key});
  }
- if(waterLow>=3)add('water',5,`최근 30일 동안 수분 섭취를 '적음'으로 표시한 날짜가 ${waterLow}일 있었어요. 실제 수분량이나 원인은 알 수 없어요.`);
- if(sleepLow>=4)add('sleep',2,`최근 30일 동안 수면을 '부족'으로 표시한 날짜가 ${sleepLow}일 있었어요. 배변에 미친 영향은 확인되지 않았어요.`);
- if(current.n>=8&&current.loose>=3)add('meals',3,`최근 30일 배변 ${current.n}건 중 6~7형이 ${current.loose}건 있었어요. 특정 음식이 원인이라는 뜻은 아니에요.`);
- if(ranked.length===0)add('meals',1,`최근 30일 배변 ${current.n}건을 확인했어요. 개인별 추천을 뒷받침할 뚜렷한 신호가 없어 기록 습관부터 제안해요.`);
- // Keep alternatives available even without a personal signal. They are explicitly labelled general advice.
- for(const id of ['water','fiber','routine','meals','sleep'])if(!ranked.some(x=>x.id===id))add(id,0,'이 행동을 특별히 추천할 개인 기록상 근거는 아직 확인되지 않았어요. 일반적인 선택지입니다.');
- return ranked.sort((a,b)=>b.weight-a.weight);
+ // The food explorer uses a different (weaker) screening process.
+ // Keep its suggestions separate from statistically selected lifestyle evidence.
+ const food=analyzeFoodPatterns(data,days);
+ const tested=(food.qualified||[]).find(r=>r&&r.full?.diff>0&&['1~2형','6~7형','복통·불편 보통 이상'].includes(r.outcome));
+ if(tested){
+   personal.push({id:'meals',kind:'exploratory',weight:5,analysisDays:days,
+     why:`식사 특성 '${tested.food}'을 기록한 뒤 ${tested.lag} 구간의 ${tested.outcome} 기록이 다른 경우보다 많았고, 이후 기록에서도 같은 방향이 관찰됐어요. (${tested.full.exposedCases}/${tested.full.exposed}건 대 ${tested.full.otherCases}/${tested.full.other}건)`,
+     evidence:'식사 분석의 탐색·후속 반복 기준을 통과했지만, 생활습관 대표 분석과 같은 다중검정 보정을 거친 확정 결과는 아니에요. 특정 음식을 끊으라는 의미가 아닙니다.',
+     rank:1,order:tested.score||0});
+ }
+ personal.sort((a,b)=>b.weight-a.weight||a.rank-b.rank||b.order-a.order);
+ const used=new Set(personal.map(x=>x.id));
+ const general=['water','fiber','routine','meals','sleep','stress'].filter(id=>!used.has(id)).map(id=>({
+   id,kind:'general',weight:0,analysisDays:days,
+   why:'현재 선택한 분석 기간에서 이 행동을 우선 제안할 만한 개인별 검증 결과는 확인되지 않았어요.',
+   evidence:'일반적인 기록·생활 습관 선택지이며, 개인 분석으로 효과가 입증된 것은 아니에요.'
+ }));
+ return [...personal,...general];
 }
 function sourceBlock(id){const url=SOURCES[id],template=TEMPLATES[id];return url?`<a href="${E(url)}" target="_blank" rel="noopener noreferrer">근거 자료: ${E(template.src)} ↗</a>`:`<small class="jg110-evidence">${E(template.src)} · 의학적 효과 주장 없음</small>`;}
 function empty(msg){return `<div class="jg110-empty">${E(msg)}</div>`;}
@@ -6504,7 +6537,23 @@ function reviewHTML(data,lab){
 function drawRecommendations(data){
  const root=$('jg110-recommendation-list');if(!root)return;
  const active=activeLab(data),recs=recommendations(data),warning=warningInRecent(data);
- root.innerHTML=(warning?'<div class="jg110-caution"><strong>주의 증상 기록이 최근 14일에 있어요.</strong> 생활 실험보다 보호자 또는 의료진과의 상담을 우선하세요. 이 앱은 질환 여부를 판단하지 않습니다.</div>':'')+`<div class="jg110-rec-grid">${recs.map((r,i)=>{const t=TEMPLATES[r.id];return `<article class="jg110-rec"><span class="jg110-chip">${r.weight>=2&&i===0?'기록을 참고한 우선 제안':r.weight>=2?'기록 기반 제안':r.weight===1?'기록 시작 제안':'일반적인 선택지'}</span><h3>${E(t.title)}</h3><p class="jg110-observation"><strong>내 기록:</strong> ${E(r.why)}</p><p><strong>해볼 일:</strong> ${E(t.action)}</p><p><strong>일반적 근거:</strong> ${E(t.basis)}</p>${sourceBlock(r.id)}<button type="button" class="jg110-primary" data-jg110-start="${r.id}" ${active||data.demo||warning?'disabled':''}>${active?'다른 실험 진행 중':data.demo?'데모 기록은 시작할 수 없어요':warning?'건강 상담 우선':'7일 실험 시작하기'}</button></article>`;}).join('')}</div>`;
+ const period=selectedAnalysisDays(data);
+ const personal=recs.filter(r=>r.kind!=='general');
+ const general=recs.filter(r=>r.kind==='general');
+ const card=(r,i)=>{const t=TEMPLATES[r.id];
+   const badge=r.kind==='confirmed'?'시간순 검증 통과 · 개인 분석':r.kind==='exploratory'?'탐색적 연관성 · 개인 분석':'일반적인 선택지';
+   return `<article class="jg110-rec ${r.kind==='general'?'jg110-general-card':'jg110-personal-card'}">
+   <span class="jg110-chip">${badge}</span><h3>${E(t.title)}</h3>
+   <p class="jg110-observation"><strong>${r.kind==='general'?'분석 상태:':'내 기록에서 확인한 점:'}</strong> ${E(r.why)}</p>
+   ${r.kind!=='general'?`<p><strong>이렇게 해석해요:</strong> ${E(r.evidence)}</p><button class="jg110-analysis-link" type="button" data-jg110-open-analysis>개인별 분석 원문 확인 →</button>`:''}
+   <p><strong>해볼 일:</strong> ${E(t.action)}</p><p><strong>일반적인 안내:</strong> ${E(t.basis)}</p>
+   ${sourceBlock(r.id)}<button type="button" class="jg110-primary" data-jg110-start="${r.id}" ${active||data.demo||warning?'disabled':''}>${active?'다른 실험 진행 중':data.demo?'데모 기록은 시작할 수 없어요':warning?'건강 상담 우선':'7일 실험 시작하기'}</button></article>`;
+ };
+ root.innerHTML=(warning?'<div class="jg110-caution"><strong>주의 증상 기록이 최근 14일에 있어요.</strong> 생활 실험보다 보호자 또는 의료진과의 상담을 우선하세요. 이 앱은 질환 여부를 판단하지 않습니다.</div>':'')+
+ `<p class="jg110-analysis-period">개인별 분석과 동일한 최근 <strong>${period}일</strong>을 기준으로 확인했어요. 분석 기간은 <button type="button" data-jg110-open-analysis>개인별 분석</button>에서 변경할 수 있어요.</p>`+
+ `<div class="jg110-subsection"><h3>내 분석에서 연결된 실험 <small>${personal.length}개</small></h3>`+
+ (personal.length?`<div class="jg110-rec-grid">${personal.map(card).join('')}</div>`:empty('현재 분석의 대표 기준을 통과하고 실천 행동과 연결할 수 있는 개인별 패턴이 없어요. 이 상황에서 맞춤형 추천을 임의로 만들지 않습니다. 아래의 일반 선택지는 자유롭게 고를 수 있어요.'))+'</div>'+
+ `<div class="jg110-subsection"><h3>일반적인 실험 선택지 <small>${general.length}개</small></h3><p class="jg110-general-note">개인 분석으로 우선순위가 입증된 항목이 아닙니다. 식이섬유 섭취량·배변 시간 등의 직접 측정 기록이 없으므로 개인화된 발견처럼 표시하지 않아요.</p><div class="jg110-rec-grid">${general.map(card).join('')}</div></div>`;
 }
 function drawActive(data){
  const root=$('jg110-active-content');if(!root)return;
@@ -6524,6 +6573,7 @@ function draw(){const d=window.__jangilgiSecurityRead?.();if(!d){$('jg110-recomm
 let saving=false;
 async function update(op){if(saving)return;const d=window.__jangilgiSecurityRead?.();if(!d){showToast('먼저 로그인해 주세요.');return;}if(d.demo){showToast('데모 기록은 실험 결과에 저장하지 않아요.');return;}if(!d.profile)d.profile={};d.profile.labExperiments=labs(d);try{saving=true;const changed=op(d.profile.labExperiments);if(!changed)return;const saved=await window.__jangilgiSecurityWrite(d);if(saved){refreshAllViews();draw();}else draw();}finally{saving=false;}}
 $('labView').addEventListener('click',async ev=>{
+ if(ev.target.closest('[data-jg110-open-analysis]')){navigate('analysis');return;}
  const start=ev.target.closest('[data-jg110-start]');if(start){const id=start.dataset.jg110Start;if(!TEMPLATES[id])return;await update(arr=>{if(arr.some(x=>x.status==='active')){showToast('진행 중인 실험을 먼저 완료하거나 중단해 주세요.');return false;}if(arr.length>=100){showToast('기록 한도(100개)에 도달했어요.');return false;}const data=window.__jangilgiSecurityRead();if(warningInRecent(data)){showToast('주의 증상 기록이 있어 상담 안내를 먼저 확인해 주세요.');return false;}arr.push({id:(crypto.randomUUID?.()||`lab-${Date.now()}`),templateId:id,startDate:today(),status:'active',checkIns:[]});return true;});return;}
  const toggle=ev.target.closest('[data-jg110-check]');if(toggle){const day=toggle.dataset.jg110Check;await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur||day<cur.startDate||day>shift(cur.startDate,6)||day>today())return false;cur.checkIns=unique(Array.isArray(cur.checkIns)?cur.checkIns:[]);cur.checkIns=cur.checkIns.includes(day)?cur.checkIns.filter(d=>d!==day):[...cur.checkIns,day].sort();return true;});return;}
  const finish=ev.target.closest('[data-jg110-finish]');if(finish){await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur||today()<shift(cur.startDate,6))return false;cur.status='completed';cur.closedAt=new Date().toISOString();return true;});return;}
