@@ -2335,7 +2335,137 @@ function renderPersonalAnalysis(data){
  }).join('');
  panel.innerHTML=`<div class="analysis-card jg189-food-analysis"><div class="jg189-section-heading"><span class="jg189-section-icon">${jg189Art('meal')}</span><div><span class="jg189-eyebrow">MEAL × BOWEL</span><h2>식사와 배변, 그래프로 보기</h2><p>섭취 후 0~72시간의 관찰 비율을 비교해요.</p></div></div><p class="analysis-subtle">최근 ${days}일 기준 · 소화 관련 특성 × 시간차 4구간 × 배변·불편 유형 5종 탐색. 확정된 의학 기준이 아닌 개발용 관찰 조건입니다.</p>${all||`<div class="jg189-empty-result">${jg189Art('empty')}<div><strong>아직 표시할 식사 비교 결과가 없어요</strong><p>식사 시각과 확인된 배변 기록이 쌓이면 여기에 비교 막대그래프가 표시돼요.</p></div></div>`}<p class="analysis-subtle">음식 미기록 구간은 미섭취로 처리하지 않아요. 하루 단위의 과거 음식 기록 ${legacy}건은 식사 시각을 알 수 없어 이 분석에서 제외돼요.</p><p class="analysis-subtle">초기 통계 조건: 학습 부분 섭취·비섭취 각 5건 이상, 관찰 차이 20%p 이상. 후속 부분에서 각 3건 이상이고 같은 방향이어야 '재현' 표기. 수치는 의학적 기준이 아닙니다.</p></div>`;
  home.querySelector('.food-footnote').textContent='통계적 연관성은 질환이나 원인 음식 판정이 아니며 식사 제한을 권하지 않아요.';
+ jg1813RenderUnified({data,days,results,qualified,prepared,change:ch,findings:analyzeLifestylePatterns(data,days)});
 }
+
+/* v1.8.13: one analysis UI for meals, water, sleep, stress and recent trends.
+ * This is a presentation adapter. All existing analysis/statistical algorithms remain unchanged.
+ */
+const JG1813_NAV=[
+ {key:'meal',name:'식사',art:'meal',caption:'식사 후 0~72시간'},
+ {key:'water',name:'수분',art:'water',caption:'당일과 이전 3일'},
+ {key:'sleep',name:'수면',art:'sleep',caption:'지난밤과 최근 3회'},
+ {key:'stress',name:'스트레스',art:'stress',caption:'당일과 전날'},
+ {key:'recent',name:'최근 변화',art:'calendar',caption:'최근 30일과 이전 60일'}
+];
+const JG1813_PREFERRED={water:'yesterday',sleep:'last-night',stress:'today'};
+const JG1813_OTHER_LABEL={water:'보통·많음',sleep:'보통·충분',stress:'낮음·보통'};
+const JG1813_RECENT_METRICS=[{key:'hard',label:'1~2형 변'},{key:'formed',label:'3~4형 변'},{key:'loose',label:'6~7형 변'},{key:'pain',label:'복통·불편'}];
+const jg1813State={tab:'water',window:{},foodIndex:0,recentMetric:'hard'};
+function jg1813Num(n,d){return d?Math.round(100*n/d):0;}
+function jg1813Esc(t){return escapeHTML(String(t??''));}
+function jg1813SafeBar(n,d,caption,kind){
+ const rate=jg1813Num(n,d);
+ return `<div class="jg1813-bar-line"><div class="jg1813-bar-info"><strong>${jg1813Esc(caption)}</strong><span>${n}/${d} ${d===1?'기록':'기록'} · ${rate}%</span></div><div class="jg1813-bar-track" role="img" aria-label="${jg1813Esc(caption)}: ${d}건 중 ${n}건, ${rate}%"><div class="jg1813-bar-progress jg1813-bar-${kind}" style="width:${Math.min(100,Math.max(0,rate))}%"></div></div></div>`;
+}
+function jg1813LifestyleModel(h){
+ const preferred=JG1813_PREFERRED[h.key], selected=jg1813State.window[h.key]||preferred;
+ const p=h.panels.find(x=>x.id===selected)||h.panels[0];
+ const subject={water:'수분 섭취',sleep:'수면',stress:'스트레스'}[h.key];
+ const timeNotes={water:'수분 섭취와 배변 형태를 날짜별로 비교해요.',sleep:'선택 날짜의 아침까지 잔 지난밤 수면을 기준으로 해요.',stress:'스트레스와 배변을 비교해요. 당일 기록은 선후관계를 알 수 없어요.'};
+ const outcome=jg1812FocusOutcome(p,h.key);
+ const readable=jg1811Readable(p,h.key);
+ const other=JG1813_OTHER_LABEL[h.key];
+ const obs=outcome?{
+  a:outcome.exposedCases,b:outcome.otherCases,na:p.exposedCount,nb:p.otherCount,
+  aLabel:p.exposedLabel,bLabel:other,what:jg1811Outcome(outcome.label),
+  lead:readable.lead,
+  explain:`${p.exposedLabel} ${p.exposedCount}일 중 ${outcome.exposedCases}일, ${other} ${p.otherCount}일 중 ${outcome.otherCases}일에 기록됐어요.`
+ }:{a:0,b:0,na:p.exposedCount,nb:p.otherCount,aLabel:p.exposedLabel,bLabel:other,lead:readable.lead,explain:readable.explain};
+ const list=h.panels.map(x=>({id:x.id,label:x.label}));
+ const rest=p.enough?p.outcomes.filter(o=>o.label!==outcome?.label):[];
+ return {title:`${subject}와 배변`,hint:timeNotes[h.key],options:list,selected:p.id,obs,ready:p.enough,
+  countLabel:'날짜',note:p.note,extra:rest.map(o=>({label:o.label,a:o.exposedCases,b:o.otherCases,na:p.exposedCount,nb:p.otherCount})),
+  method:'생활습관을 기록한 날 중 배변 기록이 있는 날짜만 비교해요. 하루 여러 번 배변했어도 한 날짜로 계산해요.',
+  sufficient:'각 조건에 비교 가능한 날짜가 최소 8일씩 있어야 그래프를 보여 줘요. 이 기준은 의학적 유의성을 의미하지 않아요.'};
+}
+function jg1813FoodModel(payload){
+ const results=payload.results;
+ const selected=Math.min(Math.max(jg1813State.foodIndex,0),Math.max(results.length-1,0));
+ const r=results[selected];
+ const covered=payload.prepared.lagRows;
+ if(!r){
+  return {title:'식사와 배변',hint:'식사 시각을 기록한 뒤 배변을 확인한 자료만 비교해요.',
+   options:[],selected:'',ready:false,countLabel:'회',obs:{lead:'아직 식사와 배변의 뚜렷한 비교 결과가 없어요.',explain:'음식 종류, 섭취 시각, 배변 기록이 더 쌓이면 관찰된 차이를 이곳에서 비교할 수 있어요.',na:0,nb:0},
+   note:`현재 비교 가능한 배변 기록(0~6 / 6~24 / 24~48 / 48~72시간): ${covered.map(x=>x.rows.length).join(' · ')}건.`,
+   method:'식사 시각이 없는 과거 음식 기록은 시간차 분석에 사용하지 않아요. 음식 미기록은 미섭취가 아니에요.',
+   sufficient:'식사 분석은 시간순 학습·후속 기록에서 차이를 비교하는 탐색 분석이며, 기준 충족이 의학적 입증을 뜻하지 않아요.'};
+ }
+ const pa=jg1813Num(r.full.exposedCases,r.full.exposed),pb=jg1813Num(r.full.otherCases,r.full.other);
+ const outcome=jg1811Outcome(r.outcome),diff=Math.abs(pa-pb);
+ const lead=diff<10?`${r.food} 섭취 여부에 따른 ${outcome} 기록은 비슷했어요.`:pa>pb?`${r.food}을 먹고 ${r.lag} 뒤에는 ${outcome}이 더 자주 나타났어요.`:`${r.food}을 먹고 ${r.lag} 뒤에는 ${outcome}이 덜 자주 나타났어요.`;
+ const quality=r.confound?'다른 식사·생활 차이 때문에 구분이 어려워요.':r.verified?'후속 기록에서도 같은 방향이 관찰됐어요.':'후속 기록에서는 아직 같은 경향이 확인되지 않았어요.';
+ return {title:'식사와 배변',hint:'기록된 식사 특성별로 0~72시간 뒤의 배변을 탐색해요.',
+  options:results.map((x,i)=>({id:String(i),label:`${x.food} · ${x.lag}`})),selected:String(selected),ready:true,
+  obs:{a:r.full.exposedCases,b:r.full.otherCases,na:r.full.exposed,nb:r.full.other,aLabel:`${r.food} 섭취`,bLabel:'비교 기록',lead,
+    explain:`${r.food} 섭취 후 ${r.full.exposed}회 중 ${r.full.exposedCases}회, 비교 기록 ${r.full.other}회 중 ${r.full.otherCases}회였어요.`},
+  countLabel:'회',note:`${r.outcome} · 섭취 ${r.lag} 후. ${quality}`,
+  extra:[],method:'같은 배변 기록을 섭취 후 시간 구간별로 비교하되, 음식 미기록 구간을 미섭취로 처리하지 않아요.',
+  sufficient:'식사 분석은 여러 음식·시간 구간·증상 조합을 탐색하므로 우연한 차이가 나타날 수 있어요.'};
+}
+function jg1813RecentModel(payload){
+ const {recent:a,before:b}=payload.change;
+ const kind=jg1813State.recentMetric;
+ const metric=JG1813_RECENT_METRICS.find(x=>x.key===kind)||JG1813_RECENT_METRICS[0];
+ const n=a[metric.key]||0,m=b[metric.key]||0;
+ const pa=jg1813Num(n,a.count),pb=jg1813Num(m,b.count),delta=Math.abs(pa-pb);
+ const enough=a.count>=8&&b.count>=12;
+ const lead=!enough?'아직 두 기간의 배변 기록이 부족해서 비교하기 어려워요.':delta<10?`최근 30일과 이전 60일의 ${metric.label} 기록 비율은 비슷해요.`:pa>pb?`최근 30일에는 ${metric.label}이 이전보다 더 자주 기록됐어요.`:`최근 30일에는 ${metric.label}이 이전보다 덜 자주 기록됐어요.`;
+ return {title:'내 기록의 최근 변화',hint:'최근 30일과 그 이전 60일에 기록된 배변 형태를 비교해요.',
+  options:JG1813_RECENT_METRICS.map(x=>({id:x.key,label:x.label})),selected:metric.key,ready:enough,
+  obs:{a:n,b:m,na:a.count,nb:b.count,aLabel:'최근 30일',bLabel:'이전 60일',lead,
+    explain:`최근 30일은 ${a.count}회 중 ${n}회, 이전 60일은 ${b.count}회 중 ${m}회 기록됐어요.`},
+  countLabel:'회',note:'기록하지 않은 날을 배변하지 않은 날로 가정하지 않아요.',
+  extra:[],method:'최근 두 기간의 실제 배변 기록 건수와 형태 비율을 비교해요.',
+  sufficient:'최근 30일 8건 이상, 이전 60일 12건 이상일 때 그래프를 표시해요. 의학적 기준은 아니에요.'};
+}
+function jg1813Model(payload,key){
+ if(key==='meal')return jg1813FoodModel(payload);
+ if(key==='recent')return jg1813RecentModel(payload);
+ return jg1813LifestyleModel(payload.findings.find(h=>h.key===key));
+}
+function jg1813RenderUnified(payload){
+ const pane=document.getElementById('foodlifeAnalysisPane');if(!pane)return;
+ let root=pane.querySelector('#jg1813-unified');
+ if(!root){root=document.createElement('article');root.id='jg1813-unified';root.className='jg1813-unified';pane.prepend(root);}
+ const tabs=JG1813_NAV,key=tabs.some(x=>x.key===jg1813State.tab)?jg1813State.tab:'meal';
+ const model=jg1813Model(payload,key);
+ const previews=tabs.map(t=>{
+  const m=jg1813Model(payload,t.key);
+  return {key:t.key,name:t.name,art:t.art,lead:m.obs.lead,ready:m.ready};
+ });
+ const o=model.obs;
+ const sufficient=model.ready;
+ root.innerHTML=`
+ <header class="jg1813-intro"><div><span class="jg1813-overline">MY RECORDS · PERSONAL INSIGHTS</span><h2>내 기록 분석</h2><p>식사와 생활습관, 배변의 관계를 <strong>같은 기준의 화면</strong>에서 쉽게 비교해요.</p></div><span class="jg1813-range">최근 ${payload.days}일 기준</span></header>
+ <section class="jg1813-overview" aria-label="분석 한눈에 보기"><div class="jg1813-block-head"><h3>한눈에 보기</h3><small>궁금한 항목을 선택해 보세요</small></div>
+ <div class="jg1813-glance">${previews.map(p=>`<button type="button" class="jg1813-glance-item ${p.key===key?'active':''}" data-jg1813-tab="${p.key}" aria-pressed="${p.key===key}"><span class="jg1813-glance-art">${jg189Art(p.art)}</span><span class="jg1813-glance-copy"><strong>${jg1813Esc(p.name)}</strong><small>${jg1813Esc(p.lead)}</small></span></button>`).join('')}</div></section>
+ <section class="jg1813-main" id="jg1813-main"><div class="jg1813-block-head"><h3>자세히 보기</h3><small>모든 항목은 동일한 방식으로 보여요</small></div>
+ <div class="jg1813-tabs" role="tablist" aria-label="분석 항목 선택">${tabs.map(t=>`<button role="tab" type="button" id="jg1813-tab-${t.key}" data-jg1813-tab="${t.key}" aria-selected="${t.key===key}" aria-controls="jg1813-panel" class="${t.key===key?'active':''}">${jg1813Esc(t.name)}</button>`).join('')}</div>
+ <div class="jg1813-content" id="jg1813-panel" role="tabpanel" aria-labelledby="jg1813-tab-${key}">
+  <div class="jg1813-detail-title"><span class="jg1813-detail-art">${jg189Art(tabs.find(t=>t.key===key).art)}</span><div><span class="jg1813-overline">${jg1813Esc(tabs.find(t=>t.key===key).caption)}</span><h3>${jg1813Esc(model.title)}</h3><p>${jg1813Esc(model.hint)}</p></div></div>
+  <div class="jg1813-picker"><span class="jg1813-label">${key==='meal'?'관찰된 식사 조합':key==='recent'?'배변 형태':'비교할 날짜 범위'}</span><div class="jg1813-options" role="group" aria-label="비교 조건 선택">${model.options.length?model.options.map(t=>`<button type="button" data-jg1813-choice="${jg1813Esc(t.id)}" aria-pressed="${String(t.id)===String(model.selected)}" class="${String(t.id)===String(model.selected)?'active':''}">${jg1813Esc(t.label)}</button>`).join(''):'<span class="jg1813-no-options">아직 비교할 항목이 없어요</span>'}</div></div>
+  <section class="jg1813-conclusion"><span class="jg1813-label">한 줄 결론</span><p>${jg1813Esc(o.lead)}</p><small>${jg1813Esc(o.explain)}</small></section>
+  <section class="jg1813-evidence"><div class="jg1813-block-head"><h4>기록 비교 그래프</h4><span class="jg1813-status ${sufficient?'ready':'wait'}">${sufficient?'비교 기록 있음':'비교 기록 부족'}</span></div>
+   ${sufficient?`<div class="jg1813-bars">${jg1813SafeBar(o.a,o.na,o.aLabel,'a')}${jg1813SafeBar(o.b,o.nb,o.bLabel,'b')}</div><p class="jg1813-graph-caption">막대 길이는 각 조건에서 <b>해당 결과가 기록된 비율</b>이에요. 길이가 길다고 원인이 확인된 것은 아니에요.</p>`:
+   `<div class="jg1813-need"><span class="jg1813-need-art">${jg189Art('empty')}</span><p>${jg1813Esc(model.sufficient)}</p></div>`}
+  </section>
+  <details class="jg1813-method"><summary>분석 기준과 추가 설명</summary><p>${jg1813Esc(model.method)}</p><p>${jg1813Esc(model.note)}</p><p>${jg1813Esc(model.sufficient)}</p>${model.extra?.length?`<div class="jg1813-more-results">${model.extra.map(x=>`<div><strong>${jg1813Esc(x.label)}</strong>${jg1813SafeBar(x.a,x.na,o.aLabel,'a')}${jg1813SafeBar(x.b,x.nb,o.bLabel,'b')}</div>`).join('')}</div>`:''}</details>
+ </div></section>
+ <p class="jg1813-disclaimer">이 화면은 기록에서 관찰된 차이를 보여 줍니다. 식사·수분·수면·스트레스가 증상의 원인이라는 뜻은 아니며, 질병을 진단하지 않습니다.</p>`;
+ root.onclick=e=>{
+  const tab=e.target.closest('[data-jg1813-tab]');
+  if(tab&&root.contains(tab)){jg1813State.tab=tab.dataset.jg1813Tab;jg1813RenderUnified(payload);return;}
+  const choice=e.target.closest('[data-jg1813-choice]');
+  if(!choice||!root.contains(choice))return;
+  const value=choice.dataset.jg1813Choice;
+  if(jg1813State.tab==='meal')jg1813State.foodIndex=Number(value);
+  else if(jg1813State.tab==='recent')jg1813State.recentMetric=value;
+  else jg1813State.window[jg1813State.tab]=value;
+  jg1813RenderUnified(payload);
+ };
+}
+
 function initPersonalAnalysis(){
  initTimedMeals();initMealReview();
  const choices=document.querySelectorAll('[data-analysis-days]');
@@ -2923,13 +3053,11 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.8.12';
+const JANGILGI_VERSION='1.8.13';
 const JANGILGI_RELEASE_STEPS=[
- ['홈 그림 자연스럽게','식사·배변·생활 기록 카드 그림의 배경 패치를 없애고, 최근 기록에는 반복되는 사진 대신 가벼운 선형 아이콘을 넣었어요.'],
- ['생활 분석 한눈에','수분·수면·스트레스의 결과를 세 줄로 요약하고 원하는 항목을 선택해서 자세히 살펴볼 수 있어요.'],
- ['시간차별 그래프','당일·전날·2일 전·최근 며칠의 비교 시점을 버튼으로 선택하고 해당 기록의 그래프만 보여 줘요.'],
- ['해석의 기준 고정','수분은 단단한 변(1~2형), 수면은 복통·불편, 스트레스는 묽은 변(6~7형)을 먼저 보여 줘요. 다른 결과도 볼 수 있어요.'],
- ['기존 기능 유지','기존 식사 시간차·생활습관 계산, 저장, 보안, 공지, 문의 및 화면 메뉴 구조는 그대로예요.']
+ ['모든 분석 하나로','식사·수분·수면·스트레스·최근 변화를 하나의 통합 분석 화면에서 확인할 수 있어요.'],
+ ['분석 화면 통일','모든 항목에 동일한 결론·비교 조건·그래프·기록 근거·방법 설명 구조를 적용했어요.'],
+ ['기존 계산 유지','식사·생활습관 시간차 및 기록 충분도 계산은 바꾸지 않고 표시 방식만 통합했어요.']
 ];
 
 /* old release steps (preserved in changelog below) */
@@ -2939,6 +3067,8 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+ {version:'1.8.13',date:'2026-11-01',title:'식사·생활·최근 변화 분석 UI 완전 통합',details:['식사·수분·수면·스트레스·최근 변화를 한 분석 화면에서 확인','모든 항목에 동일한 한 줄 결론·조건 선택·비교 그래프·기록 근거 구조 적용','기존 분석 계산·암호화 저장·기록·공지·문의 유지']},
+ {version:'1.8.12',date:'2026-11-01',title:'자연스러운 홈 일러스트·집중형 생활 분석',details:['홈 기록 카드에 일러스트 배경 패치 제거','최근 기록의 반복 이미지를 선형 아이콘으로 교체','생활습관별 요약과 탭·시간 구간 선택 적용']},
  {version:'1.8.11',date:'2026-11-01',title:'기록지 일러스트·생활 분석 한 줄 해석',details:['홈의 흐린 장 모니터 이미지를 기록지·체크 그래프 그림으로 교체','식사 분석 카드의 잘린 음식 그림 정리','생활습관 분석 결과를 조건→배변형태 순서로 직관적 해석','비교 날짜 수는 한 줄 결론 아래에 보조 설명으로 표시']},
  {version:'1.8.10',date:'2026-11-01',title:'일러스트 품질 향상·분석 결과 쉽게 읽기',details:['기존 화면 배치 유지·고화질 이미지 자산 교체','생활습관 분석 결과의 실제 날짜 수·비율·차이 쉬운 설명','대표 비교 그래프 우선 노출·기타 결과 펼쳐 보기','비교 그룹 이름과 기록 부족 이유 명확화']},
  {version:'1.8.9',date:'2026-11-01',title:'일러스트·분석 시각화 개선',details:['기록·분석 화면의 벡터 이미지 통일','생활습관·식사 분석 비교 막대그래프 추가','자동 요약 및 기록 충분도 표시']},
@@ -3273,7 +3403,7 @@ function initDigestiveEditors(){
 }
 let jangCurrentHelp='first';
 // Each help category has one highlighted target per brief instruction.
-const JANG_HELP_TARGETS={"first":[["profile","#profileView .jg184-profile-grid"],["settings","#backupRestoreSettingsCard"],["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg187-top-update"]],"bowel":[["record","#quickTimeBlock"],["record","#quickShapeBlock"],["record","#quickSymptomBlock"],["record","#quickFlagsBlock"],["record","#recordView .quick-actions"]],"food":[["meal","#mealAt"],["meal","#mealFoodSearch"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal","#timedMealPanel"]],"custom":[["meal","#mealFoodSearch"],["meal","#mealFoodChoices"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal",".menu-request-open"]],"life":[["lifestyle","#foodlifeDateBlock"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#lifestyleView .foodlife-actions"]],"edit":[["bowelHistory","#bowelHistoryView"],["mealDay","#mealDayView"],["lifestyle","#lifestyleView"],["settings","#backupRestoreSettingsCard"]],"home":[["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg181-week-panel"],["week","#weekView .jg184-calendar-layout"],["dashboard",".jg181-contact"]],"analysis":[["analysis","#analysisView"],["analysis","#foodlifeAnalysisPane"],["analysis","#jgLifestyleAnalysis"],["analysis","#analysisView"]],"support":[["dashboard",".jg181-contact"],["support","#supportComposeToggle"],["support","#supportMyList"],["support","#supportThreadDetail"]],"account":[["profile","#profileView .jg184-profile-grid"],["profile","#profileView .profile-menu-field"],["profile","#profileView .jg184-profile-security"],["settings","#backupRestoreSettingsCard"]],"version":[["dashboard",".jg181-top-notify"],["dashboard",".jg181-top-notify"],["dashboard",".jg187-top-update"],["dashboard",".jg187-top-update"]]};
+const JANG_HELP_TARGETS={"first":[["profile","#profileView .jg184-profile-grid"],["settings","#backupRestoreSettingsCard"],["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg187-top-update"]],"bowel":[["record","#quickTimeBlock"],["record","#quickShapeBlock"],["record","#quickSymptomBlock"],["record","#quickFlagsBlock"],["record","#recordView .quick-actions"]],"food":[["meal","#mealAt"],["meal","#mealFoodSearch"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal","#timedMealPanel"]],"custom":[["meal","#mealFoodSearch"],["meal","#mealFoodChoices"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal",".menu-request-open"]],"life":[["lifestyle","#foodlifeDateBlock"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#lifestyleView .foodlife-actions"]],"edit":[["bowelHistory","#bowelHistoryView"],["mealDay","#mealDayView"],["lifestyle","#lifestyleView"],["settings","#backupRestoreSettingsCard"]],"home":[["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg181-week-panel"],["week","#weekView .jg184-calendar-layout"],["dashboard",".jg181-contact"]],"analysis":[["analysis","#analysisView"],["analysis","#jg1813-unified .jg1813-overview"],["analysis","#jg1813-main"],["analysis","#jg1813-unified .jg1813-method"]],"support":[["dashboard",".jg181-contact"],["support","#supportComposeToggle"],["support","#supportMyList"],["support","#supportThreadDetail"]],"account":[["profile","#profileView .jg184-profile-grid"],["profile","#profileView .profile-menu-field"],["profile","#profileView .jg184-profile-security"],["settings","#backupRestoreSettingsCard"]],"version":[["dashboard",".jg181-top-notify"],["dashboard",".jg181-top-notify"],["dashboard",".jg187-top-update"],["dashboard",".jg187-top-update"]]};
 function jangHelpTour(id){
  const item=JANGILGI_HELP.find(x=>x.id===id)||JANGILGI_HELP[0];
  const builtin=JANGILGI_BUILTIN_HELP.find(x=>x.id===item.id);
@@ -3305,14 +3435,13 @@ function initDetailedHelp(){
 }
 // 업데이트 안내는 항상 바로 전 릴리스와 현재 릴리스의 차이만 설명합니다.
 // 과거 버전 내역은 관리자가 편집할 수 있지만, 안내에 자동으로 누적하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.8.11';
-// The update tour only describes the change from v1.8.10 to v1.8.11.
+const JANGILGI_PREVIOUS_RELEASE='1.8.12';
+// The update tour only describes the change from v1.8.12 to v1.8.13.
 // 과거 릴리스 배열 인덱스를 재사용하지 않는다.
 const JANG_CURRENT_UPDATE_STEPS=[
- {view:'dashboard',selector:'.jg181-action-row',title:'홈 그림을 더 자연스럽게',text:'v1.8.11 → v1.8.12: 기록 카드 이미지가 별도의 작은 사진처럼 보이지 않도록 배경을 없애고 정리했어요.'},
- {view:'dashboard',selector:'.jg181-recent-row',title:'최근 기록은 깔끔하게',text:'최근 기록에는 똑같은 이미지를 반복하지 않고 필요한 정보와 선형 아이콘을 보여 줘요.'},
- {view:'analysis',selector:'#jg1812-summary-title',title:'생활 분석 세 줄 요약',text:'수분·수면·스트레스에서 먼저 볼 배변 결과를 한 줄씩 확인할 수 있어요.'},
- {view:'analysis',selector:'#jg1812-detail-area',title:'보고 싶은 항목만 분석',text:'생활습관과 시간 구간을 선택하면 해당 그래프와 기록 수만 자세히 확인할 수 있어요.'}
+ {view:'analysis',selector:'#jg1813-unified .jg1813-overview',title:'모든 분석을 한곳에',text:'식사·수분·수면·스트레스·최근 변화의 요약을 같은 화면에서 확인할 수 있어요.'},
+ {view:'analysis',selector:'#jg1813-unified .jg1813-tabs',title:'동일한 분석 카드',text:'항목을 바꾸어도 결론·비교 그래프·근거가 같은 위치에 표시돼요.'},
+ {view:'analysis',selector:'#jg1813-unified .jg1813-options',title:'비교 조건 선택',text:'식사 조합·날짜 범위·배변 형태를 선택하면 그래프와 해석이 함께 바뀌어요.'}
 ];
 
 function showUpdateNotes(){
@@ -5561,6 +5690,84 @@ form.addEventListener('submit',async e=>{e.preventDefault();if(!window.__jangilg
 @media(max-width:880px){#analysisView .jg1812-summary-grid{grid-template-columns:1fr}#analysisView .jg1812-summary-item{align-items:center}#analysisView .jg1812-summary-icon{width:43px;height:43px;flex-basis:43px}}
 @media(max-width:660px){#dashboardView .jg181-action-card .jg181-action-icon,#dashboardView .jg181-action-card[data-kind] .jg181-action-icon{flex-basis:49px!important;width:49px!important;height:49px!important}#analysisView .jg1812-overview,#analysisView .jg1812-detail-area{padding:12px}#analysisView .jg1812-detail-hint{display:none}#analysisView .jg1812-detail-illustration{width:50px;height:48px;flex-basis:50px}#analysisView .jg1812-window-tabs button{padding:8px 9px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){#analysisView .jg1812-summary-item{transition:none}}
+</style>
+
+<style id="jangilgi-v1813-unified-analysis">
+/* Single unified analysis surface. Legacy result targets remain mounted for compatibility. */
+#analysisView #foodlifeAnalysisPane{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;min-height:0!important;}
+#analysisView #foodlifeAnalysisPane>.jg1812-analysis-guide,
+#analysisView #foodlifeAnalysisPane>.food-card,
+#analysisView #foodlifeAnalysisPane>.report-food,
+#analysisView #foodlifeAnalysisPane>#jgLifestyleAnalysis,
+#analysisView #foodlifeAnalysisPane>#personalChangeAnalysis,
+#analysisView #foodlifeAnalysisPane>.jg189-food-analysis{display:none!important}
+#analysisView #jg1813-unified{width:100%;display:grid;gap:18px;min-width:0;color:var(--ink);}
+#analysisView .jg1813-overview,#analysisView .jg1813-main{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:19px 21px;min-width:0;}
+#analysisView .jg1813-intro{display:flex;justify-content:space-between;align-items:end;gap:15px;padding:2px 3px;}
+#analysisView .jg1813-intro h2{font-size:clamp(23px,3vw,32px);font-weight:800;letter-spacing:-.07em;margin:5px 0 6px;color:var(--deep);}
+#analysisView .jg1813-intro p{font-size:13px;line-height:1.65;color:var(--muted);margin:0;}
+#analysisView .jg1813-intro p strong{color:var(--deep)}
+#analysisView .jg1813-overline{font:700 10px "DM Mono",monospace;letter-spacing:.07em;color:#679075;}
+#analysisView .jg1813-range{font-size:11px;font-weight:750;color:#427252;background:#edf6ed;border-radius:999px;padding:8px 12px;white-space:nowrap;}
+#analysisView .jg1813-block-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+#analysisView .jg1813-block-head h3,#analysisView .jg1813-block-head h4{font-size:16px;letter-spacing:-.04em;color:var(--deep);margin:0;}
+#analysisView .jg1813-block-head small{color:var(--muted);font-size:11px;}
+#analysisView .jg1813-glance{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;}
+#analysisView .jg1813-glance-item{display:flex;align-items:flex-start;gap:7px;flex-direction:column;background:#f9fbf9;border:1px solid #e3ebe3;border-radius:13px;padding:12px;text-align:left;min-width:0;transition:background .16s,border .16s;}
+#analysisView .jg1813-glance-item.active,#analysisView .jg1813-glance-item:hover{border-color:#83b492;background:#f0f8f0;}
+#analysisView .jg1813-glance-item:focus-visible,#analysisView .jg1813-tabs button:focus-visible,#analysisView .jg1813-options button:focus-visible{outline:3px solid #5ca977;outline-offset:2px;}
+#analysisView .jg1813-glance-art{width:39px;height:39px;display:block;overflow:hidden;}
+#analysisView .jg1813-glance-art img{width:100%;height:100%;object-fit:contain;}
+#analysisView .jg1813-glance-copy{display:grid;gap:5px;min-width:0;}
+#analysisView .jg1813-glance-copy strong{font-size:13px;color:#1f5037;}
+#analysisView .jg1813-glance-copy small{font-size:11px;line-height:1.58;color:#637769;word-break:keep-all;}
+#analysisView .jg1813-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:5px;background:#f1f5f0;border-radius:13px;margin-bottom:18px;}
+#analysisView .jg1813-tabs button{border-radius:9px;padding:10px 6px;font-size:12px;font-weight:800;color:#597463;}
+#analysisView .jg1813-tabs button.active{background:#fff;color:#215b3c;box-shadow:0 2px 8px rgba(32,60,40,.09);}
+#analysisView .jg1813-content{min-width:0;display:grid;gap:16px;}
+#analysisView .jg1813-detail-title{display:flex;gap:13px;align-items:center;}
+#analysisView .jg1813-detail-art{width:69px;height:65px;flex:none;overflow:hidden;display:grid;place-items:center;}
+#analysisView .jg1813-detail-art img{width:100%;height:100%;object-fit:contain;}
+#analysisView .jg1813-detail-title h3{font-size:21px;color:var(--deep);letter-spacing:-.06em;margin:3px 0 4px;}
+#analysisView .jg1813-detail-title p{font-size:12px;line-height:1.55;color:var(--muted);margin:0;}
+#analysisView .jg1813-picker{display:grid;gap:9px;}
+#analysisView .jg1813-label{font-size:11px;font-weight:800;color:#557361;}
+#analysisView .jg1813-options{display:flex;gap:7px;flex-wrap:wrap;min-width:0;}
+#analysisView .jg1813-options button{border:1px solid #deeadf;border-radius:999px;padding:9px 13px;color:#52715d;font-size:12px;font-weight:700;background:#fff;max-width:100%;}
+#analysisView .jg1813-options button.active{background:#e6f3e8;border-color:#82b993;color:#245f3f;}
+#analysisView .jg1813-no-options{font-size:12px;color:var(--muted);}
+#analysisView .jg1813-conclusion{background:#eff7ef;border:1px solid #d8eadb;border-radius:14px;padding:17px 19px;display:grid;gap:7px;}
+#analysisView .jg1813-conclusion p{font-size:clamp(16px,2vw,21px);line-height:1.55;letter-spacing:-.045em;font-weight:800;color:#184b32;word-break:keep-all;margin:0;}
+#analysisView .jg1813-conclusion small{font-size:12px;line-height:1.65;color:#5a7664;word-break:keep-all;}
+#analysisView .jg1813-evidence{border:1px solid #e5ece5;border-radius:14px;padding:16px 18px;background:#fff;}
+#analysisView .jg1813-status{font-size:10px;border-radius:999px;padding:5px 9px;font-weight:750;white-space:nowrap;}
+#analysisView .jg1813-status.ready{background:#eaf5e9;color:#287446;}
+#analysisView .jg1813-status.wait{background:#f8f0df;color:#927133;}
+#analysisView .jg1813-bars{display:grid;gap:15px;}
+#analysisView .jg1813-bar-line{display:grid;gap:8px;min-width:0;}
+#analysisView .jg1813-bar-info{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+#analysisView .jg1813-bar-info strong{font-size:12px;font-weight:750;color:#3c5b46;}
+#analysisView .jg1813-bar-info span{font-size:12px;color:#65796c;font-weight:750;text-align:right;}
+#analysisView .jg1813-bar-track{height:13px;background:#edf3ed;border-radius:999px;overflow:hidden;}
+#analysisView .jg1813-bar-progress{height:100%;border-radius:999px;min-width:0;}
+#analysisView .jg1813-bar-a{background:linear-gradient(90deg,#3d9864,#72bc86);}
+#analysisView .jg1813-bar-b{background:linear-gradient(90deg,#a8bec3,#7c9ba5);}
+#analysisView .jg1813-graph-caption{margin:13px 0 0;color:#7a887d;font-size:11px;line-height:1.65;}
+#analysisView .jg1813-need{display:flex;align-items:center;gap:14px;background:#f8faf8;border-radius:12px;padding:12px;}
+#analysisView .jg1813-need-art{width:50px;height:50px;flex:none;}
+#analysisView .jg1813-need-art img{width:100%;height:100%;object-fit:contain;}
+#analysisView .jg1813-need p{margin:0;font-size:12px;line-height:1.75;color:#68806c;}
+#analysisView .jg1813-method{border:1px solid #e2ebe3;border-radius:13px;background:#fafcf9;overflow:hidden;}
+#analysisView .jg1813-method>summary{cursor:pointer;padding:13px 16px;font-size:12px;font-weight:800;color:#486e53;}
+#analysisView .jg1813-method>p{padding:0 16px;font-size:12px;color:#617969;line-height:1.8;margin:5px 0 11px;}
+#analysisView .jg1813-more-results{display:grid;gap:15px;padding:10px 16px 15px;border-top:1px solid #e3ebe3;}
+#analysisView .jg1813-more-results>div{display:grid;gap:8px;}
+#analysisView .jg1813-more-results strong{font-size:12px;color:#31533e;}
+#analysisView .jg1813-disclaimer{font-size:11px;line-height:1.7;color:#738579;margin:0;padding:0 5px 10px;}
+@media(max-width:1120px){#analysisView .jg1813-glance{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:720px){#analysisView .jg1813-glance{grid-template-columns:repeat(2,minmax(0,1fr));}#analysisView .jg1813-intro{align-items:start;flex-direction:column;}#analysisView .jg1813-overview,#analysisView .jg1813-main{padding:13px;}#analysisView .jg1813-tabs{grid-template-columns:repeat(3,minmax(0,1fr));}#analysisView .jg1813-evidence{padding:13px;}#analysisView .jg1813-detail-art{width:54px;height:54px;}#analysisView .jg1813-conclusion{padding:14px;}#analysisView .jg1813-glance-item{padding:10px;} }
+@media(max-width:400px){#analysisView .jg1813-glance{grid-template-columns:1fr;}#analysisView .jg1813-glance-item{flex-direction:row;align-items:center;}#analysisView .jg1813-glance-art{flex:0 0 36px;}#analysisView .jg1813-detail-title h3{font-size:18px;}#analysisView .jg1813-tabs button{font-size:11px;}}
+@media(prefers-reduced-motion:reduce){#analysisView .jg1813-glance-item{transition:none}}
 </style>
 </body>
 </html>
