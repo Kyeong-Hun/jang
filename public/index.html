@@ -2067,56 +2067,156 @@ function lifestyleWarning(data,rows,food){
 // Compare bowel outcomes with calendar-day lifestyle records at multiple time offsets.
 // The app does not infer temporal ordering within one day or clinical causation.
 // Multiple bowel events on one day remain one day-level observation.
+/* v1.9.0: Predeclared exploratory family, independent chronological holdout.
+ * No synthetic or user health records are written by this module.
+ * Entirely local, deterministic, and compatible with legacy daily-context records.
+ */
+const JG14_OUTCOMES=[
+ {id:'hard',label:'1~2형',test:e=>Number(e.bristol)>=1&&Number(e.bristol)<=2},
+ {id:'formed',label:'3~4형',test:e=>Number(e.bristol)>=3&&Number(e.bristol)<=4},
+ {id:'type5',label:'5형',test:e=>Number(e.bristol)===5},
+ {id:'loose',label:'6~7형',test:e=>Number(e.bristol)>=6&&Number(e.bristol)<=7},
+ {id:'pain',label:'복통·불편 보통 이상',known:e=>e.pain!==null&&e.pain!==undefined&&Number.isInteger(Number(e.pain))&&Number(e.pain)>=0&&Number(e.pain)<=3,test:e=>Number(e.pain)>=2},
+ {id:'strain',label:'힘주기·잔변감 보통 이상',known:e=>e.strain!==null&&e.strain!==undefined&&Number.isInteger(Number(e.strain))&&Number(e.strain)>=0&&Number(e.strain)<=3,test:e=>Number(e.strain)>=2}
+];
+const JG14_SPECS=[
+ {key:'water',label:'수분 섭취',badLevel:0,windows:[
+  {id:'today',label:'당일',offsets:[0],badCount:1,exposedLabel:'적음',otherLabel:'보통·많음',note:'당일 기록은 배변과 선후관계를 알 수 없어요.'},
+  {id:'yesterday',label:'전날',offsets:[-1],badCount:1,exposedLabel:'적음',otherLabel:'보통·많음',note:'전날 수분 섭취 상태를 비교해요.'},
+  {id:'two-days',label:'2일 전',offsets:[-2],badCount:1,exposedLabel:'적음',otherLabel:'보통·많음',note:'2일 전 수분 섭취 상태를 비교해요.'},
+  {id:'last-three',label:'최근 3일',offsets:[0,-1,-2],badCount:2,exposedLabel:'적음 2일 이상',otherLabel:'적음 0~1일',note:'3일 모두 기록한 경우만 비교하며 당일 기록의 선후는 알 수 없어요.'}
+ ]},
+ {key:'sleep',label:'수면',badLevel:0,windows:[
+  {id:'last-night',label:'지난밤',offsets:[0],badCount:1,exposedLabel:'부족',otherLabel:'보통·충분',note:'그날 아침까지 잔 지난밤 수면으로 해석해요. 과거 입력 기준이 달랐다면 주의해요.'},
+  {id:'last-two',label:'최근 2회',offsets:[0,-1],badCount:2,exposedLabel:'2회 모두 부족',otherLabel:'부족 0~1회',note:'2회 수면 기록이 모두 있어야 비교해요.'},
+  {id:'last-three',label:'최근 3회',offsets:[0,-1,-2],badCount:2,exposedLabel:'3회 중 2회 이상 부족',otherLabel:'부족 0~1회',note:'3회 수면 기록이 모두 있어야 비교해요.'}
+ ]},
+ {key:'stress',label:'스트레스',badLevel:2,windows:[
+  {id:'today',label:'당일',offsets:[0],badCount:1,exposedLabel:'높음',otherLabel:'낮음·보통',note:'당일 스트레스와 배변의 선후관계를 확정하지 않아요.'},
+  {id:'yesterday',label:'전날',offsets:[-1],badCount:1,exposedLabel:'높음',otherLabel:'낮음·보통',note:'전날의 스트레스와 다음 날 배변을 비교해요.'}
+ ]}
+];
+function jg14LogFactorial(n){let v=0;for(let i=2;i<=n;i++)v+=Math.log(i);return v;}
+function jg14ChooseLog(n,k){return k<0||k>n?-Infinity:jg14LogFactorial(n)-jg14LogFactorial(k)-jg14LogFactorial(n-k);}
+function jg14Fisher(a,nA,b,nB){
+ if(!nA||!nB)return 1;
+ const total=nA+nB,positive=a+b,min=Math.max(0,nA-(total-positive)),max=Math.min(nA,positive);
+ const logDen=jg14ChooseLog(total,nA);
+ const lp=k=>jg14ChooseLog(positive,k)+jg14ChooseLog(total-positive,nA-k)-logDen;
+ const observed=lp(a);let sum=0;
+ for(let x=min;x<=max;x++){const l=lp(x);if(l<=observed+1e-10)sum+=Math.exp(l);}
+ return sum>1-1e-12?1:Math.max(0,Math.min(1,sum));
+}
+function jg14Wilson(k,n){
+ if(!n)return [0,1];const z=2.241402727,z2=z*z,p=k/n,den=1+z2/n;
+ const mid=(p+z2/(2*n))/den,rad=z*Math.sqrt(p*(1-p)/n+z2/(4*n*n))/den;
+ return [Math.max(0,mid-rad),Math.min(1,mid+rad)];
+}
+function jg14Stats(rows,outcome){
+ const valid=rows.filter(r=>r.events.some(e=>!outcome.known||outcome.known(e)));
+ const a=valid.filter(r=>r.exposed),b=valid.filter(r=>!r.exposed);
+ const hit=list=>list.filter(r=>r.events.some(e=>(!outcome.known||outcome.known(e))&&outcome.test(e))).length;
+ const ca=hit(a),cb=hit(b),na=a.length,nb=b.length,pa=na?ca/na:0,pb=nb?cb/nb:0;
+ const ai=jg14Wilson(ca,na),bi=jg14Wilson(cb,nb);
+ return {exposedCount:na,otherCount:nb,exposedCases:ca,otherCases:cb,diff:pa-pb,pA:pa,pB:pb,p:jg14Fisher(ca,na,cb,nb),ci:[ai[0]-bi[1],ai[1]-bi[0]],relativeRatio:((ca+.5)/(na+1))/((cb+.5)/(nb+1))};
+}
+function jg14Fdr(candidates){
+ // Holm step-down, family-wise 5% across all 54 prespecified tests.
+ // Unlike ordinary BH, Holm controls family error even under arbitrary dependence.
+ const sorted=[...candidates].sort((a,b)=>a.discovery.p-b.discovery.p);
+ let running=0;for(let i=0;i<sorted.length;i++){
+  running=Math.max(running,sorted[i].discovery.p*(sorted.length-i));
+  sorted[i].q=Math.min(1,running);
+ }
+}
+function jg14MealContext(data,dayEvents){
+ // Only count meal tags if the entire previous 24 hours have verified meal review coverage.
+ const result=new Map();const meals=timedMeals(data),segments=mealCoverageIntervals(data);
+ for(const [day,events] of dayEvents){
+  const valid=events.map(e=>Date.parse(e.at)).filter(Number.isFinite).sort((a,b)=>a-b);
+  if(!valid.length)continue;
+  const end=valid[0];if(!covered(segments,end-24*ANALYSIS_HOUR,end))continue;
+  const tags=[...new Set(meals.filter(m=>Date.parse(m.at)>end-24*ANALYSIS_HOUR&&Date.parse(m.at)<=end).flatMap(m=>jangFeatureSet(m.foods,m.digestiveOverrides)))];
+  result.set(day,new Set(tags));
+ }
+ return result;
+}
+function jg14Confounding(rows,spec,win,daily,mealContext){
+ const a=rows.filter(x=>x.exposed),b=rows.filter(x=>!x.exposed),warnings=[];
+ function compare(key,values,label){
+  const pa=values(a),pb=values(b);
+  if(pa.length<Math.max(6,Math.ceil(a.length*.6))||pb.length<Math.max(6,Math.ceil(b.length*.6)))return;
+  const d=Math.abs(pa.reduce((v,x)=>v+x,0)/pa.length-pb.reduce((v,x)=>v+x,0)/pb.length);
+  if(d>=.55)warnings.push(label+'도 두 집단에서 달랐어요');
+ }
+ for(const other of JG14_SPECS.filter(x=>x.key!==spec.key)){
+  const take=records=>records.map(r=>{
+   const vals=win.offsets.map(off=>daily.get(jgShiftHabitDay(r.day,off))?.[other.key]);
+   return vals.every(v=>Number.isInteger(v))?vals.reduce((s,v)=>s+v,0)/vals.length:null;
+  }).filter(v=>v!==null);
+  compare(other.key,take,other.label);
+ }
+ const tags=new Set([...mealContext.values()].flatMap(set=>[...set]));
+ for(const tag of tags){
+  if(warnings.length>=4)break;
+  const take=records=>records.filter(r=>mealContext.has(r.day)).map(r=>Number(mealContext.get(r.day).has(tag))*2);
+  compare('food',take,'식사 특성('+tag+')');
+ }
+ return warnings;
+}
 function analyzeLifestylePatterns(data,days,now=Date.now()){
- const cutoff=now-days*24*ANALYSIS_HOUR;
- const dayEvents=new Map(),daily=jgLifestyleByDay(data);
+ const cutoff=now-days*24*ANALYSIS_HOUR,dayEvents=new Map(),daily=jgLifestyleByDay(data);
  for(const event of data?.events||[]){
   const at=Date.parse(event?.at),type=Number(event?.bristol);
-  if(!Number.isFinite(at)||at<cutoff||at>now||type<1||type>7)continue;
-  const day=dateKey(event.at);
-  if(!dayEvents.has(day))dayEvents.set(day,[]);
-  dayEvents.get(day).push(event);
+  if(!Number.isFinite(at)||at<cutoff||at>now||!Number.isInteger(type)||type<1||type>7)continue;
+  const day=dateKey(event.at);if(!dayEvents.has(day))dayEvents.set(day,[]);dayEvents.get(day).push(event);
  }
- const tests=[
-  {label:'단단한 변(1~2형)',check:ev=>Number(ev.bristol)<=2},
-  {label:'묽은 변(6~7형)',check:ev=>Number(ev.bristol)>=6},
-  {label:'복통·불편 보통 이상',check:ev=>Number(ev.pain)>=2}
- ];
- const specs=[
-  {key:'water',label:'수분 섭취',badLevel:0,windows:[
-   {id:'today',label:'당일 수분 섭취',offsets:[0],badCount:1,exposedLabel:'적음',note:'당일 기록은 배변과 발생 순서를 확인할 수 없는 동시 관찰입니다.'},
-   {id:'yesterday',label:'전날 수분 섭취',offsets:[-1],badCount:1,exposedLabel:'적음',note:'배변 전날에 기록한 수분 섭취와 비교합니다.'},
-   {id:'two-days',label:'2일 전 수분 섭취',offsets:[-2],badCount:1,exposedLabel:'적음',note:'배변 2일 전 수분 섭취와 비교합니다.'},
-   {id:'last-three',label:'최근 3일 수분 경향',offsets:[0,-1,-2],badCount:2,exposedLabel:'적음 2일 이상',note:'3일 모두 기록한 경우에만 비교해요. 당일 수분은 배변 이후 입력됐을 수 있어요.'}
-  ]},
-  {key:'sleep',label:'수면',badLevel:0,windows:[
-   {id:'last-night',label:'지난밤 수면',offsets:[0],badCount:1,exposedLabel:'부족',note:'선택한 날짜 아침까지 잔 수면 기준입니다. 과거 입력의 날짜 의미가 달랐다면 비교에 주의하세요.'},
-   {id:'last-two',label:'최근 2회 수면',offsets:[0,-1],badCount:2,exposedLabel:'2회 모두 부족',note:'연속한 2일 모두 수면을 기록한 날짜만 비교합니다.'},
-   {id:'last-three',label:'최근 3회 수면',offsets:[0,-1,-2],badCount:2,exposedLabel:'3회 중 2회 이상 부족',note:'연속한 3일 모두 수면을 기록한 날짜만 비교합니다.'}
-  ]},
-  {key:'stress',label:'스트레스',badLevel:2,windows:[
-   {id:'today',label:'당일 스트레스',offsets:[0],badCount:1,exposedLabel:'높음',note:'당일 스트레스와 배변의 선후는 확정할 수 없습니다.'},
-   {id:'yesterday',label:'전날 스트레스',offsets:[-1],badCount:1,exposedLabel:'높음',note:'전날 높은 스트레스와 다음 날 배변 상태를 비교합니다.'}
-  ]}
- ];
- return specs.map(spec=>({key:spec.key,label:spec.label,panels:spec.windows.map(window=>{
-  const matched=[];
-  for(const [day,events] of dayEvents){
-   const values=window.offsets.map(offset=>daily.get(jgShiftHabitDay(day,offset))?.[spec.key]);
-   // Missing daily reports are never treated as normal or low/high.
-   if(!values.every(v=>Number.isInteger(v)&&v>=0&&v<=2))continue;
-   matched.push({day,events,exposed:values.filter(v=>v===spec.badLevel).length>=window.badCount});
+ const dates=[...dayEvents.keys()].sort(),cut=dates[Math.floor(dates.length*.7)]||'9999-12-31';
+ const mealContext=jg14MealContext(data,dayEvents),all=[];
+ const results=JG14_SPECS.map(spec=>({key:spec.key,label:spec.label,panels:spec.windows.map(win=>{
+  const rows=[];
+  for(const day of dates){
+   const vals=win.offsets.map(offset=>daily.get(jgShiftHabitDay(day,offset))?.[spec.key]);
+   if(!vals.every(v=>Number.isInteger(v)&&v>=0&&v<=2))continue;
+   rows.push({day,events:dayEvents.get(day),exposed:vals.filter(v=>v===spec.badLevel).length>=win.badCount});
   }
-  const exposed=matched.filter(r=>r.exposed),other=matched.filter(r=>!r.exposed);
-  // Data sufficiency is a conservative display threshold, NOT a clinical cutoff.
-  const enough=exposed.length>=8&&other.length>=8;
-  const comparisonLabels={water:{today:'보통·많음',yesterday:'보통·많음','two-days':'보통·많음','last-three':'적음 0~1일'},sleep:{'last-night':'보통·충분','last-two':'부족 0~1회','last-three':'부족 0~1회'},stress:{today:'낮음·보통',yesterday:'낮음·보통'}};
-  return {...window,otherLabel:comparisonLabels[spec.key]?.[window.id]||'비교 기록',exposedCount:exposed.length,otherCount:other.length,enough,
-   outcomes:enough?tests.map(test=>({label:test.label,
-    exposedCases:exposed.filter(row=>row.events.some(test.check)).length,
-    otherCases:other.filter(row=>row.events.some(test.check)).length
-   })):[]};
+  const train=rows.filter(x=>x.day<cut),valid=rows.filter(x=>x.day>=cut);
+  const outcomes=JG14_OUTCOMES.map(outcome=>{
+   const full=jg14Stats(rows,outcome),discovery=jg14Stats(train,outcome),later=jg14Stats(valid,outcome);
+   const obj={...full,id:outcome.id,label:outcome.label,discovery,later,q:1,confound:[],qualified:false,reason:''};
+   obj.confound=jg14Confounding(train.filter(r=>r.events.some(e=>!outcome.known||outcome.known(e))),spec,win,daily,mealContext);
+   all.push(obj);return obj;
+  });
+  return {...win,exposedCount:rows.filter(r=>r.exposed).length,otherCount:rows.filter(r=>!r.exposed).length,
+   enough:rows.filter(r=>r.exposed).length>=8&&rows.filter(r=>!r.exposed).length>=8,outcomes,primary:null};
  })}));
+ jg14Fdr(all);
+ for(const candidate of all){
+  const d=candidate.discovery,v=candidate.later;
+  const ready=d.exposedCount>=12&&d.otherCount>=12&&d.exposedCases+d.otherCases>=6&&
+   v.exposedCount>=6&&v.otherCount>=6&&v.exposedCases+v.otherCases>=2;
+  const effect=ready&&Math.abs(d.diff)>=.12&&Math.abs(candidate.diff)>=.10;
+  const interval=ready&&(d.ci[0]>0||d.ci[1]<0);
+  const repeated=ready&&Math.sign(d.diff)===Math.sign(v.diff)&&Math.abs(v.diff)>=.05;
+  candidate.qualified=Boolean(ready&&effect&&interval&&repeated&&candidate.q<=.05&&!candidate.confound.length);
+  candidate.repeat=Boolean(repeated);candidate.ready=Boolean(ready);candidate.discoveryCI=interval;
+  candidate.reason=!ready?'양쪽 집단의 과거·이후 기록이 충분하지 않아요.':
+   candidate.confound.length?'다른 생활습관 또는 음식 특성과 함께 나타나 구분하기 어려워요.':
+   !effect?'두 집단의 차이가 작거나 일관되지 않아요.':
+   !interval?'과거 기록의 비율 차이에 불확실성이 커요.':
+   candidate.q>.05?'54개 검정의 우연 가능성을 Holm 방법으로 보정한 기준을 통과하지 못했어요.':
+   !repeated?'이후 기록에서 같은 방향이 재현되지 않았어요.':'과거 기록에서 발견되어 이후 기록에서도 같은 방향으로 관찰됐어요.';
+ }
+ for(const h of results){
+  const qualified=h.panels.flatMap(p=>p.outcomes.filter(o=>o.qualified).map(o=>({...o,windowId:p.id,windowLabel:p.label,panel:p})));
+  qualified.sort((a,b)=>a.q-b.q||Math.min(b.discovery.exposedCount,b.discovery.otherCount)-Math.min(a.discovery.exposedCount,a.discovery.otherCount)||Math.abs(b.discovery.diff)-Math.abs(a.discovery.diff));
+  h.primary=qualified[0]||null;
+  for(const panel of h.panels){
+   panel.primary=h.primary?.windowId===panel.id?h.primary:null;
+   panel.topCandidate=panel.outcomes.slice().sort((a,b)=>a.q-b.q||Math.abs(b.discovery.diff)-Math.abs(a.discovery.diff))[0]||null;
+  }
+ }
+ return results;
 }
 /* v1.8.10: independently usable high-resolution in-app illustration assets. */
 const JG1810_ART={
@@ -2149,109 +2249,98 @@ function jg1810TopOutcome(panel){
  return outcomes.sort((a,b)=>Math.abs(b.aPct-b.bPct)-Math.abs(a.aPct-a.bPct))[0]||null;
 }
 /* v1.8.12: select a fixed descriptive focus per habit to avoid exaggerating a cherry-picked maximum. */
-function jg1812FocusOutcome(panel,habit){
- if(!panel?.enough||!Array.isArray(panel.outcomes))return null;
- const needle={water:'1~2형',sleep:'복통',stress:'6~7형'}[habit];
- const o=panel.outcomes.find(x=>needle&&x.label.includes(needle))||panel.outcomes[0];
- return o?{...o,aPct:jg189Pct(o.exposedCases,panel.exposedCount),bPct:jg189Pct(o.otherCases,panel.otherCount)}:null;
-}
-/* v1.8.11: explain observed comparisons as condition → bowel result, not statistical jargon. */
+/* v1.9.0: display exploratory evidence without promoting an unqualified comparison. */
+function jg1812FocusOutcome(panel){return panel?.primary||null;}
 function jg1811Condition(habit,p){
  const earlier=p.id==='yesterday'?'전날 ':p.id==='two-days'?'2일 전 ':'';
- if(habit==='water')return p.id==='last-three'?'최근 3일 중 수분 섭취가 적은 날이 2일 이상인 경우':`${earlier}수분 섭취가 적었던 날`;
- if(habit==='sleep')return p.id==='last-night'?'지난밤 수면이 부족했던 날':p.id==='last-two'?'최근 2회 모두 수면이 부족했던 날':'최근 3회 중 수면이 부족했던 날이 2회 이상인 경우';
+ if(habit==='water')return p.id==='last-three'?'최근 3일 중 수분 섭취가 적은 날이 2일 이상이었던 경우':`${earlier}수분 섭취가 적었던 날`;
+ if(habit==='sleep')return p.id==='last-night'?'지난밤 수면이 부족했던 날':p.id==='last-two'?'최근 2회 모두 수면이 부족했던 날':'최근 3회 중 수면이 부족했던 날이 2회 이상이었던 경우';
  if(habit==='stress')return `${earlier}스트레스가 높았던 날`;
  return `${p.exposedLabel}으로 기록된 날`;
 }
 function jg1811Outcome(label){
- if(label.includes('1~2형'))return '1~2형 변';
- if(label.includes('6~7형'))return '6~7형 변';
- if(label.includes('복통'))return '복통·불편함';
- return label;
+ if(label.includes('1~2형'))return '1~2형 변';if(label.includes('3~4형'))return '3~4형 변';
+ if(label.includes('5형'))return '5형 변';if(label.includes('6~7형'))return '6~7형 변';
+ if(label.includes('복통'))return '복통·불편';if(label.includes('힘주기'))return '힘주기·잔변감';return label;
+}
+function jg14Pct(v){return Math.round(v*100);}
+function jg14Ppt(v){return (Math.abs(v)*100).toFixed(1).replace(/\.0$/,'');}
+function jg14Sentence(p,habit,o){
+ if(!o)return '아직 뚜렷한 패턴이 확인되지 않았어요.';
+ const cond=jg1811Condition(habit,p),what=jg1811Outcome(o.label);
+ return o.diff>=0?`${cond}에는 ${what}이 더 자주 기록됐어요.`:`${cond}에는 ${what}이 오히려 덜 자주 기록됐어요.`;
 }
 function jg1811Readable(panel,habit){
- if(!panel?.enough)return {lead:'아직 기록이 부족해서 비교하기 어려워요.',explain:`${panel?.exposedLabel||'첫 그룹'} ${panel?.exposedCount||0}일과 ${panel?.otherLabel||'비교 그룹'} ${panel?.otherCount||0}일이 있어요. 각 그룹에 8일 이상 기록되면 결과를 보여 줘요.`};
- const o=jg1812FocusOutcome(panel,habit);
- if(!o)return {lead:'아직 비교할 결과가 없어요.',explain:'배변 형태와 생활습관이 함께 기록된 날짜를 확인해 주세요.'};
- const condition=jg1811Condition(habit,panel),outcome=jg1811Outcome(o.label);
- const difference=Math.abs(o.aPct-o.bPct);
- let lead;
- if(difference<10){lead=`${condition}과 그렇지 않은 날의 ${outcome} 기록은 비슷하게 나타났어요.`;}
- else if(o.aPct>o.bPct){lead=`${condition}에는 ${outcome}이 더 자주 나타나요.`;}
- else{lead=`${condition}에는 ${outcome}이 오히려 덜 자주 나타나요.`;}
- const explain=`${panel.exposedLabel}: ${panel.exposedCount}일 중 ${o.exposedCases}일(${o.aPct}%) · ${panel.otherLabel}: ${panel.otherCount}일 중 ${o.otherCases}일(${o.bPct}%).`;
- return {lead,explain,delta:difference,subject:outcome};
+ const o=panel?.primary;
+ if(!o)return {lead:'아직 뚜렷한 패턴이 확인되지 않았어요.',explain:'기록 수·우연 가능성·이후 기록의 반복 여부를 확인한 결과, 이 시간 구간에서는 대표로 표시할 관계가 없어요.'};
+ return {lead:jg14Sentence(panel,habit,o),explain:`${panel.exposedLabel} ${o.exposedCount}일 중 ${o.exposedCases}일(${jg14Pct(o.pA)}%) · ${panel.otherLabel} ${o.otherCount}일 중 ${o.otherCases}일(${jg14Pct(o.pB)}%). 차이 ${jg14Ppt(o.diff)}%p.`,subject:jg1811Outcome(o.label)};
 }
-function jg189Summary(panel,habit){
- const r=jg1811Readable(panel,habit);
- return r.lead+' '+r.explain;
-}
+function jg189Summary(panel,habit){const r=jg1811Readable(panel,habit);return r.lead+' '+r.explain;}
 function jg189Bar(value,kind,label){
  const percent=Math.max(0,Math.min(100,value));
  return `<div class="jg189-bar-row"><span class="jg189-bar-name">${escapeHTML(label)}</span><div class="jg189-bar-track" role="img" aria-label="${escapeHTML(label)} ${percent}퍼센트"><span class="jg189-bar-fill jg189-fill-${kind}" style="width:${percent}%"></span></div><strong class="jg189-bar-value">${percent}%</strong></div>`;
 }
-function jg189OutcomeCharts(panel,habit){
- if(!panel.enough){
-  const neededA=Math.max(0,8-panel.exposedCount),neededB=Math.max(0,8-panel.otherCount);
-  return `<div class="jg189-notready">${jg189Art('empty')}<div><strong>아직 비교할 수 있는 날이 부족해요</strong><p>${escapeHTML(panel.exposedLabel)} 기록은 ${panel.exposedCount}일, ${escapeHTML(panel.otherLabel)} 기록은 ${panel.otherCount}일이에요. 각각 ${neededA}일, ${neededB}일 더 필요해요.</p><div class="jg189-coverage" aria-label="비교 기록 충족도"><span style="width:${Math.round(Math.min(8,panel.exposedCount)/8*50)}%"></span><span style="width:${Math.round(Math.min(8,panel.otherCount)/8*50)}%"></span></div></div></div>`;
- }
- const chosen=jg1812FocusOutcome(panel,habit);
- const rest=panel.outcomes.filter(o=>o.label!==chosen.label);
- const renderMetric=o=>{
-  const pa=jg189Pct(o.exposedCases,panel.exposedCount),pb=jg189Pct(o.otherCases,panel.otherCount);
-  return `<div class="jg189-metric"><div class="jg189-metric-header"><strong>${escapeHTML(o.label)}</strong><small>차이 ${Math.abs(pa-pb)}%p</small></div>${jg189Bar(pa,'a',`${panel.exposedLabel} · ${o.exposedCases}/${panel.exposedCount}일`)}${jg189Bar(pb,'b',`${panel.otherLabel} · ${o.otherCases}/${panel.otherCount}일`)}</div>`;
- };
- return `<div class="jg1810-chart-intro"><strong>이 항목에서 먼저 살펴보는 결과</strong><p>수분은 1~2형, 수면은 복통·불편, 스트레스는 6~7형을 고정 기준으로 비교해요. 다른 결과도 아래에서 확인할 수 있어요.</p></div><div class="jg1810-primary-chart">${renderMetric(chosen)}</div><details class="jg1810-other-metrics"><summary>나머지 배변·불편 결과 2개 확인하기</summary><div class="jg189-metrics">${rest.map(renderMetric).join('')}</div></details>`;
+function jg14OutcomeDetail(o,p,habit,primary=false){
+ const enough=o.exposedCount>=8&&o.otherCount>=8;
+ const title=jg1811Outcome(o.label),a=jg14Pct(o.pA),b=jg14Pct(o.pB);
+ const lines=[
+  `전체 비교: ${p.exposedLabel} ${o.exposedCases}/${o.exposedCount}일 · ${p.otherLabel} ${o.otherCases}/${o.otherCount}일`,
+  `상대 비율: ${o.exposedCases>=5&&o.otherCases>=5&&o.pB>=.05?o.relativeRatio.toFixed(2)+'배(소표본 보정, 참고용)':'적은 사례나 작은 기준 비율로 인해 생략'}`,
+  `차이 ${o.diff<0?'-':'+'}${jg14Ppt(o.diff)}%p · 95% 보수적 차이 구간 ${Math.round(o.ci[0]*100)}~${Math.round(o.ci[1]*100)}%p`,
+  `과거 구간 ${o.discovery.exposedCount}+${o.discovery.otherCount}일 · 이후 구간 ${o.later.exposedCount}+${o.later.otherCount}일`,
+  `과거 기록의 차이 95% 보수적 범위 ${Math.round(o.discovery.ci[0]*100)}~${Math.round(o.discovery.ci[1]*100)}%p (후보 선정에 사용)`,
+  `54개 사전 지정 비교의 Holm 보정 p값 ${(o.q<.001?'0.001 미만':o.q.toFixed(3))} (과거 기록 기준)`,
+  o.repeat?'이후 기록에서도 같은 방향이 관찰됐어요.':'이후 기록에서 같은 방향이 충분히 확인되지는 않았어요.',
+  o.confound.length?'혼란 요인: '+o.confound.join(' / '):'확인 가능한 다른 습관·식사에서 강한 불균형은 발견되지 않았어요. 미기록 요인은 제외할 수 없어요.',
+  o.reason
+ ];
+ return `<div class="jg14-metric ${primary?'jg14-metric-main':''}"><div class="jg14-metric-title"><strong>${escapeHTML(title)}</strong><span class="jg189-quality ${primary?'jg189-quality-ready':'jg189-quality-wait'}">${primary?'대표 선정':'탐색 결과'}</span></div>
+ ${enough?`${jg189Bar(a,'a',`${p.exposedLabel} · ${o.exposedCases}/${o.exposedCount}일`)}${jg189Bar(b,'b',`${p.otherLabel} · ${o.otherCases}/${o.otherCount}일`)}`:`<p class="jg189-method-note">비교 가능한 기록: ${o.exposedCount}일 / ${o.otherCount}일</p>`}
+ <details class="jg14-evidence" ${primary?'open':''}><summary>수치·불확실성·선정 근거 확인</summary><ul>${lines.map(line=>`<li>${escapeHTML(line)}</li>`).join('')}</ul></details></div>`;
 }
-function jg189Panel(p,primary=false,habit=""){
- const example=p.enough?'이 그래프에서 40%는 10일 중 4일에 해당 기록이 있었다는 뜻이에요.':'이 기간에 생활 기록과 배변 기록이 함께 있는 날만 셌어요.';
- return `<section class="jg189-window ${primary?'jg189-window-primary':''}" data-window="${escapeHTML(p.id)}"><div class="jg189-window-head"><div><h4>${escapeHTML(p.label)}</h4><span class="jg189-comparison-count">${escapeHTML(p.exposedLabel)} ${p.exposedCount}일 · ${escapeHTML(p.otherLabel)} ${p.otherCount}일</span></div><span class="jg189-quality ${p.enough?'jg189-quality-ready':'jg189-quality-wait'}">${p.enough?'기록 비교 가능':'기록 더 필요'}</span></div><div class="jg1810-interpretation jg1811-readable"><b>한눈에 보는 결과</b><p class="jg1811-direct">${escapeHTML(jg1811Readable(p,habit).lead)}</p><small>${escapeHTML(jg1811Readable(p,habit).explain)}</small></div>${jg189OutcomeCharts(p,habit)}<p class="jg1810-example">${escapeHTML(example)}</p><p class="jg189-method-note">${escapeHTML(p.note)}</p></section>`;
+function jg189OutcomeCharts(panel,habit){
+ const representative=panel.primary,others=panel.outcomes.filter(o=>o!==representative);
+ if(representative){
+  return `<div class="jg14-primary-metric">${jg14OutcomeDetail(representative,panel,habit,true)}</div><details class="jg14-other-outcomes"><summary>선정되지 않은 나머지 결과 ${others.length}개 확인</summary><div class="jg14-extra-outcomes">${others.map(o=>jg14OutcomeDetail(o,panel,habit,false)).join('')}</div></details>`;
+ }
+ const d=panel.topCandidate?.discovery,v=panel.topCandidate?.later;
+ const needed=d&&v?`과거 그룹별 최소 12일(현재 ${d.exposedCount}/${d.otherCount}일), 이후 그룹별 최소 6일(현재 ${v.exposedCount}/${v.otherCount}일)이 기본 조건이에요. `:'';
+ return `<div class="jg14-no-signal"><strong>대표 결과를 억지로 선택하지 않았어요.</strong><p>${escapeHTML(needed)}표본·우연 가능성·이후 기록 반복·다른 습관과의 겹침을 함께 확인했지만 이 구간에서 기준을 모두 통과한 결과가 없어요.</p></div><details class="jg14-other-outcomes"><summary>탐색한 배변·불편 결과 ${panel.outcomes.length}개 보기</summary><div class="jg14-extra-outcomes">${panel.outcomes.map(o=>jg14OutcomeDetail(o,panel,habit,false)).join('')}</div></details>`;
+}
+function jg189Panel(p,primary=false,habit=''){
+ const r=jg1811Readable(p,habit);
+ return `<section class="jg189-window ${primary?'jg189-window-primary':''}" data-window="${escapeHTML(p.id)}"><div class="jg189-window-head"><div><h4>${escapeHTML(p.label)}</h4><span class="jg189-comparison-count">${escapeHTML(p.exposedLabel)} ${p.exposedCount}일 · ${escapeHTML(p.otherLabel)} ${p.otherCount}일</span></div><span class="jg189-quality ${p.primary?'jg189-quality-ready':'jg189-quality-wait'}">${p.primary?'대표 후보 검증 통과':'확인 중·보류'}</span></div><div class="jg1810-interpretation jg1811-readable"><b>한 줄 결론</b><p class="jg1811-direct">${escapeHTML(r.lead)}</p><small>${escapeHTML(r.explain)}</small></div>${jg189OutcomeCharts(p,habit)}<p class="jg189-method-note">${escapeHTML(p.note)}</p></section>`;
 }
 function jg189HabitCard(h){
- const preferred={water:'yesterday',sleep:'last-night',stress:'today'};
- const main=h.panels.find(p=>p.id===preferred[h.key])||h.panels[0];
- const others=h.panels.filter(p=>p!==main), label={water:'수분 섭취',sleep:'수면',stress:'스트레스'}[h.key], detail={water:'전날 수분과 배변을 먼저 확인해요',sleep:'지난밤 수면과 다음 날 상태를 살펴봐요',stress:'같은 날 기록된 스트레스와 배변을 비교해요'}[h.key];
- return `<article class="jg-life-finding jg189-habit" data-habit="${escapeHTML(h.key)}"><div class="jg189-habit-header"><span class="jg189-habit-icon">${jg189Art(h.key)}</span><div><span class="jg189-habit-kicker">생활습관 분석</span><h3>${escapeHTML(label)}</h3><p>${escapeHTML(detail)}</p></div></div>${jg189Panel(main,true,h.key)}${others.length?`<details class="jg189-more-windows"><summary>다른 시간 구간 ${others.length}개 보기 <span aria-hidden="true">⌄</span></summary><div class="jg189-extra-grid">${others.map(p=>jg189Panel(p,false,h.key)).join('')}</div></details>`:''}</article>`;
+ const main=h.panels.find(p=>p.id===h.primary?.windowId)||h.panels[0];
+ return `<article class="jg-life-finding jg189-habit" data-habit="${escapeHTML(h.key)}">${jg189Panel(main,true,h.key)}</article>`;
 }
 function jg1812Overall(findings,days){
- const preferred={water:'yesterday',sleep:'last-night',stress:'today'};
- const title={water:'수분',sleep:'수면',stress:'스트레스'};
- const caption={water:'전날 섭취와 1~2형',sleep:'지난밤 수면과 복통',stress:'당일 스트레스와 6~7형'};
- const icon={water:'water',sleep:'sleep',stress:'stress'};
- return `<section class="jg1812-overview" aria-labelledby="jg1812-summary-title">
-  <div class="jg1812-summary-head"><span class="jg189-eyebrow">MY RECORDS</span><h3 id="jg1812-summary-title">내 기록, 세 줄로 이해하기</h3><p>최근 ${days}일의 기록을 비교했어요. 아래에서 궁금한 항목을 선택하면 자세한 근거를 볼 수 있어요.</p></div>
-  <div class="jg1812-summary-grid">${findings.map(h=>{
-   const p=h.panels.find(x=>x.id===preferred[h.key])||h.panels[0];
-   const text=jg1811Readable(p,h.key);
-   return `<button type="button" class="jg1812-summary-item" data-jg1812-habit="${h.key}" aria-label="${escapeHTML(title[h.key])} 분석 자세히 보기"><span class="jg1812-summary-icon">${jg189Art(icon[h.key])}</span><span class="jg1812-summary-body"><strong>${escapeHTML(title[h.key])}</strong><small>${escapeHTML(caption[h.key])}</small><span class="jg1812-summary-sentence">${escapeHTML(text.lead)}</span><em>${p.enough?`비교 기록 ${p.exposedCount+p.otherCount}일`:'비교할 기록 더 필요'}</em></span><span class="jg1812-summary-arrow" aria-hidden="true">›</span></button>`;
-  }).join('')}</div>
-  <p class="jg1812-overview-caution">이 결과는 기록에서 관찰된 차이이며 원인을 알려주거나 질병을 진단하지 않아요.</p>
- </section>`;
+ const names={water:'수분',sleep:'수면',stress:'스트레스'};
+ return `<section class="jg1812-overview" aria-labelledby="jg1812-summary-title"><div class="jg1812-summary-head"><span class="jg189-eyebrow">MY RECORDS</span><h3 id="jg1812-summary-title">내 기록, 세 줄로 이해하기</h3><p>최근 ${days}일 · 모든 배변 유형과 시간 구간을 비교했지만 확실하지 않으면 결론을 보류해요.</p></div>
+ <div class="jg1812-summary-grid">${findings.map(h=>{
+  const o=h.primary,p=o?.panel;
+  return `<button type="button" class="jg1812-summary-item" data-jg1812-habit="${h.key}" aria-label="${escapeHTML(names[h.key])} 분석 자세히 보기"><span class="jg1812-summary-icon">${jg189Art(h.key)}</span><span class="jg1812-summary-body"><strong>${escapeHTML(names[h.key])}</strong><small>${o?escapeHTML(p.label+' · '+o.label):'아직 대표 패턴 없음'}</small><span class="jg1812-summary-sentence">${escapeHTML(o?jg14Sentence(p,h.key,o):'아직 뚜렷한 패턴이 확인되지 않았어요.')}</span><em>${o?'시간순 후속 기록에서 같은 방향 관찰':'과거 기록·후속 반복·다중 검정 기준 확인 필요'}</em></span><span class="jg1812-summary-arrow" aria-hidden="true">›</span></button>`;
+ }).join('')}</div><p class="jg1812-overview-caution">관련성은 원인이나 질병 진단이 아니며, 여러 비교 중 발견된 패턴에는 불확실성이 남아요.</p></section>`;
 }
 function jg1812AnalysisDetail(h){
- const preferred={water:'yesterday',sleep:'last-night',stress:'today'};
+ const preferredID=h.primary?.windowId||h.panels.slice().sort((a,b)=>Math.min(b.exposedCount,b.otherCount)-Math.min(a.exposedCount,a.otherCount))[0]?.id||h.panels[0].id;
  const label={water:'수분 섭취',sleep:'수면',stress:'스트레스'}[h.key];
- const detail={water:'전날 수분, 2일 전 수분, 최근 3일 상태를 각각 따로 비교해요.',sleep:'지난밤 수면과 최근 2~3회 수면 상태를 비교해요.',stress:'같은 날 스트레스와 전날 스트레스를 따로 비교해요.'}[h.key];
- const preferredID=preferred[h.key];
- return `<section class="jg1812-habit-section" data-jg1812-section="${h.key}" role="tabpanel" id="jg1812-panel-${h.key}" aria-labelledby="jg1812-tab-${h.key}">
-   <div class="jg1812-detail-intro"><span class="jg1812-detail-illustration">${jg189Art(h.key)}</span><div><strong>${escapeHTML(label)}와 배변을 비교했어요</strong><p>${escapeHTML(detail)}</p></div></div>
-   <div class="jg1812-window-tabs" role="group" aria-label="${escapeHTML(label)} 비교 시점">${h.panels.map(p=>`<button type="button" data-jg1812-window="${escapeHTML(p.id)}" aria-pressed="${p.id===preferredID?'true':'false'}" class="${p.id===preferredID?'active':''}">${escapeHTML(p.label)}</button>`).join('')}</div>
-   <div class="jg1812-window-content">${h.panels.map(p=>`<div data-jg1812-window-panel="${escapeHTML(p.id)}" ${p.id!==preferredID?'hidden':''}>${jg189Panel(p,true,h.key)}</div>`).join('')}</div>
-  </section>`;
+ return `<section class="jg1812-habit-section" data-jg1812-section="${h.key}" role="tabpanel" id="jg1812-panel-${h.key}" aria-labelledby="jg1812-tab-${h.key}"><div class="jg1812-detail-intro"><span class="jg1812-detail-illustration">${jg189Art(h.key)}</span><div><strong>${escapeHTML(label)}와 배변을 비교했어요</strong><p>대표 시간 구간과 배변 결과는 기록에 따라 자동으로 결정돼요. 아래에서 다른 구간도 확인할 수 있어요.</p></div></div><div class="jg1812-window-tabs" role="group" aria-label="${escapeHTML(label)} 비교 시점">${h.panels.map(p=>`<button type="button" data-jg1812-window="${escapeHTML(p.id)}" aria-pressed="${p.id===preferredID?'true':'false'}" class="${p.id===preferredID?'active':''}">${escapeHTML(p.label)}${h.primary?.windowId===p.id?' · 대표':''}</button>`).join('')}</div>
+ <div class="jg1812-window-content">${h.panels.map(p=>`<div data-jg1812-window-panel="${escapeHTML(p.id)}" ${p.id!==preferredID?'hidden':''}>${jg189Panel(p,true,h.key)}</div>`).join('')}</div></section>`;
 }
 function renderLifestylePatterns(data,days,pane){
  let card=pane.querySelector('#jgLifestyleAnalysis');
  if(!card){card=document.createElement('article');card.id='jgLifestyleAnalysis';card.className='analysis-card jg-lifestyle-analysis';
   const change=pane.querySelector('#personalChangeAnalysis');if(change)change.before(card);else pane.prepend(card);}
- const findings=analyzeLifestylePatterns(data,days);
- const labels={water:'수분',sleep:'수면',stress:'스트레스'};
+ const findings=analyzeLifestylePatterns(data,days),labels={water:'수분',sleep:'수면',stress:'스트레스'};
  const active=findings.some(h=>h.key===card.dataset.activeHabit)?card.dataset.activeHabit:'water';
- card.innerHTML=`<div class="jg1812-section-head"><div><span class="jg189-eyebrow">LIFESTYLE ANALYSIS</span><h2>생활습관과 배변 기록</h2><p>수분·수면·스트레스와 배변 상태가 어떤 날에 함께 나타났는지 살펴봐요.</p></div></div>
+ card.innerHTML=`<div class="jg1812-section-head"><div><span class="jg189-eyebrow">LIFESTYLE ANALYSIS</span><h2>생활습관과 배변 기록</h2><p>실제 기록에서 모든 결과와 시간 구간을 탐색하고, 과거·이후 기록을 나누어 확인했어요.</p></div></div>
  ${jg1812Overall(findings,days)}
- <div class="jg1812-detail-area" id="jg1812-detail-area"><div class="jg1812-detail-bar"><div><span class="jg189-eyebrow">DETAILS</span><h3>하나씩 자세히 살펴보기</h3></div><span class="jg1812-detail-hint">항목과 비교 시점을 선택하세요</span></div>
+ <div class="jg1812-detail-area" id="jg1812-detail-area"><div class="jg1812-detail-bar"><div><span class="jg189-eyebrow">DETAILS</span><h3>선정 근거와 다른 결과 보기</h3></div><span class="jg1812-detail-hint">습관과 시점을 선택하세요</span></div>
  <div class="jg1812-habit-tabs" role="tablist" aria-label="생활습관 분석 선택">${findings.map(h=>`<button id="jg1812-tab-${h.key}" role="tab" type="button" data-jg1812-tab="${h.key}" aria-controls="jg1812-panel-${h.key}" aria-selected="${h.key===active?'true':'false'}" class="${h.key===active?'active':''}">${escapeHTML(labels[h.key])}</button>`).join('')}</div>
  ${findings.map(h=>jg1812AnalysisDetail(h)).join('')}</div>
- <details class="jg1812-method"><summary>분석 방법과 주의할 점 보기</summary><div><p><b>당일 기록:</b> 생활습관과 배변의 발생 순서를 확정할 수 없는 동시 관찰이에요.</p><p><b>이전 날짜:</b> 전날·2일 전 또는 최근 며칠의 기록과 배변을 비교하며 의학적으로 확정된 반응 시간을 뜻하지 않아요.</p><p><b>분석 단위:</b> 한 날짜에 배변을 여러 번 해도 날짜를 한 번만 세고, 생활 기록이 빠진 날짜는 제외해요.</p><p><b>해석의 한계:</b> 비교 집단 각각 8일 이상은 앱의 표시 조건일 뿐 통계적 유의성이나 의학적 기준은 아니에요. 여러 시간 구간에서 우연한 차이가 나올 수 있어요.</p></div></details>`;
+ <details class="jg1812-method"><summary>분석 기준과 한계 보기</summary><div><p><b>탐색 대상:</b> 수분·수면·스트레스 각각의 시간 구간에서 1~2형, 3~4형, 5형, 6~7형, 복통·불편, 힘주기·잔변감을 비교해요. 증상 미기록은 증상 없음으로 계산하지 않아요.</p><p><b>검증 방법:</b> 시간순으로 앞의 약 70% 날짜에서 후보를 탐색하고, 뒤의 약 30% 날짜에서 같은 방향인지 다시 확인해요. 과거 구간에서는 Fisher 정확검정, 전체 54개 비교에 대해 Holm 다중검정 보정(보정 p≤0.05), 보수적인 비율 차이 신뢰구간을 사용해요. 이는 임상적으로 검증된 규칙은 아니에요.</p><p><b>선정 기준:</b> 과거 구간 각 집단 최소 12일, 이후 구간 각 집단 최소 6일, 효과 크기·불확실성·반복 방향·혼란 요인 점검을 모두 충족해야 대표로 보여 줘요.</p><p><b>혼란 요인:</b> 같은 날짜 범위의 다른 생활습관과, 기록이 확인된 식사 특성의 집단 간 차이를 점검해요. 미기록이나 측정하지 않은 요인은 배제할 수 없어요.</p><p><b>분석 단위:</b> 하루 여러 배변도 날짜는 한 번만 세요. 같은 날 다양한 형태가 기록될 수 있지만 개별 배변의 브리스톨 구간은 서로 겹치지 않아요. 당일 생활습관과 배변의 발생 순서는 알 수 없어요.</p><p><b>중요:</b> 신뢰구간은 각 집단의 Wilson 97.5% 구간을 결합한 보수적인 동시 95% 범위이며, 선행 기록의 신뢰성을 설명하는 보조 수치예요. 과거·이후 데이터 모두를 사용한 수치는 기술통계이지 별도 외부 검증이 아니에요. 연관성이 있어도 원인이나 질병을 판단하지 않아요.</p></div></details>`;
  card.dataset.activeHabit=active;
  function syncHabit(){
   const key=card.dataset.activeHabit||'water';
@@ -2263,20 +2352,16 @@ function renderLifestylePatterns(data,days,pane){
  card.onclick=e=>{
   const select=e.target.closest('[data-jg1812-tab],[data-jg1812-habit]');
   if(select&&card.contains(select)){
-   const key=select.dataset.jg1812Tab||select.dataset.jg1812Habit;
-   card.dataset.activeHabit=key;syncHabit();
+   card.dataset.activeHabit=select.dataset.jg1812Tab||select.dataset.jg1812Habit;syncHabit();
    if(select.hasAttribute('data-jg1812-habit'))card.querySelector('#jg1812-detail-area')?.scrollIntoView({behavior:'smooth',block:'start'});
    return;
   }
-  const btn=e.target.closest('[data-jg1812-window]');
-  if(!btn||!card.contains(btn))return;
+  const btn=e.target.closest('[data-jg1812-window]');if(!btn||!card.contains(btn))return;
   const section=btn.closest('[data-jg1812-section]');if(!section)return;
-  const value=btn.dataset.jg1812Window;
-  section.querySelectorAll('[data-jg1812-window]').forEach(el=>{let on=el.dataset.jg1812Window===value;el.classList.toggle('active',on);el.setAttribute('aria-pressed',String(on));});
-  section.querySelectorAll('[data-jg1812-window-panel]').forEach(el=>el.hidden=el.dataset.jg1812WindowPanel!==value);
+  section.querySelectorAll('[data-jg1812-window]').forEach(el=>{const on=el.dataset.jg1812Window===btn.dataset.jg1812Window;el.classList.toggle('active',on);el.setAttribute('aria-pressed',String(on));});
+  section.querySelectorAll('[data-jg1812-window-panel]').forEach(el=>el.hidden=el.dataset.jg1812WindowPanel!==btn.dataset.jg1812Window);
  };
 }
-
 function analyzeFoodPatterns(data,days,now=Date.now()){
  const prepared=prepareAnalysisRows(data,days,now),results=[];
  for(const item of prepared.lagRows){
@@ -2335,137 +2420,7 @@ function renderPersonalAnalysis(data){
  }).join('');
  panel.innerHTML=`<div class="analysis-card jg189-food-analysis"><div class="jg189-section-heading"><span class="jg189-section-icon">${jg189Art('meal')}</span><div><span class="jg189-eyebrow">MEAL × BOWEL</span><h2>식사와 배변, 그래프로 보기</h2><p>섭취 후 0~72시간의 관찰 비율을 비교해요.</p></div></div><p class="analysis-subtle">최근 ${days}일 기준 · 소화 관련 특성 × 시간차 4구간 × 배변·불편 유형 5종 탐색. 확정된 의학 기준이 아닌 개발용 관찰 조건입니다.</p>${all||`<div class="jg189-empty-result">${jg189Art('empty')}<div><strong>아직 표시할 식사 비교 결과가 없어요</strong><p>식사 시각과 확인된 배변 기록이 쌓이면 여기에 비교 막대그래프가 표시돼요.</p></div></div>`}<p class="analysis-subtle">음식 미기록 구간은 미섭취로 처리하지 않아요. 하루 단위의 과거 음식 기록 ${legacy}건은 식사 시각을 알 수 없어 이 분석에서 제외돼요.</p><p class="analysis-subtle">초기 통계 조건: 학습 부분 섭취·비섭취 각 5건 이상, 관찰 차이 20%p 이상. 후속 부분에서 각 3건 이상이고 같은 방향이어야 '재현' 표기. 수치는 의학적 기준이 아닙니다.</p></div>`;
  home.querySelector('.food-footnote').textContent='통계적 연관성은 질환이나 원인 음식 판정이 아니며 식사 제한을 권하지 않아요.';
- jg1813RenderUnified({data,days,results,qualified,prepared,change:ch,findings:analyzeLifestylePatterns(data,days)});
 }
-
-/* v1.8.13: one analysis UI for meals, water, sleep, stress and recent trends.
- * This is a presentation adapter. All existing analysis/statistical algorithms remain unchanged.
- */
-const JG1813_NAV=[
- {key:'meal',name:'식사',art:'meal',caption:'식사 후 0~72시간'},
- {key:'water',name:'수분',art:'water',caption:'당일과 이전 3일'},
- {key:'sleep',name:'수면',art:'sleep',caption:'지난밤과 최근 3회'},
- {key:'stress',name:'스트레스',art:'stress',caption:'당일과 전날'},
- {key:'recent',name:'최근 변화',art:'calendar',caption:'최근 30일과 이전 60일'}
-];
-const JG1813_PREFERRED={water:'yesterday',sleep:'last-night',stress:'today'};
-const JG1813_OTHER_LABEL={water:'보통·많음',sleep:'보통·충분',stress:'낮음·보통'};
-const JG1813_RECENT_METRICS=[{key:'hard',label:'1~2형 변'},{key:'formed',label:'3~4형 변'},{key:'loose',label:'6~7형 변'},{key:'pain',label:'복통·불편'}];
-const jg1813State={tab:'water',window:{},foodIndex:0,recentMetric:'hard'};
-function jg1813Num(n,d){return d?Math.round(100*n/d):0;}
-function jg1813Esc(t){return escapeHTML(String(t??''));}
-function jg1813SafeBar(n,d,caption,kind){
- const rate=jg1813Num(n,d);
- return `<div class="jg1813-bar-line"><div class="jg1813-bar-info"><strong>${jg1813Esc(caption)}</strong><span>${n}/${d} ${d===1?'기록':'기록'} · ${rate}%</span></div><div class="jg1813-bar-track" role="img" aria-label="${jg1813Esc(caption)}: ${d}건 중 ${n}건, ${rate}%"><div class="jg1813-bar-progress jg1813-bar-${kind}" style="width:${Math.min(100,Math.max(0,rate))}%"></div></div></div>`;
-}
-function jg1813LifestyleModel(h){
- const preferred=JG1813_PREFERRED[h.key], selected=jg1813State.window[h.key]||preferred;
- const p=h.panels.find(x=>x.id===selected)||h.panels[0];
- const subject={water:'수분 섭취',sleep:'수면',stress:'스트레스'}[h.key];
- const timeNotes={water:'수분 섭취와 배변 형태를 날짜별로 비교해요.',sleep:'선택 날짜의 아침까지 잔 지난밤 수면을 기준으로 해요.',stress:'스트레스와 배변을 비교해요. 당일 기록은 선후관계를 알 수 없어요.'};
- const outcome=jg1812FocusOutcome(p,h.key);
- const readable=jg1811Readable(p,h.key);
- const other=JG1813_OTHER_LABEL[h.key];
- const obs=outcome?{
-  a:outcome.exposedCases,b:outcome.otherCases,na:p.exposedCount,nb:p.otherCount,
-  aLabel:p.exposedLabel,bLabel:other,what:jg1811Outcome(outcome.label),
-  lead:readable.lead,
-  explain:`${p.exposedLabel} ${p.exposedCount}일 중 ${outcome.exposedCases}일, ${other} ${p.otherCount}일 중 ${outcome.otherCases}일에 기록됐어요.`
- }:{a:0,b:0,na:p.exposedCount,nb:p.otherCount,aLabel:p.exposedLabel,bLabel:other,lead:readable.lead,explain:readable.explain};
- const list=h.panels.map(x=>({id:x.id,label:x.label}));
- const rest=p.enough?p.outcomes.filter(o=>o.label!==outcome?.label):[];
- return {title:`${subject}와 배변`,hint:timeNotes[h.key],options:list,selected:p.id,obs,ready:p.enough,
-  countLabel:'날짜',note:p.note,extra:rest.map(o=>({label:o.label,a:o.exposedCases,b:o.otherCases,na:p.exposedCount,nb:p.otherCount})),
-  method:'생활습관을 기록한 날 중 배변 기록이 있는 날짜만 비교해요. 하루 여러 번 배변했어도 한 날짜로 계산해요.',
-  sufficient:'각 조건에 비교 가능한 날짜가 최소 8일씩 있어야 그래프를 보여 줘요. 이 기준은 의학적 유의성을 의미하지 않아요.'};
-}
-function jg1813FoodModel(payload){
- const results=payload.results;
- const selected=Math.min(Math.max(jg1813State.foodIndex,0),Math.max(results.length-1,0));
- const r=results[selected];
- const covered=payload.prepared.lagRows;
- if(!r){
-  return {title:'식사와 배변',hint:'식사 시각을 기록한 뒤 배변을 확인한 자료만 비교해요.',
-   options:[],selected:'',ready:false,countLabel:'회',obs:{lead:'아직 식사와 배변의 뚜렷한 비교 결과가 없어요.',explain:'음식 종류, 섭취 시각, 배변 기록이 더 쌓이면 관찰된 차이를 이곳에서 비교할 수 있어요.',na:0,nb:0},
-   note:`현재 비교 가능한 배변 기록(0~6 / 6~24 / 24~48 / 48~72시간): ${covered.map(x=>x.rows.length).join(' · ')}건.`,
-   method:'식사 시각이 없는 과거 음식 기록은 시간차 분석에 사용하지 않아요. 음식 미기록은 미섭취가 아니에요.',
-   sufficient:'식사 분석은 시간순 학습·후속 기록에서 차이를 비교하는 탐색 분석이며, 기준 충족이 의학적 입증을 뜻하지 않아요.'};
- }
- const pa=jg1813Num(r.full.exposedCases,r.full.exposed),pb=jg1813Num(r.full.otherCases,r.full.other);
- const outcome=jg1811Outcome(r.outcome),diff=Math.abs(pa-pb);
- const lead=diff<10?`${r.food} 섭취 여부에 따른 ${outcome} 기록은 비슷했어요.`:pa>pb?`${r.food}을 먹고 ${r.lag} 뒤에는 ${outcome}이 더 자주 나타났어요.`:`${r.food}을 먹고 ${r.lag} 뒤에는 ${outcome}이 덜 자주 나타났어요.`;
- const quality=r.confound?'다른 식사·생활 차이 때문에 구분이 어려워요.':r.verified?'후속 기록에서도 같은 방향이 관찰됐어요.':'후속 기록에서는 아직 같은 경향이 확인되지 않았어요.';
- return {title:'식사와 배변',hint:'기록된 식사 특성별로 0~72시간 뒤의 배변을 탐색해요.',
-  options:results.map((x,i)=>({id:String(i),label:`${x.food} · ${x.lag}`})),selected:String(selected),ready:true,
-  obs:{a:r.full.exposedCases,b:r.full.otherCases,na:r.full.exposed,nb:r.full.other,aLabel:`${r.food} 섭취`,bLabel:'비교 기록',lead,
-    explain:`${r.food} 섭취 후 ${r.full.exposed}회 중 ${r.full.exposedCases}회, 비교 기록 ${r.full.other}회 중 ${r.full.otherCases}회였어요.`},
-  countLabel:'회',note:`${r.outcome} · 섭취 ${r.lag} 후. ${quality}`,
-  extra:[],method:'같은 배변 기록을 섭취 후 시간 구간별로 비교하되, 음식 미기록 구간을 미섭취로 처리하지 않아요.',
-  sufficient:'식사 분석은 여러 음식·시간 구간·증상 조합을 탐색하므로 우연한 차이가 나타날 수 있어요.'};
-}
-function jg1813RecentModel(payload){
- const {recent:a,before:b}=payload.change;
- const kind=jg1813State.recentMetric;
- const metric=JG1813_RECENT_METRICS.find(x=>x.key===kind)||JG1813_RECENT_METRICS[0];
- const n=a[metric.key]||0,m=b[metric.key]||0;
- const pa=jg1813Num(n,a.count),pb=jg1813Num(m,b.count),delta=Math.abs(pa-pb);
- const enough=a.count>=8&&b.count>=12;
- const lead=!enough?'아직 두 기간의 배변 기록이 부족해서 비교하기 어려워요.':delta<10?`최근 30일과 이전 60일의 ${metric.label} 기록 비율은 비슷해요.`:pa>pb?`최근 30일에는 ${metric.label}이 이전보다 더 자주 기록됐어요.`:`최근 30일에는 ${metric.label}이 이전보다 덜 자주 기록됐어요.`;
- return {title:'내 기록의 최근 변화',hint:'최근 30일과 그 이전 60일에 기록된 배변 형태를 비교해요.',
-  options:JG1813_RECENT_METRICS.map(x=>({id:x.key,label:x.label})),selected:metric.key,ready:enough,
-  obs:{a:n,b:m,na:a.count,nb:b.count,aLabel:'최근 30일',bLabel:'이전 60일',lead,
-    explain:`최근 30일은 ${a.count}회 중 ${n}회, 이전 60일은 ${b.count}회 중 ${m}회 기록됐어요.`},
-  countLabel:'회',note:'기록하지 않은 날을 배변하지 않은 날로 가정하지 않아요.',
-  extra:[],method:'최근 두 기간의 실제 배변 기록 건수와 형태 비율을 비교해요.',
-  sufficient:'최근 30일 8건 이상, 이전 60일 12건 이상일 때 그래프를 표시해요. 의학적 기준은 아니에요.'};
-}
-function jg1813Model(payload,key){
- if(key==='meal')return jg1813FoodModel(payload);
- if(key==='recent')return jg1813RecentModel(payload);
- return jg1813LifestyleModel(payload.findings.find(h=>h.key===key));
-}
-function jg1813RenderUnified(payload){
- const pane=document.getElementById('foodlifeAnalysisPane');if(!pane)return;
- let root=pane.querySelector('#jg1813-unified');
- if(!root){root=document.createElement('article');root.id='jg1813-unified';root.className='jg1813-unified';pane.prepend(root);}
- const tabs=JG1813_NAV,key=tabs.some(x=>x.key===jg1813State.tab)?jg1813State.tab:'meal';
- const model=jg1813Model(payload,key);
- const previews=tabs.map(t=>{
-  const m=jg1813Model(payload,t.key);
-  return {key:t.key,name:t.name,art:t.art,lead:m.obs.lead,ready:m.ready};
- });
- const o=model.obs;
- const sufficient=model.ready;
- root.innerHTML=`
- <header class="jg1813-intro"><div><span class="jg1813-overline">MY RECORDS · PERSONAL INSIGHTS</span><h2>내 기록 분석</h2><p>식사와 생활습관, 배변의 관계를 <strong>같은 기준의 화면</strong>에서 쉽게 비교해요.</p></div><span class="jg1813-range">최근 ${payload.days}일 기준</span></header>
- <section class="jg1813-overview" aria-label="분석 한눈에 보기"><div class="jg1813-block-head"><h3>한눈에 보기</h3><small>궁금한 항목을 선택해 보세요</small></div>
- <div class="jg1813-glance">${previews.map(p=>`<button type="button" class="jg1813-glance-item ${p.key===key?'active':''}" data-jg1813-tab="${p.key}" aria-pressed="${p.key===key}"><span class="jg1813-glance-art">${jg189Art(p.art)}</span><span class="jg1813-glance-copy"><strong>${jg1813Esc(p.name)}</strong><small>${jg1813Esc(p.lead)}</small></span></button>`).join('')}</div></section>
- <section class="jg1813-main" id="jg1813-main"><div class="jg1813-block-head"><h3>자세히 보기</h3><small>모든 항목은 동일한 방식으로 보여요</small></div>
- <div class="jg1813-tabs" role="tablist" aria-label="분석 항목 선택">${tabs.map(t=>`<button role="tab" type="button" id="jg1813-tab-${t.key}" data-jg1813-tab="${t.key}" aria-selected="${t.key===key}" aria-controls="jg1813-panel" class="${t.key===key?'active':''}">${jg1813Esc(t.name)}</button>`).join('')}</div>
- <div class="jg1813-content" id="jg1813-panel" role="tabpanel" aria-labelledby="jg1813-tab-${key}">
-  <div class="jg1813-detail-title"><span class="jg1813-detail-art">${jg189Art(tabs.find(t=>t.key===key).art)}</span><div><span class="jg1813-overline">${jg1813Esc(tabs.find(t=>t.key===key).caption)}</span><h3>${jg1813Esc(model.title)}</h3><p>${jg1813Esc(model.hint)}</p></div></div>
-  <div class="jg1813-picker"><span class="jg1813-label">${key==='meal'?'관찰된 식사 조합':key==='recent'?'배변 형태':'비교할 날짜 범위'}</span><div class="jg1813-options" role="group" aria-label="비교 조건 선택">${model.options.length?model.options.map(t=>`<button type="button" data-jg1813-choice="${jg1813Esc(t.id)}" aria-pressed="${String(t.id)===String(model.selected)}" class="${String(t.id)===String(model.selected)?'active':''}">${jg1813Esc(t.label)}</button>`).join(''):'<span class="jg1813-no-options">아직 비교할 항목이 없어요</span>'}</div></div>
-  <section class="jg1813-conclusion"><span class="jg1813-label">한 줄 결론</span><p>${jg1813Esc(o.lead)}</p><small>${jg1813Esc(o.explain)}</small></section>
-  <section class="jg1813-evidence"><div class="jg1813-block-head"><h4>기록 비교 그래프</h4><span class="jg1813-status ${sufficient?'ready':'wait'}">${sufficient?'비교 기록 있음':'비교 기록 부족'}</span></div>
-   ${sufficient?`<div class="jg1813-bars">${jg1813SafeBar(o.a,o.na,o.aLabel,'a')}${jg1813SafeBar(o.b,o.nb,o.bLabel,'b')}</div><p class="jg1813-graph-caption">막대 길이는 각 조건에서 <b>해당 결과가 기록된 비율</b>이에요. 길이가 길다고 원인이 확인된 것은 아니에요.</p>`:
-   `<div class="jg1813-need"><span class="jg1813-need-art">${jg189Art('empty')}</span><p>${jg1813Esc(model.sufficient)}</p></div>`}
-  </section>
-  <details class="jg1813-method"><summary>분석 기준과 추가 설명</summary><p>${jg1813Esc(model.method)}</p><p>${jg1813Esc(model.note)}</p><p>${jg1813Esc(model.sufficient)}</p>${model.extra?.length?`<div class="jg1813-more-results">${model.extra.map(x=>`<div><strong>${jg1813Esc(x.label)}</strong>${jg1813SafeBar(x.a,x.na,o.aLabel,'a')}${jg1813SafeBar(x.b,x.nb,o.bLabel,'b')}</div>`).join('')}</div>`:''}</details>
- </div></section>
- <p class="jg1813-disclaimer">이 화면은 기록에서 관찰된 차이를 보여 줍니다. 식사·수분·수면·스트레스가 증상의 원인이라는 뜻은 아니며, 질병을 진단하지 않습니다.</p>`;
- root.onclick=e=>{
-  const tab=e.target.closest('[data-jg1813-tab]');
-  if(tab&&root.contains(tab)){jg1813State.tab=tab.dataset.jg1813Tab;jg1813RenderUnified(payload);return;}
-  const choice=e.target.closest('[data-jg1813-choice]');
-  if(!choice||!root.contains(choice))return;
-  const value=choice.dataset.jg1813Choice;
-  if(jg1813State.tab==='meal')jg1813State.foodIndex=Number(value);
-  else if(jg1813State.tab==='recent')jg1813State.recentMetric=value;
-  else jg1813State.window[jg1813State.tab]=value;
-  jg1813RenderUnified(payload);
- };
-}
-
 function initPersonalAnalysis(){
  initTimedMeals();initMealReview();
  const choices=document.querySelectorAll('[data-analysis-days]');
@@ -3053,11 +3008,13 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.8.13';
+const JANGILGI_VERSION='1.9.0';
 const JANGILGI_RELEASE_STEPS=[
- ['모든 분석 하나로','식사·수분·수면·스트레스·최근 변화를 하나의 통합 분석 화면에서 확인할 수 있어요.'],
- ['분석 화면 통일','모든 항목에 동일한 결론·비교 조건·그래프·기록 근거·방법 설명 구조를 적용했어요.'],
- ['기존 계산 유지','식사·생활습관 시간차 및 기록 충분도 계산은 바꾸지 않고 표시 방식만 통합했어요.']
+ ['생활 분석 자동 탐색','수분·수면·스트레스의 모든 시간 구간에서 브리스톨 4개 그룹과 복통·잔변감의 관계를 살펴봐요.'],
+ ['대표 결과 동적 선정','특정 배변 유형이나 시간을 미리 정하지 않고 기록 수, 우연 가능성, 후속 반복, 동시 생활습관을 확인한 뒤 선정해요.'],
+ ['기록 불충분 시 보류','기준을 통과한 결과가 없으면 패턴이 아직 확인되지 않았다고 알려줘요.'],
+ ['선정 이유 투명하게','집단 기록 수, 비율 차이, 불확실성, 후속 반복, 다른 요인과의 중복 가능성을 함께 확인할 수 있어요.'],
+ ['원래 기능 보존','식사 분석 계산, 기존 일러스트와 UI, 기록 및 암호화 저장 구조는 유지해요.']
 ];
 
 /* old release steps (preserved in changelog below) */
@@ -3067,8 +3024,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
- {version:'1.8.13',date:'2026-11-01',title:'식사·생활·최근 변화 분석 UI 완전 통합',details:['식사·수분·수면·스트레스·최근 변화를 한 분석 화면에서 확인','모든 항목에 동일한 한 줄 결론·조건 선택·비교 그래프·기록 근거 구조 적용','기존 분석 계산·암호화 저장·기록·공지·문의 유지']},
- {version:'1.8.12',date:'2026-11-01',title:'자연스러운 홈 일러스트·집중형 생활 분석',details:['홈 기록 카드에 일러스트 배경 패치 제거','최근 기록의 반복 이미지를 선형 아이콘으로 교체','생활습관별 요약과 탭·시간 구간 선택 적용']},
+ {version:'1.9.0',date:'2026-11-01',title:'개인별 대표 연관성 자동 탐색',details:['배변 형태 4분류·복부 불편·잔변감과 모든 생활 시간차를 비교','Fisher 정확검정 및 Holm 다중 비교 보정·시간순 후속 확인','다른 습관·음식 특성이 함께 나타나는지 점검','신뢰할 대표 관계가 없으면 선정 보류','기존 저장·JSON·UI 보존']},
  {version:'1.8.11',date:'2026-11-01',title:'기록지 일러스트·생활 분석 한 줄 해석',details:['홈의 흐린 장 모니터 이미지를 기록지·체크 그래프 그림으로 교체','식사 분석 카드의 잘린 음식 그림 정리','생활습관 분석 결과를 조건→배변형태 순서로 직관적 해석','비교 날짜 수는 한 줄 결론 아래에 보조 설명으로 표시']},
  {version:'1.8.10',date:'2026-11-01',title:'일러스트 품질 향상·분석 결과 쉽게 읽기',details:['기존 화면 배치 유지·고화질 이미지 자산 교체','생활습관 분석 결과의 실제 날짜 수·비율·차이 쉬운 설명','대표 비교 그래프 우선 노출·기타 결과 펼쳐 보기','비교 그룹 이름과 기록 부족 이유 명확화']},
  {version:'1.8.9',date:'2026-11-01',title:'일러스트·분석 시각화 개선',details:['기록·분석 화면의 벡터 이미지 통일','생활습관·식사 분석 비교 막대그래프 추가','자동 요약 및 기록 충분도 표시']},
@@ -3403,7 +3359,7 @@ function initDigestiveEditors(){
 }
 let jangCurrentHelp='first';
 // Each help category has one highlighted target per brief instruction.
-const JANG_HELP_TARGETS={"first":[["profile","#profileView .jg184-profile-grid"],["settings","#backupRestoreSettingsCard"],["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg187-top-update"]],"bowel":[["record","#quickTimeBlock"],["record","#quickShapeBlock"],["record","#quickSymptomBlock"],["record","#quickFlagsBlock"],["record","#recordView .quick-actions"]],"food":[["meal","#mealAt"],["meal","#mealFoodSearch"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal","#timedMealPanel"]],"custom":[["meal","#mealFoodSearch"],["meal","#mealFoodChoices"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal",".menu-request-open"]],"life":[["lifestyle","#foodlifeDateBlock"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#lifestyleView .foodlife-actions"]],"edit":[["bowelHistory","#bowelHistoryView"],["mealDay","#mealDayView"],["lifestyle","#lifestyleView"],["settings","#backupRestoreSettingsCard"]],"home":[["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg181-week-panel"],["week","#weekView .jg184-calendar-layout"],["dashboard",".jg181-contact"]],"analysis":[["analysis","#analysisView"],["analysis","#jg1813-unified .jg1813-overview"],["analysis","#jg1813-main"],["analysis","#jg1813-unified .jg1813-method"]],"support":[["dashboard",".jg181-contact"],["support","#supportComposeToggle"],["support","#supportMyList"],["support","#supportThreadDetail"]],"account":[["profile","#profileView .jg184-profile-grid"],["profile","#profileView .profile-menu-field"],["profile","#profileView .jg184-profile-security"],["settings","#backupRestoreSettingsCard"]],"version":[["dashboard",".jg181-top-notify"],["dashboard",".jg181-top-notify"],["dashboard",".jg187-top-update"],["dashboard",".jg187-top-update"]]};
+const JANG_HELP_TARGETS={"first":[["profile","#profileView .jg184-profile-grid"],["settings","#backupRestoreSettingsCard"],["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg187-top-update"]],"bowel":[["record","#quickTimeBlock"],["record","#quickShapeBlock"],["record","#quickSymptomBlock"],["record","#quickFlagsBlock"],["record","#recordView .quick-actions"]],"food":[["meal","#mealAt"],["meal","#mealFoodSearch"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal","#timedMealPanel"]],"custom":[["meal","#mealFoodSearch"],["meal","#mealFoodChoices"],["meal","#jgMealSelected"],["meal","#timedMealPanel"],["meal",".menu-request-open"]],"life":[["lifestyle","#foodlifeDateBlock"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#foodlifeLifePanel"],["lifestyle","#lifestyleView .foodlife-actions"]],"edit":[["bowelHistory","#bowelHistoryView"],["mealDay","#mealDayView"],["lifestyle","#lifestyleView"],["settings","#backupRestoreSettingsCard"]],"home":[["dashboard",".jg181-action-row"],["dashboard",".jg181-recent-row"],["dashboard",".jg181-week-panel"],["week","#weekView .jg184-calendar-layout"],["dashboard",".jg181-contact"]],"analysis":[["analysis","#analysisView"],["analysis","#foodlifeAnalysisPane"],["analysis","#jgLifestyleAnalysis"],["analysis","#analysisView"]],"support":[["dashboard",".jg181-contact"],["support","#supportComposeToggle"],["support","#supportMyList"],["support","#supportThreadDetail"]],"account":[["profile","#profileView .jg184-profile-grid"],["profile","#profileView .profile-menu-field"],["profile","#profileView .jg184-profile-security"],["settings","#backupRestoreSettingsCard"]],"version":[["dashboard",".jg181-top-notify"],["dashboard",".jg181-top-notify"],["dashboard",".jg187-top-update"],["dashboard",".jg187-top-update"]]};
 function jangHelpTour(id){
  const item=JANGILGI_HELP.find(x=>x.id===id)||JANGILGI_HELP[0];
  const builtin=JANGILGI_BUILTIN_HELP.find(x=>x.id===item.id);
@@ -3436,12 +3392,13 @@ function initDetailedHelp(){
 // 업데이트 안내는 항상 바로 전 릴리스와 현재 릴리스의 차이만 설명합니다.
 // 과거 버전 내역은 관리자가 편집할 수 있지만, 안내에 자동으로 누적하지 않습니다.
 const JANGILGI_PREVIOUS_RELEASE='1.8.12';
-// The update tour only describes the change from v1.8.12 to v1.8.13.
+// The update tour describes only the v1.8.12 → v1.9.0 changes.
 // 과거 릴리스 배열 인덱스를 재사용하지 않는다.
 const JANG_CURRENT_UPDATE_STEPS=[
- {view:'analysis',selector:'#jg1813-unified .jg1813-overview',title:'모든 분석을 한곳에',text:'식사·수분·수면·스트레스·최근 변화의 요약을 같은 화면에서 확인할 수 있어요.'},
- {view:'analysis',selector:'#jg1813-unified .jg1813-tabs',title:'동일한 분석 카드',text:'항목을 바꾸어도 결론·비교 그래프·근거가 같은 위치에 표시돼요.'},
- {view:'analysis',selector:'#jg1813-unified .jg1813-options',title:'비교 조건 선택',text:'식사 조합·날짜 범위·배변 형태를 선택하면 그래프와 해석이 함께 바뀌어요.'}
+ {view:'analysis',selector:'#jg1812-summary-title',title:'생활습관별 대표 패턴 자동 선정',text:'v1.8.12 → v1.9.0: 수분·수면·스트레스의 대표 배변 형태와 시간 구간을 기록에 따라 자동으로 선정해요.'},
+ {view:'analysis',selector:'#jg1812-detail-area',title:'선정 근거까지 확인',text:'과거와 이후 기록 수, 비율 차이, 불확실성, 다른 생활습관의 중복 가능성을 확인할 수 있어요.'},
+ {view:'analysis',selector:'#jg1812-detail-area',title:'패턴이 없어도 정직하게 표시',text:'기록이 부족하거나 검증되지 않으면 대표 관계를 만들지 않고 해석을 보류해요.'},
+ {view:'analysis',selector:'#jg1812-detail-area',title:'나머지 결과도 확인',text:'시간 구간을 바꾸고 나머지 6종 배변·불편 결과도 펼쳐서 확인할 수 있어요.'}
 ];
 
 function showUpdateNotes(){
@@ -5691,83 +5648,24 @@ form.addEventListener('submit',async e=>{e.preventDefault();if(!window.__jangilg
 @media(max-width:660px){#dashboardView .jg181-action-card .jg181-action-icon,#dashboardView .jg181-action-card[data-kind] .jg181-action-icon{flex-basis:49px!important;width:49px!important;height:49px!important}#analysisView .jg1812-overview,#analysisView .jg1812-detail-area{padding:12px}#analysisView .jg1812-detail-hint{display:none}#analysisView .jg1812-detail-illustration{width:50px;height:48px;flex-basis:50px}#analysisView .jg1812-window-tabs button{padding:8px 9px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){#analysisView .jg1812-summary-item{transition:none}}
 </style>
-
-<style id="jangilgi-v1813-unified-analysis">
-/* Single unified analysis surface. Legacy result targets remain mounted for compatibility. */
-#analysisView #foodlifeAnalysisPane{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;min-height:0!important;}
-#analysisView #foodlifeAnalysisPane>.jg1812-analysis-guide,
-#analysisView #foodlifeAnalysisPane>.food-card,
-#analysisView #foodlifeAnalysisPane>.report-food,
-#analysisView #foodlifeAnalysisPane>#jgLifestyleAnalysis,
-#analysisView #foodlifeAnalysisPane>#personalChangeAnalysis,
-#analysisView #foodlifeAnalysisPane>.jg189-food-analysis{display:none!important}
-#analysisView #jg1813-unified{width:100%;display:grid;gap:18px;min-width:0;color:var(--ink);}
-#analysisView .jg1813-overview,#analysisView .jg1813-main{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:19px 21px;min-width:0;}
-#analysisView .jg1813-intro{display:flex;justify-content:space-between;align-items:end;gap:15px;padding:2px 3px;}
-#analysisView .jg1813-intro h2{font-size:clamp(23px,3vw,32px);font-weight:800;letter-spacing:-.07em;margin:5px 0 6px;color:var(--deep);}
-#analysisView .jg1813-intro p{font-size:13px;line-height:1.65;color:var(--muted);margin:0;}
-#analysisView .jg1813-intro p strong{color:var(--deep)}
-#analysisView .jg1813-overline{font:700 10px "DM Mono",monospace;letter-spacing:.07em;color:#679075;}
-#analysisView .jg1813-range{font-size:11px;font-weight:750;color:#427252;background:#edf6ed;border-radius:999px;padding:8px 12px;white-space:nowrap;}
-#analysisView .jg1813-block-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
-#analysisView .jg1813-block-head h3,#analysisView .jg1813-block-head h4{font-size:16px;letter-spacing:-.04em;color:var(--deep);margin:0;}
-#analysisView .jg1813-block-head small{color:var(--muted);font-size:11px;}
-#analysisView .jg1813-glance{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;}
-#analysisView .jg1813-glance-item{display:flex;align-items:flex-start;gap:7px;flex-direction:column;background:#f9fbf9;border:1px solid #e3ebe3;border-radius:13px;padding:12px;text-align:left;min-width:0;transition:background .16s,border .16s;}
-#analysisView .jg1813-glance-item.active,#analysisView .jg1813-glance-item:hover{border-color:#83b492;background:#f0f8f0;}
-#analysisView .jg1813-glance-item:focus-visible,#analysisView .jg1813-tabs button:focus-visible,#analysisView .jg1813-options button:focus-visible{outline:3px solid #5ca977;outline-offset:2px;}
-#analysisView .jg1813-glance-art{width:39px;height:39px;display:block;overflow:hidden;}
-#analysisView .jg1813-glance-art img{width:100%;height:100%;object-fit:contain;}
-#analysisView .jg1813-glance-copy{display:grid;gap:5px;min-width:0;}
-#analysisView .jg1813-glance-copy strong{font-size:13px;color:#1f5037;}
-#analysisView .jg1813-glance-copy small{font-size:11px;line-height:1.58;color:#637769;word-break:keep-all;}
-#analysisView .jg1813-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:5px;background:#f1f5f0;border-radius:13px;margin-bottom:18px;}
-#analysisView .jg1813-tabs button{border-radius:9px;padding:10px 6px;font-size:12px;font-weight:800;color:#597463;}
-#analysisView .jg1813-tabs button.active{background:#fff;color:#215b3c;box-shadow:0 2px 8px rgba(32,60,40,.09);}
-#analysisView .jg1813-content{min-width:0;display:grid;gap:16px;}
-#analysisView .jg1813-detail-title{display:flex;gap:13px;align-items:center;}
-#analysisView .jg1813-detail-art{width:69px;height:65px;flex:none;overflow:hidden;display:grid;place-items:center;}
-#analysisView .jg1813-detail-art img{width:100%;height:100%;object-fit:contain;}
-#analysisView .jg1813-detail-title h3{font-size:21px;color:var(--deep);letter-spacing:-.06em;margin:3px 0 4px;}
-#analysisView .jg1813-detail-title p{font-size:12px;line-height:1.55;color:var(--muted);margin:0;}
-#analysisView .jg1813-picker{display:grid;gap:9px;}
-#analysisView .jg1813-label{font-size:11px;font-weight:800;color:#557361;}
-#analysisView .jg1813-options{display:flex;gap:7px;flex-wrap:wrap;min-width:0;}
-#analysisView .jg1813-options button{border:1px solid #deeadf;border-radius:999px;padding:9px 13px;color:#52715d;font-size:12px;font-weight:700;background:#fff;max-width:100%;}
-#analysisView .jg1813-options button.active{background:#e6f3e8;border-color:#82b993;color:#245f3f;}
-#analysisView .jg1813-no-options{font-size:12px;color:var(--muted);}
-#analysisView .jg1813-conclusion{background:#eff7ef;border:1px solid #d8eadb;border-radius:14px;padding:17px 19px;display:grid;gap:7px;}
-#analysisView .jg1813-conclusion p{font-size:clamp(16px,2vw,21px);line-height:1.55;letter-spacing:-.045em;font-weight:800;color:#184b32;word-break:keep-all;margin:0;}
-#analysisView .jg1813-conclusion small{font-size:12px;line-height:1.65;color:#5a7664;word-break:keep-all;}
-#analysisView .jg1813-evidence{border:1px solid #e5ece5;border-radius:14px;padding:16px 18px;background:#fff;}
-#analysisView .jg1813-status{font-size:10px;border-radius:999px;padding:5px 9px;font-weight:750;white-space:nowrap;}
-#analysisView .jg1813-status.ready{background:#eaf5e9;color:#287446;}
-#analysisView .jg1813-status.wait{background:#f8f0df;color:#927133;}
-#analysisView .jg1813-bars{display:grid;gap:15px;}
-#analysisView .jg1813-bar-line{display:grid;gap:8px;min-width:0;}
-#analysisView .jg1813-bar-info{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-#analysisView .jg1813-bar-info strong{font-size:12px;font-weight:750;color:#3c5b46;}
-#analysisView .jg1813-bar-info span{font-size:12px;color:#65796c;font-weight:750;text-align:right;}
-#analysisView .jg1813-bar-track{height:13px;background:#edf3ed;border-radius:999px;overflow:hidden;}
-#analysisView .jg1813-bar-progress{height:100%;border-radius:999px;min-width:0;}
-#analysisView .jg1813-bar-a{background:linear-gradient(90deg,#3d9864,#72bc86);}
-#analysisView .jg1813-bar-b{background:linear-gradient(90deg,#a8bec3,#7c9ba5);}
-#analysisView .jg1813-graph-caption{margin:13px 0 0;color:#7a887d;font-size:11px;line-height:1.65;}
-#analysisView .jg1813-need{display:flex;align-items:center;gap:14px;background:#f8faf8;border-radius:12px;padding:12px;}
-#analysisView .jg1813-need-art{width:50px;height:50px;flex:none;}
-#analysisView .jg1813-need-art img{width:100%;height:100%;object-fit:contain;}
-#analysisView .jg1813-need p{margin:0;font-size:12px;line-height:1.75;color:#68806c;}
-#analysisView .jg1813-method{border:1px solid #e2ebe3;border-radius:13px;background:#fafcf9;overflow:hidden;}
-#analysisView .jg1813-method>summary{cursor:pointer;padding:13px 16px;font-size:12px;font-weight:800;color:#486e53;}
-#analysisView .jg1813-method>p{padding:0 16px;font-size:12px;color:#617969;line-height:1.8;margin:5px 0 11px;}
-#analysisView .jg1813-more-results{display:grid;gap:15px;padding:10px 16px 15px;border-top:1px solid #e3ebe3;}
-#analysisView .jg1813-more-results>div{display:grid;gap:8px;}
-#analysisView .jg1813-more-results strong{font-size:12px;color:#31533e;}
-#analysisView .jg1813-disclaimer{font-size:11px;line-height:1.7;color:#738579;margin:0;padding:0 5px 10px;}
-@media(max-width:1120px){#analysisView .jg1813-glance{grid-template-columns:repeat(3,minmax(0,1fr));}}
-@media(max-width:720px){#analysisView .jg1813-glance{grid-template-columns:repeat(2,minmax(0,1fr));}#analysisView .jg1813-intro{align-items:start;flex-direction:column;}#analysisView .jg1813-overview,#analysisView .jg1813-main{padding:13px;}#analysisView .jg1813-tabs{grid-template-columns:repeat(3,minmax(0,1fr));}#analysisView .jg1813-evidence{padding:13px;}#analysisView .jg1813-detail-art{width:54px;height:54px;}#analysisView .jg1813-conclusion{padding:14px;}#analysisView .jg1813-glance-item{padding:10px;} }
-@media(max-width:400px){#analysisView .jg1813-glance{grid-template-columns:1fr;}#analysisView .jg1813-glance-item{flex-direction:row;align-items:center;}#analysisView .jg1813-glance-art{flex:0 0 36px;}#analysisView .jg1813-detail-title h3{font-size:18px;}#analysisView .jg1813-tabs button{font-size:11px;}}
-@media(prefers-reduced-motion:reduce){#analysisView .jg1813-glance-item{transition:none}}
+<style id="jangilgi-v1814-analysis-statistics">
+/* v1.9.0 statistics: reuse the existing v1.8.12 card style and spacing. */
+#jgLifestyleAnalysis .jg14-no-signal{background:#f5f8f4;border:1px solid #dce8de;border-radius:12px;padding:14px 15px;margin:12px 0;color:#365c45;line-height:1.6}
+#jgLifestyleAnalysis .jg14-no-signal strong{font-size:14px}
+#jgLifestyleAnalysis .jg14-no-signal p{margin:5px 0 0;font-size:12px;color:#6d8176}
+#jgLifestyleAnalysis .jg14-metric{background:#fff;border:1px solid #e1e9e2;border-radius:12px;padding:13px 14px;min-width:0;margin:10px 0}
+#jgLifestyleAnalysis .jg14-metric-main{border-color:#b5dac0;background:#f8fcf8}
+#jgLifestyleAnalysis .jg14-metric-title{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+#jgLifestyleAnalysis .jg14-metric-title strong{font-size:14px}
+#jgLifestyleAnalysis .jg14-evidence{border-top:1px solid #e7ede7;margin-top:11px;padding-top:9px}
+#jgLifestyleAnalysis .jg14-evidence summary,#jgLifestyleAnalysis .jg14-other-outcomes summary{cursor:pointer;font-size:12px;font-weight:700;color:#397553}
+#jgLifestyleAnalysis .jg14-evidence ul{margin:9px 0 0;padding-left:19px;display:grid;gap:6px}
+#jgLifestyleAnalysis .jg14-evidence li{font-size:11px;line-height:1.65;color:#5c7164;overflow-wrap:anywhere}
+#jgLifestyleAnalysis .jg14-other-outcomes{border-top:1px solid #e1e9e2;margin-top:13px;padding-top:11px}
+#jgLifestyleAnalysis .jg14-extra-outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:9px;margin-top:12px}
+#jgLifestyleAnalysis .jg14-extra-outcomes .jg14-metric{margin:0}
+#jgLifestyleAnalysis .jg1812-summary-sentence{font-weight:700;line-height:1.55}
+@media(max-width:640px){#jgLifestyleAnalysis .jg14-metric{padding:11px}#jgLifestyleAnalysis .jg14-extra-outcomes{grid-template-columns:minmax(0,1fr)}}
 </style>
 </body>
 </html>
