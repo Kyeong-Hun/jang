@@ -1116,7 +1116,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.2</strong><p id="releaseText">개인별 분석에 실제로 나타난 관찰 결과를 생활 실험에 연결해요. 고정된 일반 실험 목록은 표시하지 않습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.3</strong><p id="releaseText">개인 분석 위에 겹쳐 표시되던 실험실 안내 배너를 제거했습니다. 실험실은 왼쪽 메뉴에서 이용할 수 있습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1196,11 +1196,11 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </article>
 <article class="foodlife-summary card-surface" id="foodlifeSavedSummary"><div class="card-heading"><div><span class="section-kicker">SAVED DAILY NOTES</span><h2>선택한 날짜의 기록</h2></div></div><p id="foodlifeSummaryText">저장한 기록이 아직 없어요.</p></article>
 <div class="foodlife-analysis" id="foodlifeAnalysisPane"><div class="foodlife-help jg1812-analysis-guide"><div><b>생활습관 분석</b><span>수분·수면·스트레스의 당일 및 이전 날짜 기록을 배변과 비교해요.</span></div><div><b>식사 분석</b><span>식사 후 0~6, 6~24, 24~48, 48~72시간의 배변 기록을 나누어 살펴봐요.</span></div></div></div>
-<article id="jg110-analysis-bridge" class="jg110-analysis-bridge"><div><span class="section-kicker">NEXT STEP · 생활 습관 실험실</span><h2>기록을 확인했다면, 작은 실천도 해볼까요?</h2><p>개인 분석에서 실제로 보이는 경향에 맞는 작은 실천을 선택하고, 전후 기록을 비교해 보세요.</p></div><button type="button" data-view="lab">실험실 열기 →</button></article>
+
 <p class="foodlife-disclaimer">음식·생활 통계는 건강 점수나 질병 진단이 아니에요. 기록이 없으면 '섭취하지 않음'으로 간주하지 않습니다.</p>
 </section>
 <section class="view" id="labView" aria-label="생활 습관 실험실">
-  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.2</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
+  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.3</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
   <div class="jg110-main">
     <div class="jg110-intro" role="note"><span aria-hidden="true">🧪</span><div><strong>건강 점수가 아닌, 작은 관찰 실험</strong><p>참여는 선택이에요. 기록하지 않은 날을 실패로 취급하지 않으며, 실천 후 변화가 관찰되더라도 원인으로 단정하지 않아요.</p></div></div>
     <div id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">DISCOVER</span><h2>내 기록에서 시작하기</h2></div><small>개인 분석의 발견 사항에서만 실험 생성</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></div>
@@ -3509,7 +3509,7 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.10.2';
+const JANGILGI_VERSION='1.10.3';
 const JANGILGI_RELEASE_STEPS=[
   ['개인 분석에서 실험 자동 생성','이제 엄격한 대표 결과만이 아니라 내 분석 화면의 관찰된 경향과 최근 변화를 실천 제안으로 연결해요.'],
   ['고정 실험 목록 제거','개인 기록에서 연결할 근거가 없으면 실험을 억지로 채우지 않고, 기록이 더 필요한 이유를 안내해요.'],
@@ -3523,6 +3523,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.10.3',date:'2026-11-02',title:'개인 분석 화면의 실험실 안내 배너 겹침 수정',details:['개인 분석 상세 결과를 가리던 중복 생활 실험실 안내 배너 제거','생활 실험실은 기존 사이드바 메뉴를 통해 계속 이용 가능','실험 추천·기록·암호화 저장·분석 계산은 기존 v1.10.2 그대로 유지']},
   {version:'1.10.2',date:'2026-11-02',title:'개인 분석 결과 기반 실험 추천·일반 실험 제거',details:['개인 분석 화면에 나타나는 수분·수면·스트레스 관찰 결과와 식사 패턴을 실험에 연결','최근 30일과 이전 60일의 배변 형태 변화도 행동 제안의 근거로 활용','시간순 검증을 통과하지 않은 관찰 결과도 실험 후보로 안내하되 기록 횟수와 불확실성을 명시','분석 결과와 연결되지 않는 일반 실험 목록 제거, 기록이 부족할 때는 추천 생성 보류','새 실험은 추천 근거가 된 배변 지표를 전후 비교하고 기존 실험도 정상 표시','실험 시작·체크·종료 및 암호화 저장·기존 백업 호환 유지']},
   {version:'1.10.1',date:'2026-11-02',title:'실험실 개인 분석 연동 및 근거 수준 구분',details:['기존 수분·수면·스트레스 분석 엔진의 검증 통과 대표 결과를 실험 추천에 연결','식사 특성의 후속 반복 탐색 결과는 검증 수준을 별도로 표시하고 기록 실험에 연결','뚜렷한 개인 분석이 없으면 개인 맞춤 추천을 만들지 않고 일반 선택지만 표시','기록하지 않은 식이섬유·배변 습관을 맞춤형 추천의 개인 근거로 사용하지 않음','실험 체크·완료·암호화 저장·기존 기록의 구조 및 안전 안내 유지']},
   {version:'1.10.0',date:'2026-11-02',title:'생활 습관 실험실 및 근거 기반 실천 제안',details:['개인 배변·생활 기록을 바탕으로 실험 주제의 우선순위를 제안하고 관찰 근거를 표시','일반적 생활 습관 실천 지침과 의학 자료 출처를 제시하되 개인의 원인·효과로 단정하지 않음','자발적인 7일 실천 기록을 암호화된 프로필에 저장하고 실천 전후의 실제 배변 기록을 비교','기록이 부족한 경우 판단을 보류하고 필요 시 진료 안내를 우선','점수·경험치·연속 출석 보상 없이 선택적 참여, 기존 기록·Firebase 구조 호환 유지']},
@@ -3897,7 +3898,7 @@ function initDetailedHelp(){
 }
 // 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
 // GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.10.1';
+const JANGILGI_PREVIOUS_RELEASE='1.10.2';
 const JANG_CURRENT_UPDATE_STEPS=[
   {view:'lab',selector:'#jg110-lab-recommendations',title:'근거 기반 생활 습관 제안',text:'실제 기록의 경향을 참고해 작은 실천을 추천하지만 원인을 단정하지 않아요.'},
   {view:'lab',selector:'#jg110-lab-active',title:'7일간의 작은 실험',text:'원하는 날짜에 실천 여부를 기록해요. 연속 출석이나 점수는 없어요.'},
@@ -6436,14 +6437,10 @@ const oldNavigate=navigate;navigate=function(v){oldNavigate(v);if(v==='bowelStat
 #labView .jg110-caution{border-left:3px solid #d8a362;background:#fff8ed;padding:12px 14px;color:#84552a;border-radius:0 10px 10px 0;line-height:1.7;font-size:12px;margin-bottom:12px}
 #labView .jg110-footer-note{font-size:11px;color:#7f9083;line-height:1.8;margin:0;padding:2px 4px}
 #labView :is(button,a):focus-visible{outline:3px solid #8abf96;outline-offset:2px}
-#analysisView .jg110-analysis-bridge{margin:15px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#e8f3e7;padding:18px 20px;border:1px solid #d3e5d4;border-radius:15px}
-#analysisView .jg110-analysis-bridge h2{font-size:16px;margin:5px 0;color:#24563b}
-#analysisView .jg110-analysis-bridge p{font-size:12px;line-height:1.6;margin:0;color:#5b7b64}
-#analysisView .jg110-analysis-bridge button{flex:none;background:#307d50;border-radius:9px;padding:11px 14px;color:#fff;font-size:12px;font-weight:700}
-@media(max-width:760px){#labView .jg110-rec-grid,#labView .jg110-stats{grid-template-columns:1fr}#labView .jg110-section{padding:14px}#labView .jg110-main{gap:12px}#labView .jg110-dates{gap:4px}#labView .jg110-day{min-height:63px;padding:6px 1px}#labView .jg110-day b{font-size:10px}#labView .jg110-day span{font-size:11px}#analysisView .jg110-analysis-bridge{align-items:stretch;flex-direction:column}#analysisView .jg110-analysis-bridge button{align-self:flex-start}}
+@media(max-width:760px){#labView .jg110-rec-grid,#labView .jg110-stats{grid-template-columns:1fr}#labView .jg110-section{padding:14px}#labView .jg110-main{gap:12px}#labView .jg110-dates{gap:4px}#labView .jg110-day{min-height:63px;padding:6px 1px}#labView .jg110-day b{font-size:10px}#labView .jg110-day span{font-size:11px}}
 </style>
 <script id="jangilgi-v110-habit-lab-script">
-/* v1.10.2: visible analysis findings are the ONLY habit-lab recommendations. Existing encrypted diary/profile remains storage. */
+/* v1.10.3: visible analysis findings are the ONLY habit-lab recommendations. Existing encrypted diary/profile remains storage. */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
@@ -6646,9 +6643,7 @@ if(realSideNav&&!realSideNav.querySelector('[data-image-route="lab"]')){
   const account=realSideNav.querySelector('[data-image-account]');
   if(account)account.before(labButton);else realSideNav.appendChild(labButton);
 }
-// Make the next-step bridge visible inside the genuine personal-analysis view.
-const bridge=$('jg110-analysis-bridge'),analysisPage=$('analysisView');
-if(bridge&&analysisPage&&!analysisPage.contains(bridge))analysisPage.appendChild(bridge);
+// 생활 실험실은 사이드바에서 바로 열 수 있습니다. 개인 분석 위에 별도의 배너를 중첩하지 않습니다.
 window.__jangilgiLabDiagnostics={recommendations,measurements,labs};
 draw();
 })();
