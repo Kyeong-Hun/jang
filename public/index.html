@@ -318,6 +318,62 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 .digest-tag-grid label{min-height:39px;flex:1 1 min(175px,100%);line-height:1.45;align-items:center}
 .digest-tag-grid input{width:16px;height:16px;flex:none}
 @media(max-width:600px){.digest-tag-grid label{flex-basis:100%}}
+
+/* v1.10.5: compact habit-lab and support card refresh */
+#labView .jg110-top{align-items:flex-start;margin:4px 0 12px}
+#labView .jg110-top p{font-size:13px;line-height:1.55;max-width:620px}
+#labView .jg110-main{gap:14px}
+#labView .jg110-intro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;background:transparent;border:none;padding:0;color:inherit}
+#labView .jg110-mini-step{background:#edf5ec;border:1px solid #d8e6d7;border-radius:15px;padding:14px 16px;min-width:0}
+#labView .jg110-mini-step strong{display:block;font-size:13px;color:#234b35}
+#labView .jg110-mini-step p{margin:4px 0 0;font-size:12px;line-height:1.5;color:#607469}
+#labView .jg110-section{padding:16px 18px}
+#labView .jg110-section-title{margin-bottom:12px;align-items:center}
+#labView .jg110-section-title h2{font-size:18px}
+#labView .jg110-section-title small{font-size:11px;color:#61766a;background:#f4f7f4;border:1px solid #e0e8e0;padding:6px 10px;border-radius:999px}
+#labView .jg110-section-intro{margin:0 0 12px;font-size:12px;color:#6a7f70;line-height:1.55}
+#labView .jg110-rec-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+#labView .jg110-rec{padding:16px;gap:10px;border-radius:16px}
+#labView .jg110-rec-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+#labView .jg110-badge-soft{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#eef5ee;border:1px solid #dbe7db;color:#5e7767;font-size:11px;font-weight:700}
+#labView .jg110-rec h3{font-size:17px;line-height:1.4}
+#labView .jg110-oneline{font-size:13px;color:#2b5d40;font-weight:800;line-height:1.45}
+#labView .jg110-observation{margin:0;padding:10px 12px;border-left:3px solid #a2c9aa;background:#f0f6ef;border-radius:0 8px 8px 0;font-size:12px;line-height:1.55;color:#567060}
+#labView .jg110-rec-actions{display:flex;gap:8px;flex-wrap:wrap}
+#labView .jg110-rec-actions .jg110-primary,#labView .jg110-rec-actions .jg110-textbtn{flex:1 1 150px;justify-self:stretch;text-align:center}
+#labView .jg110-textbtn{background:#f8faf8;color:#4f6659}
+#labView details.jg110-more{border:1px solid #e1e9e1;border-radius:11px;background:#f8fbf8}
+#labView details.jg110-more summary{cursor:pointer;list-style:none;padding:10px 12px;font-size:12px;font-weight:700;color:#3a6448}
+#labView details.jg110-more summary::-webkit-details-marker{display:none}
+#labView .jg110-more-body{padding:0 12px 12px;display:grid;gap:8px}
+#labView .jg110-more-body p{font-size:12px;line-height:1.6;color:#63796b;margin:0}
+#labView .jg110-empty{padding:16px;font-size:12px;line-height:1.65}
+#labView .jg110-caution{padding:12px 14px;margin-bottom:12px;background:#fff4e8;border:1px solid #f0d7bb;border-radius:13px;color:#7a5633;font-size:12px;line-height:1.6}
+#labView .jg110-active-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+#labView .jg110-progress-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border-radius:999px;background:#eaf4ea;border:1px solid #d3e2d3;color:#2d6a46;font-size:12px;font-weight:800}
+#labView .jg110-active-card h3{font-size:18px}
+#labView .jg110-active-card p{line-height:1.6}
+#labView .jg110-history-intro{margin:0 0 12px;font-size:12px;color:#6a7f70;line-height:1.55}
+#labView .jg110-history-entry{border:1px solid #dde7dd;border-radius:14px;background:#fbfdfb;padding:15px 16px;display:grid;gap:9px}
+#labView .jg110-footer-note{border:1px solid #e2ebe2;border-radius:13px;background:#f7faf7;padding:0;overflow:hidden}
+#labView .jg110-footer-note summary{cursor:pointer;list-style:none;padding:11px 14px;font-size:12px;font-weight:700;color:#45604f}
+#labView .jg110-footer-note summary::-webkit-details-marker{display:none}
+#labView .jg110-footer-note div{padding:0 14px 14px;font-size:11px;line-height:1.65;color:#6d8173}
+#dashboardView .jg181-contact{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px}
+#dashboardView .jg181-contact h2{margin:0;font-size:clamp(18px,2.1vw,28px);line-height:1.25;letter-spacing:-.04em;color:var(--deep)}
+#dashboardView .jg181-contact p{margin:0;color:#6e7e72;font-size:14px;line-height:1.55}
+#dashboardView .jg181-contact-icon{width:54px;height:54px;display:grid;place-items:center;font-size:28px;flex:none}
+#dashboardView .jg181-contact button{margin-top:2px}
+@media(max-width:760px){
+  #labView .jg110-intro{grid-template-columns:1fr}
+  #labView .jg110-rec-actions{flex-direction:column}
+  #labView .jg110-section{padding:14px}
+  #labView .jg110-top h1{font-size:clamp(22px,7vw,30px)}
+  #dashboardView .jg181-contact{padding:16px!important;gap:8px}
+  #dashboardView .jg181-contact h2{font-size:clamp(16px,6vw,22px)}
+  #dashboardView .jg181-contact p{font-size:13px}
+}
+
 </style>
 <style>
 /* Firebase 연동에 필요한 인증 UI만 추가, 기존 앱 스타일은 유지 */
@@ -1116,7 +1172,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.4</strong><p id="releaseText">개인 분석 아래에 실험실 바로가기를 복원하고, 홈 화면 배치와 캘린더 스크롤을 정리했습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.5</strong><p id="releaseText">실험실 문구를 줄이고 카드형으로 단순화했으며, 홈 문의 카드 배치도 함께 정리했습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1200,13 +1256,17 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <p class="foodlife-disclaimer">음식·생활 통계는 건강 점수나 질병 진단이 아니에요. 기록이 없으면 '섭취하지 않음'으로 간주하지 않습니다.</p>
 </section>
 <section class="view" id="labView" aria-label="생활 습관 실험실">
-  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.4</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
+  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.5</div><h1>생활 습관 <em>실험실</em></h1><p>분석에서 나온 추천을 고르고, 7일 동안 가볍게 체크해 보세요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
   <div class="jg110-main">
-    <div class="jg110-intro" role="note"><span aria-hidden="true">🧪</span><div><strong>건강 점수가 아닌, 작은 관찰 실험</strong><p>참여는 선택이에요. 기록하지 않은 날을 실패로 취급하지 않으며, 실천 후 변화가 관찰되더라도 원인으로 단정하지 않아요.</p></div></div>
-    <div id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">DISCOVER</span><h2>내 기록에서 시작하기</h2></div><small>개인 분석의 발견 사항에서만 실험 생성</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></div>
-    <div id="jg110-lab-active" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">TRY</span><h2>진행 중인 작은 실험</h2></div><small>7일 · 언제든 중단 가능</small></div><div id="jg110-active-content" aria-live="polite"></div></div>
-    <div id="jg110-lab-history" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">REVIEW</span><h2>실험 결과 돌아보기</h2></div><small>전후의 실제 배변 기록으로만 비교</small></div><div id="jg110-history-content" aria-live="polite"></div></div>
-    <p class="jg110-footer-note">생활 습관 제안은 일반적인 건강 정보이며 진단이나 처방이 아닙니다. 혈변·검은색 변·지속적인 복통 등의 경고 증상이 있다면 실험보다 보호자 또는 의료진과 상담하는 것이 우선입니다. 개인 기록은 로그인한 계정의 기존 암호화 저장 방식을 사용합니다.</p>
+    <div class="jg110-intro" role="note">
+      <div class="jg110-mini-step"><strong>1 · 추천 확인</strong><p>내 분석에서 나온 실험만 보여줘요.</p></div>
+      <div class="jg110-mini-step"><strong>2 · 7일 체크</strong><p>해본 날만 눌러 간단히 기록해요.</p></div>
+      <div class="jg110-mini-step"><strong>3 · 결과 보기</strong><p>전후 배변 기록을 비교해요.</p></div>
+    </div>
+    <div id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">DISCOVER</span><h2>추천 실험</h2></div><small>마음에 드는 것 1개만 골라 시작</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></div>
+    <div id="jg110-lab-active" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">TRY</span><h2>진행 중</h2></div><small>하나씩만 진행</small></div><div id="jg110-active-content" aria-live="polite"></div></div>
+    <div id="jg110-lab-history" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">REVIEW</span><h2>결과 보기</h2></div><small>실제 기록으로 비교</small></div><div id="jg110-history-content" aria-live="polite"></div></div>
+    <details class="jg110-footer-note"><summary>안내 보기</summary><div>생활 습관 제안은 일반적인 건강 정보이며 진단이나 처방이 아닙니다. 혈변·검은색 변·지속적인 복통 등의 경고 증상이 있다면 실험보다 보호자 또는 의료진과 상담하는 것이 우선입니다. 개인 기록은 로그인한 계정의 기존 암호화 저장 방식을 사용합니다.</div></details>
   </div>
 </section>
 <section class="view" id="settingsView">
@@ -3509,7 +3569,7 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.10.4';
+const JANGILGI_VERSION='1.10.5';
 const JANGILGI_RELEASE_STEPS=[
   ['개인 분석에서 실험실로','분석 결과의 마지막에 작은 실험 제안 배너를 다시 배치해요. 결과를 가리지 않고 실험실로 바로 이동할 수 있어요.'],
   ['홈 화면 레이아웃 정돈','짧은 PC 화면과 휴대폰 화면에서 카드와 일러스트가 겹치지 않도록 조절해요.'],
@@ -3523,6 +3583,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.10.5',date:'2026-11-02',title:'실험실 화면 단순화·직관형 카드 UI 개편',details:['생활 실험실 첫 화면을 추천·진행·결과 중심의 간단한 카드 구조로 재구성','추천 카드의 긴 설명을 줄이고 자세한 근거는 접어서 보는 방식으로 변경','진행 중·완료한 실험 화면의 문구를 줄이고 핵심 상태와 결과만 더 직관적으로 표시','홈의 문의 카드 아이콘·제목·본문 간격을 다시 맞춰 작은 화면에서도 깨지지 않게 조정']},
   {version:'1.10.4',date:'2026-11-02',title:'실험실 연결 배너 복원·홈 레이아웃·캘린더 화면 개선',details:['개인 분석의 마지막에 실험실 이동 배너를 흐름에 맞춰 복원, 분석 내용과 겹침 제거','홈 일러스트 겹침 및 여러 화면 크기에서 카드 영역 넘침 개선','달력 화면의 외부 스크롤 제거, 날짜 선택 시 식사·배변·생활 전체 기록을 전용 상세 창에서 표시','실험 추천·암호화 데이터·기록 계산·저장 방식은 변경하지 않음']},
   {version:'1.10.3',date:'2026-11-02',title:'개인 분석 화면의 실험실 안내 배너 겹침 수정',details:['개인 분석 상세 결과를 가리던 중복 생활 실험실 안내 배너 제거','생활 실험실은 기존 사이드바 메뉴를 통해 계속 이용 가능','실험 추천·기록·암호화 저장·분석 계산은 기존 v1.10.2 그대로 유지']},
   {version:'1.10.2',date:'2026-11-02',title:'개인 분석 결과 기반 실험 추천·일반 실험 제거',details:['개인 분석 화면에 나타나는 수분·수면·스트레스 관찰 결과와 식사 패턴을 실험에 연결','최근 30일과 이전 60일의 배변 형태 변화도 행동 제안의 근거로 활용','시간순 검증을 통과하지 않은 관찰 결과도 실험 후보로 안내하되 기록 횟수와 불확실성을 명시','분석 결과와 연결되지 않는 일반 실험 목록 제거, 기록이 부족할 때는 추천 생성 보류','새 실험은 추천 근거가 된 배변 지표를 전후 비교하고 기존 실험도 정상 표시','실험 시작·체크·종료 및 암호화 저장·기존 백업 호환 유지']},
@@ -3899,7 +3960,7 @@ function initDetailedHelp(){
 }
 // 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
 // GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.10.3';
+const JANGILGI_PREVIOUS_RELEASE='1.10.4';
 const JANG_CURRENT_UPDATE_STEPS=[
   {view:'lab',selector:'#jg110-lab-recommendations',title:'근거 기반 생활 습관 제안',text:'실제 기록의 경향을 참고해 작은 실천을 추천하지만 원인을 단정하지 않아요.'},
   {view:'lab',selector:'#jg110-lab-active',title:'7일간의 작은 실험',text:'원하는 날짜에 실천 여부를 기록해요. 연속 출석이나 점수는 없어요.'},
@@ -6441,7 +6502,7 @@ const oldNavigate=navigate;navigate=function(v){oldNavigate(v);if(v==='bowelStat
 @media(max-width:760px){#labView .jg110-rec-grid,#labView .jg110-stats{grid-template-columns:1fr}#labView .jg110-section{padding:14px}#labView .jg110-main{gap:12px}#labView .jg110-dates{gap:4px}#labView .jg110-day{min-height:63px;padding:6px 1px}#labView .jg110-day b{font-size:10px}#labView .jg110-day span{font-size:11px}}
 </style>
 <script id="jangilgi-v110-habit-lab-script">
-/* v1.10.3: visible analysis findings are the ONLY habit-lab recommendations. Existing encrypted diary/profile remains storage. */
+/* v1.10.5: habit-lab recommendations stay tied to visible personal analysis; UI is simplified. */
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
@@ -6572,38 +6633,38 @@ function reviewHTML(data,lab){
  else result='전후 기록의 횟수와 비율을 보여줍니다. 차이가 있더라도 실험 행동 때문이라고 확정할 수 없어요.';
  return `${stats(pre,post,lab.status==='completed',target)}<p><strong>${E(result)}</strong> ${E(coverage)} 기록이 없는 날을 증상이 없는 날로 간주하지 않았어요.</p>`;
 }
+function focusLabel(id){const map={hard:'단단한 변 줄이기',loose:'묽은 변 줄이기',pain:'복통·불편 줄이기',strain:'힘주기·잔변감 줄이기'};return map[id]||'기록 기반 추천';}
 function drawRecommendations(data){
  const root=$('jg110-recommendation-list');if(!root)return;
  const active=activeLab(data),recs=recommendations(data),warning=warningInRecent(data);
- const period=selectedAnalysisDays(data);
  const card=(r)=>{const t=TEMPLATES[r.id];
-   const badge=r.kind==='confirmed'?'시간순 검증을 통과한 관찰':r.kind==='observed'?'개인 분석의 관찰된 경향':'초기 관찰 · 근거 적음';
+   const badge=r.kind==='confirmed'?'검증된 관찰':r.kind==='observed'?'관찰된 경향':'초기 관찰';
    return `<article class="jg110-rec jg110-personal-card">
-   <span class="jg110-chip">${badge}</span><h3>${E(t.title)}</h3>
-   <p class="jg110-observation"><strong>내 분석에서 발견한 점:</strong> ${E(r.why)}</p>
-   <p><strong>해석할 때:</strong> ${E(r.evidence)}</p>
-   <button class="jg110-analysis-link" type="button" data-jg110-open-analysis="${E(r.analysisTab||'water')}" data-jg110-window="${E(r.windowId||'')}" data-jg110-outcome="${E(r.outcomeId||'')}" data-jg110-recent="${E(r.recentMetric||'')}">이 분석 결과 자세히 보기 →</button>
-   <p><strong>해볼 일:</strong> ${E(t.action)}</p><p><strong>일반적인 근거:</strong> ${E(t.basis)}</p>
-   ${sourceBlock(r.id)}<button type="button" class="jg110-primary" data-jg110-start="${r.id}" data-jg110-target="${E(r.targetOutcome||'')}" ${active||data.demo||warning?'disabled':''}>${active?'다른 실험 진행 중':data.demo?'데모 기록은 시작할 수 없어요':warning?'건강 상담 우선':'7일 실험 시작하기'}</button></article>`;
+   <div class="jg110-rec-head"><span class="jg110-chip">${badge}</span><span class="jg110-badge-soft">${E(focusLabel(r.targetOutcome||''))}</span></div>
+   <h3>${E(t.title)}</h3>
+   <p class="jg110-oneline">${E(t.action)}</p>
+   <p class="jg110-observation">${E(r.why)}</p>
+   <div class="jg110-rec-actions"><button type="button" class="jg110-primary" data-jg110-start="${r.id}" data-jg110-target="${E(r.targetOutcome||'')}" ${active||data.demo||warning?'disabled':''}>${active?'다른 실험 진행 중':data.demo?'데모 기록은 시작할 수 없어요':warning?'건강 상담 우선':'이 실험 시작하기'}</button><button class="jg110-textbtn" type="button" data-jg110-open-analysis="${E(r.analysisTab||'water')}" data-jg110-window="${E(r.windowId||'')}" data-jg110-outcome="${E(r.outcomeId||'')}" data-jg110-recent="${E(r.recentMetric||'')}">분석 보기</button></div>
+   <details class="jg110-more"><summary>근거 간단히 보기</summary><div class="jg110-more-body"><p><strong>해석:</strong> ${E(r.evidence)}</p><p><strong>일반 근거:</strong> ${E(t.basis)}</p>${sourceBlock(r.id)}</div></details></article>`;
  };
- root.innerHTML=(warning?'<div class="jg110-caution"><strong>주의 증상 기록이 최근 14일에 있어요.</strong> 생활 실험보다 보호자 또는 의료진과의 상담을 우선하세요. 이 앱은 질환 여부를 판단하지 않습니다.</div>':'')+
- `<p class="jg110-analysis-period">최근 <strong>${period}일</strong>의 수분·수면·스트레스·식사 분석과 <strong>최근 30일 대 이전 60일</strong>의 배변 변화를 참고해요. <button type="button" data-jg110-open-analysis="water">분석 원문</button>에서 관찰한 내용만 연결합니다.</p>`+
- `<div class="jg110-subsection"><h3>내 분석에서 나온 실험 <small>${recs.length}개</small></h3>`+
- (recs.length?`<div class="jg110-rec-grid">${recs.map(card).join('')}</div>`:empty('현재 기록에서 실천과 연결할 만한 배변·생활 패턴이 아직 보이지 않아요. 억지로 일반 실험을 추천하지 않습니다. 식사·배변·생활 기록을 이어가면 분석 결과가 갱신돼요.'))+'</div>';
+ root.innerHTML=(warning?'<div class="jg110-caution"><strong>최근 14일 안에 주의 증상이 기록됐어요.</strong> 실험보다 보호자 또는 의료진과의 상담을 먼저 고려해 주세요.</div>':'')+
+ `<p class="jg110-section-intro">길게 읽지 않아도 돼요. 아래 추천 중 <strong>하나만</strong> 골라 7일 동안 가볍게 기록해 보세요.</p>`+
+ (recs.length?`<div class="jg110-rec-grid">${recs.map(card).join('')}</div>`:empty('지금은 실험으로 연결할 만한 분석 결과가 아직 부족해요. 식사·배변·생활 기록이 더 쌓이면 추천이 다시 나타나요.'));
 }
 function drawActive(data){
  const root=$('jg110-active-content');if(!root)return;
- const lab=activeLab(data);if(!lab){root.innerHTML=empty('진행 중인 실험이 없어요. 위에서 부담 없이 해볼 행동을 선택할 수 있어요.');return;}
+ const lab=activeLab(data);if(!lab){root.innerHTML=empty('진행 중인 실험이 없어요. 위 추천에서 하나를 골라 시작해 보세요.');return;}
  const template=TEMPLATES[lab.templateId],end=shift(lab.startDate,6),done=unique(Array.isArray(lab.checkIns)?lab.checkIns:[]);
  const week=['일','월','화','수','목','금','토'];
  const days=Array.from({length:7},(_,i)=>{const day=shift(lab.startDate,i);const isDone=done.includes(day);const weekday=week[new Date(day+'T12:00:00').getDay()];return `<button class="jg110-day" type="button" data-jg110-check="${day}" aria-pressed="${isDone}" aria-label="${day} 실천 ${isDone?'기록됨':'기록하기'}" ${day>today()?'disabled':''}><b>${weekday} ${Number(day.slice(-2))}일</b><span>${isDone?'✓':'＋'}</span></button>`;}).join('');
  const reached=today()>=end;
- root.innerHTML=`<article class="jg110-active-card"><span class="jg110-chip">실험 기간 · ${E(lab.startDate)} ~ ${E(end)}</span><h3>${E(template.title)}</h3><p>${E(template.action)}</p><div class="jg110-dates" role="group" aria-label="실천한 날짜 선택">${days}</div><p>실천했다고 표시한 날 <strong>${done.length}일</strong>. 미표시 날짜는 실패나 미실천으로 단정하지 않아요.</p><div class="jg110-actions"><button type="button" class="jg110-primary" data-jg110-finish ${reached?'':'disabled'}>${reached?'실험 마치고 결과 보기':'7일 경과 후 결과 확인'}</button><button type="button" class="jg110-textbtn" data-jg110-stop>실험 중단하기</button></div>${reviewHTML(data,lab)}</article>`;
+ root.innerHTML=`<article class="jg110-active-card"><div class="jg110-active-head"><div><span class="jg110-chip">진행 중 · ${E(lab.startDate)} ~ ${E(end)}</span><h3>${E(template.title)}</h3><p>${E(template.action)}</p></div><span class="jg110-progress-pill">체크 ${done.length}/7일</span></div><div class="jg110-dates" role="group" aria-label="실천한 날짜 선택">${days}</div><p>해본 날만 표시하면 돼요. 표시하지 않은 날을 실패로 계산하지 않아요.</p><div class="jg110-actions"><button type="button" class="jg110-primary" data-jg110-finish ${reached?'':'disabled'}>${reached?'결과 보기':'7일 경과 후 결과 보기'}</button><button type="button" class="jg110-textbtn" data-jg110-stop>중단하기</button></div>${reviewHTML(data,lab)}</article>`;
 }
 function drawHistory(data){
  const root=$('jg110-history-content');if(!root)return;
  const items=labs(data).filter(x=>x.status!=='active').slice().reverse();
- root.innerHTML=items.length?items.map(x=>`<article class="jg110-history-entry"><span class="jg110-chip">${x.status==='completed'?'완료한 실험':'중단한 실험'} · ${E(x.startDate)}</span><h3>${E(TEMPLATES[x.templateId].title)}</h3><p>실천을 표시한 날 ${unique(Array.isArray(x.checkIns)?x.checkIns:[]).length}일. 진단이나 효과의 증명에 사용하지 않아요.</p>${reviewHTML(data,x)}</article>`).join(''):empty('아직 마친 실험이 없어요. 실험을 선택하고 7일이 지난 뒤 결과를 확인할 수 있어요.');
+ root.innerHTML=(items.length?'<p class="jg110-history-intro">완료하거나 중단한 실험의 전후 기록을 다시 볼 수 있어요.</p>':'')+
+ (items.length?items.map(x=>`<article class="jg110-history-entry"><span class="jg110-chip">${x.status==='completed'?'완료':'중단'} · ${E(x.startDate)}</span><h3>${E(TEMPLATES[x.templateId].title)}</h3><p>실천 체크 ${unique(Array.isArray(x.checkIns)?x.checkIns:[]).length}일</p>${reviewHTML(data,x)}</article>`).join(''):empty('아직 결과가 없어요. 실험을 시작하고 7일이 지나면 여기에 정리돼요.'));
 }
 function draw(){const d=window.__jangilgiSecurityRead?.();if(!d){$('jg110-recommendation-list').innerHTML=empty('로그인한 뒤 개인 기록과 제안을 확인할 수 있어요.');$('jg110-active-content').innerHTML=empty('로그인이 필요해요.');$('jg110-history-content').innerHTML=empty('로그인이 필요해요.');return;}drawRecommendations(d);drawActive(d);drawHistory(d);}
 let saving=false;
@@ -6644,7 +6705,7 @@ if(realSideNav&&!realSideNav.querySelector('[data-image-route="lab"]')){
   const account=realSideNav.querySelector('[data-image-account]');
   if(account)account.before(labButton);else realSideNav.appendChild(labButton);
 }
-// v1.10.4: place a single CTA AFTER the complete analysis pane, in the same scroll flow.
+// v1.10.4+: place a single CTA AFTER the complete analysis pane, in the same scroll flow.
 const analysisPage=$('analysisView');
 const analysisPane=$('foodlifeAnalysisPane');
 if(analysisPage && analysisPane && !document.getElementById('jg1104-analysis-bridge')){
