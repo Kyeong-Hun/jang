@@ -1116,7 +1116,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.3</strong><p id="releaseText">개인 분석 위에 겹쳐 표시되던 실험실 안내 배너를 제거했습니다. 실험실은 왼쪽 메뉴에서 이용할 수 있습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.4</strong><p id="releaseText">개인 분석 아래에 실험실 바로가기를 복원하고, 홈 화면 배치와 캘린더 스크롤을 정리했습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1200,7 +1200,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <p class="foodlife-disclaimer">음식·생활 통계는 건강 점수나 질병 진단이 아니에요. 기록이 없으면 '섭취하지 않음'으로 간주하지 않습니다.</p>
 </section>
 <section class="view" id="labView" aria-label="생활 습관 실험실">
-  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.3</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
+  <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.4</div><h1>생활 습관 <em>실험실</em></h1><p>내 기록을 읽고, 해볼 만한 행동을 선택하고, 변화가 있었는지 관찰해요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
   <div class="jg110-main">
     <div class="jg110-intro" role="note"><span aria-hidden="true">🧪</span><div><strong>건강 점수가 아닌, 작은 관찰 실험</strong><p>참여는 선택이에요. 기록하지 않은 날을 실패로 취급하지 않으며, 실천 후 변화가 관찰되더라도 원인으로 단정하지 않아요.</p></div></div>
     <div id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">DISCOVER</span><h2>내 기록에서 시작하기</h2></div><small>개인 분석의 발견 사항에서만 실험 생성</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></div>
@@ -3509,11 +3509,11 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.10.3';
+const JANGILGI_VERSION='1.10.4';
 const JANGILGI_RELEASE_STEPS=[
-  ['개인 분석에서 실험 자동 생성','이제 엄격한 대표 결과만이 아니라 내 분석 화면의 관찰된 경향과 최근 변화를 실천 제안으로 연결해요.'],
-  ['고정 실험 목록 제거','개인 기록에서 연결할 근거가 없으면 실험을 억지로 채우지 않고, 기록이 더 필요한 이유를 안내해요.'],
-  ['불확실성 함께 표시','비교 횟수와 실제 비율, 검증 여부를 분리하고 습관을 바꾸면 반드시 나아진다는 표현을 사용하지 않아요.']
+  ['개인 분석에서 실험실로','분석 결과의 마지막에 작은 실험 제안 배너를 다시 배치해요. 결과를 가리지 않고 실험실로 바로 이동할 수 있어요.'],
+  ['홈 화면 레이아웃 정돈','짧은 PC 화면과 휴대폰 화면에서 카드와 일러스트가 겹치지 않도록 조절해요.'],
+  ['캘린더 스크롤 제거','날짜 목록은 한 화면에 유지하고, 날짜를 선택하면 그날 식사·배변·생활 기록을 별도 상세 창에서 확인해요.']
 ];
 
 /* old release steps (preserved in changelog below) */
@@ -3523,6 +3523,7 @@ const JG184_OLDER_RELEASE_STEPS=[
   ['v1.8.2 → v1.8.3 · JSON 형식 점검','기존 기록과 조리 특성·시각은 보존하며, 중복 식별자와 생활습관 값 등을 추가로 검사해요.']
 ];
 const JANGILGI_CHANGELOG=[
+  {version:'1.10.4',date:'2026-11-02',title:'실험실 연결 배너 복원·홈 레이아웃·캘린더 화면 개선',details:['개인 분석의 마지막에 실험실 이동 배너를 흐름에 맞춰 복원, 분석 내용과 겹침 제거','홈 일러스트 겹침 및 여러 화면 크기에서 카드 영역 넘침 개선','달력 화면의 외부 스크롤 제거, 날짜 선택 시 식사·배변·생활 전체 기록을 전용 상세 창에서 표시','실험 추천·암호화 데이터·기록 계산·저장 방식은 변경하지 않음']},
   {version:'1.10.3',date:'2026-11-02',title:'개인 분석 화면의 실험실 안내 배너 겹침 수정',details:['개인 분석 상세 결과를 가리던 중복 생활 실험실 안내 배너 제거','생활 실험실은 기존 사이드바 메뉴를 통해 계속 이용 가능','실험 추천·기록·암호화 저장·분석 계산은 기존 v1.10.2 그대로 유지']},
   {version:'1.10.2',date:'2026-11-02',title:'개인 분석 결과 기반 실험 추천·일반 실험 제거',details:['개인 분석 화면에 나타나는 수분·수면·스트레스 관찰 결과와 식사 패턴을 실험에 연결','최근 30일과 이전 60일의 배변 형태 변화도 행동 제안의 근거로 활용','시간순 검증을 통과하지 않은 관찰 결과도 실험 후보로 안내하되 기록 횟수와 불확실성을 명시','분석 결과와 연결되지 않는 일반 실험 목록 제거, 기록이 부족할 때는 추천 생성 보류','새 실험은 추천 근거가 된 배변 지표를 전후 비교하고 기존 실험도 정상 표시','실험 시작·체크·종료 및 암호화 저장·기존 백업 호환 유지']},
   {version:'1.10.1',date:'2026-11-02',title:'실험실 개인 분석 연동 및 근거 수준 구분',details:['기존 수분·수면·스트레스 분석 엔진의 검증 통과 대표 결과를 실험 추천에 연결','식사 특성의 후속 반복 탐색 결과는 검증 수준을 별도로 표시하고 기록 실험에 연결','뚜렷한 개인 분석이 없으면 개인 맞춤 추천을 만들지 않고 일반 선택지만 표시','기록하지 않은 식이섬유·배변 습관을 맞춤형 추천의 개인 근거로 사용하지 않음','실험 체크·완료·암호화 저장·기존 기록의 구조 및 안전 안내 유지']},
@@ -3898,7 +3899,7 @@ function initDetailedHelp(){
 }
 // 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
 // GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.10.2';
+const JANGILGI_PREVIOUS_RELEASE='1.10.3';
 const JANG_CURRENT_UPDATE_STEPS=[
   {view:'lab',selector:'#jg110-lab-recommendations',title:'근거 기반 생활 습관 제안',text:'실제 기록의 경향을 참고해 작은 실천을 추천하지만 원인을 단정하지 않아요.'},
   {view:'lab',selector:'#jg110-lab-active',title:'7일간의 작은 실험',text:'원하는 날짜에 실천 여부를 기록해요. 연속 출석이나 점수는 없어요.'},
@@ -6643,9 +6644,128 @@ if(realSideNav&&!realSideNav.querySelector('[data-image-route="lab"]')){
   const account=realSideNav.querySelector('[data-image-account]');
   if(account)account.before(labButton);else realSideNav.appendChild(labButton);
 }
-// 생활 실험실은 사이드바에서 바로 열 수 있습니다. 개인 분석 위에 별도의 배너를 중첩하지 않습니다.
+// v1.10.4: place a single CTA AFTER the complete analysis pane, in the same scroll flow.
+const analysisPage=$('analysisView');
+const analysisPane=$('foodlifeAnalysisPane');
+if(analysisPage && analysisPane && !document.getElementById('jg1104-analysis-bridge')){
+  const bridge=document.createElement('aside');
+  bridge.id='jg1104-analysis-bridge';
+  bridge.className='jg1104-analysis-bridge';
+  bridge.setAttribute('aria-label','분석에 연결된 생활 습관 실험실');
+  bridge.innerHTML=`<span class="jg1104-bridge-icon" aria-hidden="true">🧪</span><div class="jg1104-bridge-copy"><span class="section-kicker">NEXT STEP · 생활 습관 실험실</span><h2>내 분석에서 찾은 작은 실천</h2><p>위에서 확인한 개인별 관찰 결과를 바탕으로, 해볼 만한 생활 습관을 골라보세요. 실천 뒤의 변화도 기록으로 살펴볼 수 있어요.</p></div><button type="button" class="jg1104-bridge-go" data-view="lab">실험실 열기 <span aria-hidden="true">→</span></button>`;
+  analysisPane.insertAdjacentElement('afterend',bridge);
+  bridge.querySelector('button').addEventListener('click',()=>navigate('lab'));
+}
+
 window.__jangilgiLabDiagnostics={recommendations,measurements,labs};
 draw();
+})();
+</script>
+<style id="jangilgi-v1104-layout-fix">
+/* v1.10.4: analysis CTA belongs to the document flow, not an overlay. */
+#analysisView.active-view{overflow-y:auto!important;overflow-x:hidden!important;align-content:start!important;}
+#analysisView #foodlifeAnalysisPane{flex:0 0 auto!important;min-height:0!important;max-height:none!important;height:auto!important;overflow:visible!important;width:100%!important;}
+#analysisView #jg1104-analysis-bridge{position:relative!important;inset:auto!important;transform:none!important;z-index:auto!important;display:flex!important;align-items:center!important;gap:16px!important;flex:0 0 auto!important;width:100%!important;min-height:112px!important;margin:17px 0 24px!important;padding:20px 23px!important;border:1px solid color-mix(in srgb,var(--jg184-accent,#328152) 25%,var(--line))!important;border-radius:18px!important;background:linear-gradient(110deg,var(--surface),var(--jg184-tint,#eaf5e7))!important;box-sizing:border-box!important;overflow:visible!important;}
+#analysisView .jg1104-bridge-icon{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:15px;background:var(--surface);font-size:25px;}
+#analysisView .jg1104-bridge-copy{flex:1 1 0;min-width:0;overflow-wrap:anywhere;}
+#analysisView .jg1104-bridge-copy .section-kicker{font-size:10px;color:var(--jg184-accent,#328152);letter-spacing:.07em;}
+#analysisView .jg1104-bridge-copy h2{margin:5px 0 4px;font-size:clamp(16px,1.7vw,21px);line-height:1.35;color:var(--deep);letter-spacing:-.045em;}
+#analysisView .jg1104-bridge-copy p{margin:0;font-size:12px;line-height:1.65;color:var(--muted);word-break:keep-all;}
+#analysisView .jg1104-bridge-go{flex:0 0 auto;min-height:43px;padding:10px 16px;border-radius:10px;background:var(--jg184-accent,#327e50);color:white;font-size:12px;font-weight:800;white-space:nowrap;}
+#analysisView .jg1104-bridge-go:focus-visible,#jg1104-calendar-overlay button:focus-visible{outline:3px solid var(--jg184-accent,#327e50);outline-offset:3px;}
+@media(max-width:690px){#analysisView #jg1104-analysis-bridge{padding:15px!important;align-items:flex-start!important;flex-wrap:wrap!important;gap:10px!important;}#analysisView .jg1104-bridge-icon{width:40px;height:40px;flex-basis:40px;font-size:20px;}#analysisView .jg1104-bridge-copy{flex-basis:calc(100% - 56px);max-width:calc(100% - 56px);}#analysisView .jg1104-bridge-go{width:100%;}}
+/* Home: protect title, illustration, cards and narrow layouts from accidental overlap. */
+#dashboardView>.jg181-home{min-width:0!important;max-width:100%!important;box-sizing:border-box!important;}
+#dashboardView .jg181-hero{min-width:0!important;isolation:isolate!important;}
+#dashboardView .jg181-hero-copy{max-width:min(59%,680px)!important;min-width:0!important;}
+#dashboardView .jg181-hero-art{bottom:0!important;right:12px!important;width:min(38%,430px)!important;height:100%!important;max-height:100%!important;overflow:hidden!important;opacity:.84!important;z-index:1!important;}
+#dashboardView .jg181-hero-art .jg1810-hero-image{display:block;width:100%!important;height:100%!important;object-fit:contain!important;object-position:right bottom!important;}
+#dashboardView :is(.jg181-action-row,.jg181-recent-row,.jg181-bottom-row,.jg181-week-panel){min-width:0!important;max-width:100%!important;}
+#dashboardView :is(.jg181-action-card,.jg181-panel,.jg181-contact,.jg181-week-main){min-width:0!important;}
+#dashboardView .jg181-action-card :is(strong,.jg181-action-description,.jg181-action-cta){overflow-wrap:anywhere;word-break:keep-all;}
+#dashboardView .jg181-hero-copy :is(h1,p){overflow-wrap:break-word;}
+@media(max-width:1050px){#dashboardView>.jg181-home{width:100%!important;}}
+@media(max-width:700px){
+ #dashboardView .jg181-hero-art{display:none!important;}
+ #dashboardView .jg181-hero-copy{max-width:100%!important;}
+ #dashboardView .jg181-hero{min-height:0!important;padding:18px 17px!important;}
+ #dashboardView .jg181-action-row,#dashboardView .jg181-recent-row,#dashboardView .jg181-bottom-row{grid-template-columns:minmax(0,1fr)!important;}
+ #dashboardView .jg181-action-card{grid-template-columns:minmax(0,44px) minmax(0,1fr)!important;}
+ #dashboardView .jg181-action-description{white-space:normal!important;}
+}
+/* Calendar: no page scroll; open the complete selected-day records in a separate dialog. */
+#weekView.active-view{overflow:hidden!important;overscroll-behavior:contain!important;}
+#weekView>.jg184-calendar-layout{flex:1 1 auto!important;min-height:0!important;max-height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;}
+#weekView .calendar-card{min-height:0!important;max-height:100%!important;overflow:hidden!important;width:min(100%,900px)!important;flex:0 1 auto!important;margin:0 auto!important;padding:clamp(12px,1.6vh,22px)!important;}
+#weekView .calendar-grid .cal-day{min-height:0!important;height:clamp(32px,6.2vh,65px)!important;}
+#weekView .calendar-head{margin:clamp(4px,.8vh,11px) 0 5px!important;}
+#weekView .calendar-grid{gap:clamp(3px,.6vh,8px)!important;}
+#weekView .month-calendar-detail{display:none!important;}
+/* The detail node is moved out of the calendar to eliminate calendar-page scrolling. */
+.jg1104-calendar-overlay[hidden]{display:none!important;}
+.jg1104-calendar-overlay{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;padding:clamp(10px,3vh,25px);isolation:isolate;}
+.jg1104-calendar-backdrop{position:absolute;inset:0;background:rgba(15,30,21,.57);}
+.jg1104-calendar-dialog{position:relative;z-index:1;display:flex;flex-direction:column;width:min(970px,100%);max-height:min(90dvh,850px);min-height:0;overflow:hidden;background:var(--surface);color:var(--ink);border-radius:19px;box-shadow:0 25px 75px #0c211b47;}
+.jg1104-calendar-dialog-head{padding:17px clamp(16px,2.5vw,27px);display:flex;justify-content:space-between;align-items:center;gap:15px;flex:none;border-bottom:1px solid var(--line);}
+.jg1104-calendar-dialog-head h2{margin:4px 0 0;font-size:18px;color:var(--deep);}
+.jg1104-calendar-close{width:38px;height:38px;flex:none;border-radius:11px;background:var(--paper);color:var(--deep);font-weight:850;}
+.jg1104-calendar-dialog-content{padding:clamp(13px,2vw,22px);min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+.jg1104-calendar-dialog #monthCalendarDetail{display:block!important;margin:0!important;padding:0!important;max-height:none!important;height:auto!important;border:0!important;background:transparent!important;}
+.jg1104-calendar-dialog .jg196-detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.jg1104-calendar-dialog .jg196-record-group{min-width:0;border:1px solid var(--line);border-radius:12px;padding:13px;}
+.jg1104-calendar-dialog .jg196-record-items{display:grid;gap:8px;padding-top:9px;max-height:none!important;overflow:visible!important;}
+.jg1104-calendar-dialog .jg196-group-title{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding-bottom:9px;}
+.jg1104-calendar-dialog .jg196-group-title .jg196-count{margin-left:auto;}
+.jg1104-calendar-dialog .jg196-entry{padding:10px;background:var(--paper);border-radius:9px;overflow-wrap:anywhere;}
+.jg1104-calendar-dialog .jg196-entry p{margin:4px 0 0;font-size:12px;line-height:1.65;color:var(--muted);}
+.jg1104-calendar-dialog .jg196-no-record{font-size:12px;color:var(--muted);padding:10px 0;}
+.jg1104-calendar-dialog .jg196-selected-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:15px;}
+.jg1104-calendar-dialog .jg196-selected-head h3{margin:2px 0;font-size:19px;}
+.jg1104-calendar-dialog .jg196-selected-head>span{white-space:nowrap;font-size:12px;color:var(--jg184-accent,#327e50);}
+@media(max-width:700px){
+ #weekView.active-view{padding:10px!important;gap:7px!important;}
+ #weekView .calendar-card{padding:12px!important;}
+ #weekView .calendar-grid .cal-day{height:clamp(35px,6.8vh,55px)!important;}
+ .jg1104-calendar-overlay{padding:8px;}
+ .jg1104-calendar-dialog{max-height:94dvh;border-radius:14px;}
+ .jg1104-calendar-dialog .jg196-detail-grid{grid-template-columns:1fr;}
+ .jg1104-calendar-dialog .jg196-record-items{max-height:none!important;}
+}
+@media(max-height:680px){#weekView .calendar-grid .cal-day{height:clamp(29px,5.8vh,46px)!important;}#weekView .calendar-head{margin:2px 0!important;}#weekView.active-view{gap:5px!important;padding:8px!important;}}
+</style>
+<script id="jangilgi-v1104-calendar-overlay-script">
+(function(){'use strict';
+  const grid=document.getElementById('calendarGrid');
+  const detail=document.getElementById('monthCalendarDetail');
+  const calendar=document.querySelector('#weekView .calendar-card');
+  if(!grid||!detail||!calendar)return;
+  const overlay=document.createElement('div');
+  overlay.id='jg1104-calendar-overlay';
+  overlay.className='jg1104-calendar-overlay';
+  overlay.hidden=true;
+  overlay.innerHTML='<div class="jg1104-calendar-backdrop" data-jg1104-close></div><section class="jg1104-calendar-dialog" role="dialog" aria-modal="true" aria-label="선택한 날짜의 기록" tabindex="-1"><header class="jg1104-calendar-dialog-head"><div><span class="section-kicker">DAILY RECORDS</span><h2>선택한 날짜의 기록</h2></div><button type="button" class="jg1104-calendar-close" aria-label="기록 상세 닫기" data-jg1104-close>✕</button></header><div class="jg1104-calendar-dialog-content"></div></section>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('.jg1104-calendar-dialog-content').appendChild(detail);
+  const dialog=overlay.querySelector('.jg1104-calendar-dialog');
+  let opener=null;
+  function close(){if(overlay.hidden)return;overlay.hidden=true;document.body.classList.remove('jg1104-calendar-open');opener?.focus();opener=null;}
+  function open(btn){opener=btn;overlay.hidden=false;document.body.classList.add('jg1104-calendar-open');dialog.focus();}
+  overlay.addEventListener('click',event=>{if(event.target.closest('[data-jg1104-close]'))close();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!overlay.hidden){event.preventDefault();close();}});
+  // The original renderMonthCalendar handler populates the full record list. Let it run first.
+  grid.addEventListener('click',event=>{
+    const btn=event.target.closest('[data-month-date]');
+    if(btn && grid.contains(btn))open(btn);
+  });
+  // Keep keyboard focus inside the open dialog while reviewing records.
+  overlay.addEventListener('keydown',event=>{
+    if(event.key!=='Tab')return;
+    const focusable=Array.from(overlay.querySelectorAll('button,[href],[tabindex]:not([tabindex="-1"])')).filter(e=>!e.disabled&&e.getClientRects().length);
+    if(!focusable.length){event.preventDefault();dialog.focus();return;}
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  });
 })();
 </script>
 </body>
