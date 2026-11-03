@@ -1174,7 +1174,7 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 </div>
 </header>
 <section class="view active-view" id="dashboardView">
-<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.6</strong><p id="releaseText">실험실 흐름·실험 로그·기간 설정을 개편하고 홈 문의 카드 겹침과 업데이트 비교를 수정했습니다.</p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
+<aside id="releaseNotice" class="release-notice" aria-label="장일기 운영 공지"><div class="release-copy"><span class="release-icon" aria-hidden="true">📢</span><div><strong id="releaseHeadline">장일기 v1.10.7</strong><p id="releaseText"></p></div></div><div class="release-actions"><button type="button" id="releaseOpenGuide">변경 사항 보기</button><button type="button" id="releaseReload">↻ 새로고침</button></div></aside>
 
 <div class="demo-banner" id="demoBanner"><span class="demo-dot"></span><div><strong>데모 기록</strong><span>예시 기록입니다. 실제 기록과 구분해 주세요.</span></div><button id="resetDemo">지우고 새로 시작</button></div>
 <div class="page-intro">
@@ -1258,16 +1258,17 @@ body[data-bg="dots"]{background-image:radial-gradient(rgba(89,137,101,.18) 1.2px
 <p class="foodlife-disclaimer">음식·생활 통계는 건강 점수나 질병 진단이 아니에요. 기록이 없으면 '섭취하지 않음'으로 간주하지 않습니다.</p>
 </section>
 <section class="view" id="labView" aria-label="생활 습관 실험실">
- <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.6</div><h1>생활 습관 <em>실험실</em></h1><p>분석에서 발견한 변화에 맞춰 작은 실험을 해보세요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
+ <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · v1.10.7</div><h1>생활 습관 <em>실험실</em></h1><p>분석에서 발견한 변화에 맞춰 작은 실험을 해보세요.</p></div><button type="button" class="jg110-outline" data-view="analysis">← 개인 분석 보기</button></header>
  <div class="jg110-main">
+  <section id="jg110-lab-stopped-result" class="jg110-section" hidden aria-live="polite"></section>
   <section id="jg110-lab-active" class="jg110-section" hidden><div class="jg110-section-title"><div><span class="section-kicker">IN PROGRESS</span><h2>내가 선택한 실험</h2></div><small>해본 날만 체크</small></div><div id="jg110-active-content" aria-live="polite"></div></section>
   <section id="jg110-lab-recommendations" class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">FROM MY ANALYSIS</span><h2>추천 실험</h2></div><small>분석에 기반한 선택지</small></div><div id="jg110-recommendation-list" aria-live="polite"></div></section>
   <p class="jg1106-lab-note">기록에 나타난 연관성은 원인을 뜻하지 않아요. 완료한 결과는 사이드바 <button type="button" data-view="labLog">실험 로그</button>에서 볼 수 있어요.</p>
  </div>
 </section>
 <section class="view" id="labLogView" aria-label="실험 로그">
- <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · ARCHIVE</div><h1>실험 <em>로그</em></h1><p>마친 실험의 기록과 그때 발견한 분석을 살펴보세요.</p></div><button type="button" class="jg110-outline" data-view="lab">← 실험실로</button></header>
- <div class="jg110-main"><section class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">HISTORY</span><h2>종료한 실험</h2></div><small>개인 기록에 저장</small></div><div id="jg110-history-content" aria-live="polite"></div></section><p class="jg1106-lab-note">관찰된 변화는 실험 행동의 효과나 의학적 진단을 증명하지 않습니다.</p></div>
+ <header class="jg110-top"><div><div class="eyebrow">HABIT LAB · ARCHIVE</div><h1>실험 <em>로그</em></h1><p>끝까지 실천한 실험과 그때의 관찰 결과를 살펴보세요.</p></div><button type="button" class="jg110-outline" data-view="lab">← 실험실로</button></header>
+ <div class="jg110-main"><section class="jg110-section"><div class="jg110-section-title"><div><span class="section-kicker">HISTORY</span><h2>완주한 실험</h2></div><small>실천한 날을 모두 체크한 실험만</small></div><div id="jg110-history-content" aria-live="polite"></div></section><p class="jg1106-lab-note">관찰된 변화는 실험 행동의 효과나 의학적 진단을 증명하지 않습니다.</p></div>
 </section>
 <section class="view" id="settingsView">
 <div class="record-header"><div><div class="eyebrow">PERSONALIZE YOUR DIARY</div><h1>화면 설정</h1><p>장일기의 색상과 배경을 취향에 맞게 바꿔보세요.</p></div></div>
@@ -3572,7 +3573,7 @@ $('supportView').addEventListener('click',e=>{if(e.target.closest('[data-view="d
 </script>
 <script id="jangilgi-v110-addon">
 /* 장일기 v1.1.0: additive UI and profile options only. No changes to vault, Firebase, or record schema. */
-const JANGILGI_VERSION='1.10.6';
+const JANGILGI_VERSION='1.10.7';
 const JANGILGI_RELEASE_STEPS=[];
 
 /* old release steps (preserved in changelog below) */
@@ -3960,7 +3961,7 @@ function initDetailedHelp(){
 }
 // 비교 기준선은 배포 스크립트가 GitHub main의 기존 index.html에서 읽어 삽입합니다.
 // GitHub 기준선을 확인하지 못한 HTML 단독 실행에서는 특정 이전 버전을 추측하지 않습니다.
-const JANGILGI_PREVIOUS_RELEASE='1.10.5';
+const JANGILGI_PREVIOUS_RELEASE='1.10.6';
 function jangReleaseBaselineLabel(){
  return /^\d+\.\d+\.\d+$/.test(JANGILGI_PREVIOUS_RELEASE)
   ?`v${JANGILGI_PREVIOUS_RELEASE} → v${JANGILGI_VERSION}`:`v${JANGILGI_VERSION} 업데이트`;
@@ -4009,7 +4010,7 @@ function jangRefreshAnnouncement(){
  }
  const current=JANGILGI_CHANGELOG.find(entry=>entry.version===JANGILGI_VERSION);
  headline.textContent=`📢 장일기 v${JANGILGI_VERSION} 안내`;
- desc.textContent=current?`${jangReleaseBaselineLabel()}에서 변경된 ${jangUpdateSteps().length}개 안내 항목을 「변경 사항 보기」에서 확인할 수 있어요. 자동으로 열리지는 않아요.`:'현재 버전의 변경 사항을 확인할 수 있어요.';
+ desc.textContent=current?`${jangReleaseBaselineLabel()}에서 변경된 ${jangUpdateSteps().length}개 안내 항목을 「변경 사항 보기」에서 확인할 수 있어요. 자동으로 열리지는 않아요.`:'';
  card.classList.remove('release-new');
 }
 async function jangCheckRemoteVersion(){
@@ -6490,6 +6491,16 @@ const oldNavigate=navigate;navigate=function(v){oldNavigate(v);if(v==='bowelStat
 #labView .jg110-footer-note{font-size:11px;color:#7f9083;line-height:1.8;margin:0;padding:2px 4px}
 #labView :is(button,a):focus-visible{outline:3px solid #8abf96;outline-offset:2px}
 @media(max-width:760px){#labView .jg110-rec-grid,#labView .jg110-stats{grid-template-columns:1fr}#labView .jg110-section{padding:14px}#labView .jg110-main{gap:12px}#labView .jg110-dates{gap:4px}#labView .jg110-day{min-height:63px;padding:6px 1px}#labView .jg110-day b{font-size:10px}#labView .jg110-day span{font-size:11px}}
+
+/* v1.10.6 hotfix: show exactly one ongoing experiment, and an ephemeral stopped-result. */
+#labView #jg110-lab-active[hidden],
+#labView #jg110-lab-recommendations[hidden],
+#labView #jg110-lab-stopped-result[hidden]{display:none!important}
+#labView #jg110-lab-stopped-result{border:1px solid #c9dfcc;background:var(--surface);border-radius:16px}
+#labView .jg110-stopped-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+#labView .jg110-stopped-head h2{margin:4px 0;font-size:19px;color:var(--deep)}
+#labView .jg110-stopped-explanation{font-size:12px;color:#5d7967;line-height:1.75;margin:8px 0 12px}
+#labView .jg110-stopped-head button{border:1px solid #c9daca;border-radius:9px;padding:8px 11px;background:#f4faf3;font-size:12px;color:#38654a}
 </style>
 <script id="jangilgi-v110-habit-lab-script">
 /* v1.10.5: habit-lab recommendations stay tied to visible personal analysis; UI is simplified. */
@@ -6521,6 +6532,29 @@ const labSourceLabel=t=>({water:'수분 분석',sleep:'수면 분석',stress:'�
 const validLab=(lab)=>lab&&typeof lab.id==='string'&&TEMPLATES[lab.templateId]&&/^\d{4}-\d{2}-\d{2}$/.test(lab.startDate)&&['active','completed','stopped'].includes(lab.status);
 function labs(d){return (Array.isArray(d?.profile?.labExperiments)?d.profile.labExperiments:[]).filter(validLab).slice(0,100);}
 function activeLab(d){return labs(d).find(x=>x.status==='active');}
+function labCheckedDays(lab){
+ const end=shift(lab.startDate,labDays(lab)-1);
+ return unique(Array.isArray(lab.checkIns)?lab.checkIns:[])
+   .filter(k=>typeof k==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(k)&&k>=lab.startDate&&k<=end);
+}
+function labWasFullyCompleted(lab){
+ return lab.status==='completed'&&today()>=shift(lab.startDate,labDays(lab)-1)
+   &&labCheckedDays(lab).length===labDays(lab);
+}
+function labReviewWindow(data,lab){
+ const days=labDays(lab),end=shift(lab.startDate,days-1);
+ const closed=lab.closedDate||(lab.closedAt?dateKey(lab.closedAt):today());
+ const cutoff=lab.status==='stopped'?(closed<end?closed:end):end;
+ const before=measurements(data,shift(lab.startDate,-days),shift(lab.startDate,-1));
+ const during=measurements(data,lab.startDate,cutoff);
+ const target=['hard','loose','pain','strain'].includes(lab.focusOutcome)?lab.focusOutcome:null;
+ const known=x=>target==='pain'?x.painKnown:target==='strain'?x.strainKnown:x.n;
+ // A mid-way review is exploratory, only with >=2 recorded action days and
+ // >=3 matching bowel observations on both sides. Missing values are never zero.
+ const sufficient=labCheckedDays(lab).filter(k=>k<=cutoff).length>=2&&known(before)>=3&&known(during)>=3;
+ return {before,during,cutoff,days,target,sufficient};
+}
+
 function measurements(data,start,end){
  const events=(data?.events||[]).filter(e=>e&&e.at&&Number.isFinite(Number(e.bristol))&&Number(e.bristol)>=1&&Number(e.bristol)<=7);
  const rows=events.filter(e=>{const date=dateKey(e.at);return date>=start&&date<=end;});
@@ -6612,24 +6646,25 @@ function stats(pre,post,after,goal,days){
  return `<div class="jg110-stats">${body(pre,`실험 전 ${days}일`)}${body(post,`실험 기간 ${days}일`)}</div>`;
 }
 function reviewHTML(data,lab){
- const start=lab.startDate,days=labDays(lab),end=shift(start,days-1);
- const pre=measurements(data,shift(start,-days),shift(start,-1));
- const post=measurements(data,start,end);
- const coverage=`전 ${pre.days}일 · 실험 기간 ${post.days}일에 배변 기록이 있어요.`;
- const target=['hard','loose','pain','strain'].includes(lab.focusOutcome)?lab.focusOutcome:null;
- const known=x=>target==='pain'?x.painKnown:target==='strain'?x.strainKnown:x.n;
- const enough=known(pre)>=3&&known(post)>=3;
- let result;
- if(lab.status==='stopped')result='실험을 중단했어요. 실천하지 않은 날은 실패가 아니에요.';
- else if(today()<end)result='아직 실험 기간이 끝나지 않았어요. 중간 결과는 평가하지 않습니다.';
- else if(!enough)result='실험 전후 각각 실제 배변 기록이 3건 이상 필요해요. 현재는 변화에 대한 판단을 보류합니다.';
- else result='전후 기록의 횟수와 비율을 보여줍니다. 차이가 있더라도 실험 행동 때문이라고 확정할 수 없어요.';
- return `${stats(pre,post,lab.status==='completed',target,days)}<p><strong>${E(result)}</strong> ${E(coverage)} 기록이 없는 날을 증상이 없는 날로 간주하지 않았어요.</p>`;
+ const {before,during,cutoff,days,target,sufficient}=labReviewWindow(data,lab);
+ const isStopped=lab.status==='stopped';
+ const coverage=`실험 전 배변 기록 ${before.n}건 (${before.days}일), 실험 중 ${during.n}건 (${during.days}일).`;
+ let message;
+ if(isStopped&&!sufficient)message='변화 결과를 계산할 만큼 기록이 충분하지 않아요. 실천 확인 2일 이상 및 실험 전후 각각 비교 가능한 배변 기록 3건 이상이 필요해요.';
+ else if(isStopped)message='중단 시점까지 기록된 배변 형태와 불편감의 변화를 비교했어요. 이 차이는 행동의 효과나 원인 관계를 증명하지 않아요.';
+ else if(today()<shift(lab.startDate,days-1))message='아직 실험 기간이 끝나지 않았어요. 중간 결과는 평가하지 않습니다.';
+ else if(!sufficient)message='전후 기록이 부족하여 결과 해석을 보류해요. 실제 배변 기록과 실천 여부가 충분히 있어야 합니다.';
+ else message='전후 기록의 횟수와 비율을 보여줘요. 실험 행동이 변화의 원인이라고 확정할 수는 없어요.';
+ // Stopped trials without enough data get an explanation, not misleading zero-value charts.
+ if(isStopped&&!sufficient)return `<p class="jg110-stopped-explanation">${E(message)} ${E(coverage)}</p>`;
+ return `${stats(before,during,!isStopped,target,days).replace(`실험 기간 ${days}일`,isStopped?`중단일까지 · ${E(cutoff)}`:`실험 기간 ${days}일`)}<p class="jg110-stopped-explanation"><strong>${E(message)}</strong> ${E(coverage)} 기록하지 않은 날을 증상이 없던 날로 간주하지 않아요.</p>`;
 }
+
 function focusLabel(id){const map={hard:'단단한 변 줄이기',loose:'묽은 변 줄이기',pain:'복통·불편 줄이기',strain:'힘주기·잔변감 줄이기'};return map[id]||'기록 기반 추천';}
 function drawRecommendations(data){
  const root=$('jg110-recommendation-list');if(!root)return;
- const active=activeLab(data),recs=recommendations(data),warning=warningInRecent(data),days=labSelectedDays(data);
+ if(activeLab(data)){root.replaceChildren();return;}
+ const active=null,recs=recommendations(data),warning=warningInRecent(data),days=labSelectedDays(data);
  const card=(r,index)=>{const t=TEMPLATES[r.id];const badge=r.kind==='confirmed'?'시간순 확인':r.kind==='observed'?'관찰된 경향':'초기 관찰';
  return `<article class="jg110-rec jg110-personal-card">
   <div class="jg110-rec-head"><span class="jg110-chip">${badge}</span><span class="jg110-badge-soft">${E(labSourceLabel(r.analysisTab))}</span></div>
@@ -6648,30 +6683,46 @@ function drawActive(data){
  const lab=activeLab(data);if(!lab){root.innerHTML='';return;}
  const t=TEMPLATES[lab.templateId],daysTotal=labDays(lab),end=shift(lab.startDate,daysTotal-1),done=unique(Array.isArray(lab.checkIns)?lab.checkIns:[]),week=['일','월','화','수','목','금','토'];
  const buttons=Array.from({length:daysTotal},(_,i)=>{const day=shift(lab.startDate,i),checked=done.includes(day),weekday=week[new Date(day+'T12:00:00').getDay()];return `<button class="jg110-day" type="button" data-jg110-check="${day}" aria-pressed="${checked}" aria-label="${day} ${checked?'실천 기록됨':'실천 체크'}" ${day>today()?'disabled':''}><b>${weekday} ${Number(day.slice(-2))}일</b><span>${checked?'✓':'＋'}</span></button>`;}).join('');
- const snapshot=lab.analysisSnapshot||{};
- root.innerHTML=`<article class="jg110-active-card"><div class="jg110-active-head"><div><span class="jg110-chip">${E(lab.startDate)} ~ ${E(end)} · ${daysTotal}일 실험</span><h3>${E(t.title)}</h3></div><span class="jg110-progress-pill">체크 ${done.length}일</span></div>
+ const snapshot=lab.analysisSnapshot||{},checked=labCheckedDays(lab),canFinish=today()>=end&&checked.length===daysTotal;
+ root.innerHTML=`<article class="jg110-active-card"><div class="jg110-active-head"><div><span class="jg110-chip">${E(lab.startDate)} ~ ${E(end)} · ${daysTotal}일 실험</span><h3>${E(t.title)}</h3></div><span class="jg110-progress-pill">체크 ${checked.length}/${daysTotal}일</span></div>
  <div class="jg1106-action"><strong>확인하려는 변화</strong><p>${E(focusLabel(lab.focusOutcome||''))}</p></div>
  <div class="jg1106-action"><strong>오늘의 실천</strong><p>${E(t.action)}</p></div>
  ${snapshot.why?`<details class="jg110-more"><summary>이 실험을 선택한 이유</summary><div class="jg110-more-body"><p>${E(snapshot.why)}</p></div></details>`:''}
  <div class="jg110-dates" role="group" aria-label="실천 날짜 체크">${buttons}</div>
- <p>해본 날만 선택하세요. 미체크는 실패로 계산하지 않아요.</p>
- <div class="jg110-actions"><button type="button" class="jg110-primary" data-jg110-finish ${today()>=end?'':'disabled'}>${today()>=end?'실험 마치기':'기간 종료 후 완료 가능'}</button><button type="button" class="jg110-textbtn" data-jg110-stop>실험 중단</button></div></article>`;
+ <p>해본 날만 체크하세요. 기간 종료 후 모든 날짜를 체크했을 때만 완주 기록으로 남아요. 미체크를 건강상의 실패로 판단하지 않아요.</p>
+ <div class="jg110-actions"><button type="button" class="jg110-primary" data-jg110-finish ${canFinish?'':'disabled'}>${today()<end?'기간 종료 후 완료 가능':canFinish?'실험 완주 · 로그 저장':`완주하려면 ${daysTotal-checked.length}일 체크 필요`}</button><button type="button" class="jg110-textbtn" data-jg110-stop>실험 중단</button></div></article>`;
 }
 function drawHistory(data){
  const root=$('jg110-history-content');if(!root)return;
- const items=labs(data).filter(x=>x.status!=='active').slice().reverse();
+ const items=labs(data).filter(labWasFullyCompleted).slice().reverse();
  root.innerHTML=items.length?items.map(lab=>{const t=TEMPLATES[lab.templateId],d=labDays(lab),end=shift(lab.startDate,d-1),checked=unique(lab.checkIns||[]).length,snapshot=lab.analysisSnapshot||{};
- return `<article class="jg110-history-entry"><div class="jg110-rec-head"><span class="jg110-chip">${lab.status==='completed'?'완료':'중단'} · ${d}일</span><span class="jg110-badge-soft">체크 ${checked}일</span></div><h3>${E(t.title)}</h3><p>${E(lab.startDate)} ~ ${E(end)}</p><div class="jg1106-reason"><strong>확인하려던 변화</strong><p>${E(focusLabel(lab.focusOutcome||''))}</p></div><div class="jg1106-reason"><strong>당시 추천 이유</strong><p>${E(snapshot.why||'이전 버전에서 시작해 원본 분석 근거가 저장되지 않은 실험이에요.')}</p></div>${reviewHTML(data,lab)}</article>`;}).join(''):empty('아직 종료한 실험이 없어요. 완료하거나 중단한 실험은 이곳에 모여요.');
+ return `<article class="jg110-history-entry"><div class="jg110-rec-head"><span class="jg110-chip">완주 · ${d}일</span><span class="jg110-badge-soft">체크 ${checked}/${d}일</span></div><h3>${E(t.title)}</h3><p>${E(lab.startDate)} ~ ${E(end)}</p><div class="jg1106-reason"><strong>확인하려던 변화</strong><p>${E(focusLabel(lab.focusOutcome||''))}</p></div><div class="jg1106-reason"><strong>당시 추천 이유</strong><p>${E(snapshot.why||'이전 버전에서 시작해 원본 분석 근거가 저장되지 않은 실험이에요.')}</p></div>${reviewHTML(data,lab)}</article>`;}).join(''):empty('아직 완주한 실험이 없어요. 중단한 실험이나 기간만 끝난 실험은 실험 로그에 표시하지 않아요.');
+}
+let justStoppedLab=null;
+function drawStopped(data){
+ const panel=$('jg110-lab-stopped-result');if(!panel)return;
+ const lab=justStoppedLab;
+ if(!lab){panel.hidden=true;panel.innerHTML='';return;}
+ const template=TEMPLATES[lab.templateId];
+ if(!template){panel.hidden=true;panel.innerHTML='';return;}
+ const {sufficient,cutoff}=labReviewWindow(data,lab);
+ panel.hidden=false;
+ panel.innerHTML=`<div class="jg110-stopped-head"><div><span class="section-kicker">실험 중단 · 완주 로그에 저장하지 않음</span><h2>${E(template.title)}</h2></div><button type="button" data-jg110-dismiss-stopped>결과 닫기 ×</button></div>`+
+  (sufficient?`<p class="jg110-stopped-explanation">중단한 날짜(${E(cutoff)})까지 실천한 기록과 배변 기록을 비교했어요.</p>${reviewHTML(data,lab)}`:
+  `<p class="jg110-stopped-explanation">실험을 중단했어요. 비교할 자료가 부족해 변화 결과는 표시하지 않았어요. 실천 확인 2일 이상, 실험 전·중 각각 해당 배변 기록 3건 이상이 필요해요. 중단한 실험은 로그에 저장하지 않아요.</p>`);
 }
 function draw(){
  const d=window.__jangilgiSecurityRead?.();
- if(!d){$('jg110-recommendation-list').innerHTML=empty('로그인 후 개인 추천을 확인할 수 있어요.');$('jg110-active-content').innerHTML='';$('jg110-history-content').innerHTML=empty('로그인 후 실험 기록을 확인할 수 있어요.');$('jg110-lab-active').hidden=true;return;}
- const active=!!activeLab(d);$('jg110-lab-active').hidden=!active;
+ if(!d){$('jg110-recommendation-list').innerHTML=empty('로그인 후 개인 추천을 확인할 수 있어요.');$('jg110-active-content').innerHTML='';$('jg110-history-content').innerHTML=empty('로그인 후 실험 기록을 확인할 수 있어요.');$('jg110-lab-active').hidden=true;$('jg110-lab-recommendations').hidden=false;$('jg110-lab-stopped-result').hidden=true;return;}
+ const active=!!activeLab(d);
+ if(active)justStoppedLab=null;
+ $('jg110-lab-active').hidden=!active;
+ $('jg110-lab-recommendations').hidden=active;
  $('jg110-lab-recommendations').classList.toggle('jg1106-has-active',active);
- drawActive(d);drawRecommendations(d);drawHistory(d);
+ drawActive(d);drawRecommendations(d);drawHistory(d);drawStopped(d);
 }
 let saving=false;
-async function update(op){if(saving)return;const d=window.__jangilgiSecurityRead?.();if(!d){showToast('먼저 로그인해 주세요.');return;}if(d.demo){showToast('데모 기록은 실험 결과에 저장하지 않아요.');return;}if(!d.profile)d.profile={};d.profile.labExperiments=labs(d);try{saving=true;const changed=op(d.profile.labExperiments);if(!changed)return;const saved=await window.__jangilgiSecurityWrite(d);if(saved){refreshAllViews();draw();}else draw();}finally{saving=false;}}
+async function update(op){if(saving)return false;const d=window.__jangilgiSecurityRead?.();if(!d){showToast('먼저 로그인해 주세요.');return false;}if(d.demo){showToast('데모 기록은 실험 결과에 저장하지 않아요.');return false;}if(!d.profile)d.profile={};d.profile.labExperiments=labs(d);try{saving=true;const changed=op(d.profile.labExperiments);if(!changed)return false;const saved=await window.__jangilgiSecurityWrite(d);if(saved){refreshAllViews();draw();}else draw();return !!saved;}finally{saving=false;}}
 $('labView').addEventListener('click',async ev=>{
  const analysisLink=ev.target.closest('[data-jg110-open-analysis]');
  if(analysisLink){
@@ -6686,6 +6737,7 @@ $('labView').addEventListener('click',async ev=>{
    renderPersonalAnalysis(window.__jangilgiSecurityRead?.()||{profile:{},events:[],records:[]});
    return;
  }
+ const dismiss=ev.target.closest('[data-jg110-dismiss-stopped]');if(dismiss){justStoppedLab=null;draw();return;}
  const start=ev.target.closest('[data-jg110-start]');if(start){const id=start.dataset.jg110Start;if(!TEMPLATES[id])return;await update(arr=>{if(arr.some(x=>x.status==='active')){showToast('진행 중인 실험을 먼저 완료하거나 중단해 주세요.');return false;}if(arr.length>=100){showToast('기록 한도(100개)에 도달했어요.');return false;}const data=window.__jangilgiSecurityRead();if(warningInRecent(data)){showToast('주의 증상 기록이 있어 상담 안내를 먼저 확인해 주세요.');return false;}const candidate=recommendations(data)[Number(start.dataset.jg110Index)];
  if(!candidate||candidate.id!==id){showToast('추천 정보가 바뀌었어요. 실험실을 다시 열어 주세요.');return false;}
  const goal=candidate.targetOutcome||'',duration=labSelectedDays(data);
@@ -6693,8 +6745,21 @@ $('labView').addEventListener('click',async ev=>{
  if(['hard','loose','pain','strain'].includes(goal))trial.focusOutcome=goal;
  arr.push(trial);return true;});return;}
  const toggle=ev.target.closest('[data-jg110-check]');if(toggle){const day=toggle.dataset.jg110Check;await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur||day<cur.startDate||day>shift(cur.startDate,labDays(cur)-1)||day>today())return false;cur.checkIns=unique(Array.isArray(cur.checkIns)?cur.checkIns:[]);cur.checkIns=cur.checkIns.includes(day)?cur.checkIns.filter(d=>d!==day):[...cur.checkIns,day].sort();return true;});return;}
- const finish=ev.target.closest('[data-jg110-finish]');if(finish){await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur||today()<shift(cur.startDate,labDays(cur)-1))return false;cur.status='completed';cur.closedAt=new Date().toISOString();return true;});showToast('실험을 마쳤어요. 결과는 실험 로그에서 확인할 수 있어요.');return;}
- const stop=ev.target.closest('[data-jg110-stop]');if(stop){if(!confirm('실험을 중단할까요? 지금까지의 기록은 결과 목록에 남습니다.'))return;await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur)return false;cur.status='stopped';cur.closedAt=new Date().toISOString();return true;});return;}
+ const finish=ev.target.closest('[data-jg110-finish]');if(finish){
+   const success=await update(arr=>{const cur=arr.find(x=>x.status==='active');
+     if(!cur||today()<shift(cur.startDate,labDays(cur)-1)||labCheckedDays(cur).length!==labDays(cur))return false;
+     cur.status='completed';cur.closedAt=new Date().toISOString();return true;});
+   if(success)showToast('선택한 기간을 완주했어요. 결과는 실험 로그에서 확인할 수 있어요.');return;
+ }
+ const stop=ev.target.closest('[data-jg110-stop]');if(stop){
+   if(!confirm('실험을 중단할까요? 충분한 기록이 있으면 결과를 보여주지만 중단한 실험은 실험 로그에 남지 않아요.'))return;
+   let stopped=null;
+   const saved=await update(arr=>{const cur=arr.find(x=>x.status==='active');if(!cur)return false;
+     stopped={...cur,checkIns:[...(cur.checkIns||[])],status:'stopped',closedDate:today(),closedAt:new Date().toISOString()};
+     arr.splice(arr.indexOf(cur),1);return true;});
+   if(saved&&stopped){justStoppedLab=stopped;draw();$('jg110-lab-stopped-result')?.scrollIntoView?.({block:'nearest'});}
+   return;
+ }
 });
 // Read-only refresh: no additional Firestore writes, no polling or auto-changes.
 const originalRefresh=refreshAllViews;refreshAllViews=function(){originalRefresh();draw();};
